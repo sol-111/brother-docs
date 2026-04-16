@@ -1005,18 +1005,18 @@
         </div>
         <div class="question-body">
             <div class="visual-example">
-                <h4>本番環境（Live）で運用する場合</h4>
-                <table class="size-table" style="font-size: 13px;">
-                    <thead><tr><th style="width: 50%;">メリット</th><th style="width: 50%;">デメリット</th></tr></thead>
+                <h4 style="margin-bottom: 16px;">本番環境（Live）で運用する場合</h4>
+                <table class="size-table" style="font-size: 13px; table-layout: fixed; width: 100%;">
+                    <thead><tr><th>メリット</th><th>デメリット</th></tr></thead>
                     <tbody>
                         <tr>
-                            <td style="text-align: left; font-weight: normal; vertical-align: top;">
+                            <td style="text-align: left; font-weight: normal; vertical-align: top; padding: 16px;">
                                 ・URLがきれい（/version-test がつかない）<br>
                                 ・独自ドメインを設定できる<br>
                                 ・本番と同じ挙動で検証できる<br>
                                 ・そのまま正式リリースに移行しやすい
                             </td>
-                            <td style="text-align: left; vertical-align: top;">
+                            <td style="text-align: left; vertical-align: top; padding: 16px;">
                                 ・<strong>検索エンジンに登録されやすい</strong><br>
                                 ・Growth Planの購入が必要（費用増）<br>
                                 ・変更のたびにデプロイ作業が発生<br>
@@ -1025,20 +1025,19 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-            <div class="visual-example">
-                <h4>テスト環境（version-test）で運用する場合</h4>
-                <table class="size-table" style="font-size: 13px;">
-                    <thead><tr><th style="width: 50%;">メリット</th><th style="width: 50%;">デメリット</th></tr></thead>
+
+                <h4 style="margin-top: 28px; margin-bottom: 16px;">テスト環境（version-test）で運用する場合</h4>
+                <table class="size-table" style="font-size: 13px; table-layout: fixed; width: 100%;">
+                    <thead><tr><th>メリット</th><th>デメリット</th></tr></thead>
                     <tbody>
                         <tr>
-                            <td style="text-align: left; font-weight: normal; vertical-align: top;">
+                            <td style="text-align: left; font-weight: normal; vertical-align: top; padding: 16px;">
                                 ・<strong>検索エンジンに登録されにくい</strong>（後述の対策でほぼ防止可能）<br>
                                 ・追加のプラン購入が不要（現行プランで対応可能）<br>
                                 ・保存＝即反映でデプロイ不要、開発効率が高い<br>
                                 ・POCとして十分な検証が可能
                             </td>
-                            <td style="text-align: left; vertical-align: top;">
+                            <td style="text-align: left; vertical-align: top; padding: 16px;">
                                 ・URLに「/version-test」がつく<br>
                                 ・独自ドメインが使えない<br>
                                 ・正式リリース時に環境移行が必要<br>
