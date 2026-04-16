@@ -14,444 +14,361 @@
             overflow: hidden;
         }
 
-        /* ===== Layout ===== */
-        .app { display: flex; height: 100vh; }
+        /* ===== Pattern Switcher ===== */
+        .pattern-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+            background: #1a202c; display: flex; align-items: center; height: 40px; padding: 0 16px; gap: 8px;
+        }
+        .pattern-switcher .label { color: #a0aec0; font-size: 12px; font-weight: 600; margin-right: 8px; }
+        .pattern-btn {
+            padding: 5px 16px; font-size: 12px; font-weight: 600; border: 1px solid #4a5568;
+            border-radius: 6px; background: none; color: #a0aec0; cursor: pointer; transition: all 0.15s;
+        }
+        .pattern-btn:hover { border-color: #718096; color: #e2e8f0; }
+        .pattern-btn.active { background: #4169e1; border-color: #4169e1; color: #fff; }
+        .pattern-desc { color: #718096; font-size: 11px; margin-left: 12px; }
 
-        /* ===== Sidebar ===== */
+        .pattern-view { display: none; height: calc(100vh - 40px); margin-top: 40px; }
+        .pattern-view.active { display: flex; }
+
+        /* ===== Shared Layout ===== */
+        .app { display: flex; height: 100%; width: 100%; }
         .sidebar {
-            width: 200px;
-            background: #f8faff;
-            border-right: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
+            width: 200px; background: #f8faff; border-right: 1px solid #e2e8f0;
+            display: flex; flex-direction: column; flex-shrink: 0;
         }
-        .sidebar-logo {
-            padding: 20px 20px 16px;
-            font-size: 20px;
-            font-weight: 800;
-            color: #4169e1;
-        }
+        .sidebar-logo { padding: 20px 20px 16px; font-size: 20px; font-weight: 800; color: #4169e1; }
         .sidebar-nav { flex: 1; padding: 0 8px; }
         .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #4a5568;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 2px;
-            transition: all 0.15s;
+            display: flex; align-items: center; gap: 10px; padding: 10px 14px; font-size: 13px;
+            font-weight: 500; color: #4a5568; border-radius: 8px; cursor: pointer; margin-bottom: 2px;
         }
         .sidebar-item:hover { background: #edf2f7; }
-        .sidebar-item.active {
-            background: #4169e1;
-            color: #fff;
-        }
+        .sidebar-item.active { background: #4169e1; color: #fff; }
         .sidebar-item .icon { font-size: 16px; width: 20px; text-align: center; }
-        .sidebar-bottom {
-            padding: 16px 20px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 13px;
-            color: #a0aec0;
-            cursor: pointer;
-        }
+        .sidebar-bottom { padding: 16px 20px; border-top: 1px solid #e2e8f0; font-size: 13px; color: #a0aec0; cursor: pointer; }
 
-        /* ===== Main ===== */
         .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .main-header {
-            padding: 20px 28px 16px;
-            background: #fff;
-            border-bottom: 1px solid #e2e8f0;
-        }
+        .main-header { padding: 20px 28px 16px; background: #fff; border-bottom: 1px solid #e2e8f0; }
         .main-header h1 { font-size: 18px; font-weight: 700; color: #1a202c; }
         .main-body { flex: 1; display: flex; overflow: hidden; }
 
-        /* ===== Column 1: Industry + Group ===== */
+        /* ===== Tree Column (shared) ===== */
         .col-tree {
-            width: 280px;
-            border-right: 1px solid #e2e8f0;
-            background: #fff;
-            overflow-y: auto;
-            flex-shrink: 0;
+            width: 280px; border-right: 1px solid #e2e8f0; background: #fff;
+            overflow-y: auto; flex-shrink: 0;
         }
         .col-tree-header {
-            padding: 16px 20px 12px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #718096;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid #edf2f7;
-            position: sticky;
-            top: 0;
-            background: #fff;
-            z-index: 1;
+            padding: 16px 20px 12px; font-size: 13px; font-weight: 700; color: #718096;
+            text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #edf2f7;
+            position: sticky; top: 0; background: #fff; z-index: 1;
         }
-
-        /* Tree */
         .tree-section { padding: 8px 0; }
         .tree-section + .tree-section { border-top: 1px solid #edf2f7; }
         .tree-section-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #a0aec0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 6px; padding: 8px 16px;
+            font-size: 11px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .tree-section-label .badge {
-            font-size: 10px;
-            padding: 1px 6px;
-            border-radius: 8px;
-            font-weight: 700;
+        .tree-section-label .badge, .tree-industry .badge {
+            font-size: 10px; padding: 1px 6px; border-radius: 8px; font-weight: 700;
         }
         .badge-all { background: #ebf8ff; color: #2b6cb0; }
         .badge-l1 { background: #fefcbf; color: #975a16; }
         .badge-l2 { background: #e9d8fd; color: #6b46c1; }
 
         .tree-industry {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px 8px 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #4a5568;
-            cursor: pointer;
-            transition: background 0.1s;
+            display: flex; align-items: center; gap: 8px; padding: 8px 16px 8px 20px;
+            font-size: 13px; font-weight: 600; color: #4a5568; cursor: pointer;
         }
         .tree-industry:hover { background: #f7fafc; }
-        .tree-industry .arrow {
-            font-size: 10px;
-            color: #a0aec0;
-            transition: transform 0.2s;
-            width: 14px;
-            text-align: center;
-        }
+        .tree-industry .arrow { font-size: 10px; color: #a0aec0; transition: transform 0.2s; width: 14px; text-align: center; }
         .tree-industry.open .arrow { transform: rotate(90deg); }
-
         .tree-groups { display: none; padding-left: 18px; }
         .tree-industry.open + .tree-groups { display: block; }
 
-        .tree-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 16px 7px 28px;
-            font-size: 13px;
-            color: #718096;
-            cursor: pointer;
-            border-radius: 6px;
-            margin: 1px 8px;
-            transition: all 0.1s;
+        .tree-group, .tree-group-direct {
+            display: flex; align-items: center; gap: 8px; padding: 7px 16px 7px 28px;
+            font-size: 13px; color: #718096; cursor: pointer; border-radius: 6px; margin: 1px 8px;
         }
-        .tree-group:hover { background: #edf2f7; color: #4a5568; }
-        .tree-group.active {
-            background: #ebf4ff;
-            color: #3182ce;
-            font-weight: 600;
+        .tree-group-direct { padding-left: 20px; }
+        .tree-group:hover, .tree-group-direct:hover { background: #edf2f7; color: #4a5568; }
+        .tree-group.active, .tree-group-direct.active { background: #ebf4ff; color: #3182ce; font-weight: 600; }
+        .tree-group .count, .tree-group-direct .count {
+            margin-left: auto; font-size: 11px; background: #edf2f7; color: #a0aec0;
+            padding: 1px 7px; border-radius: 8px; font-weight: 600;
         }
-        .tree-group .count {
-            margin-left: auto;
-            font-size: 11px;
-            background: #edf2f7;
-            color: #a0aec0;
-            padding: 1px 7px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        .tree-group.active .count {
-            background: #bee3f8;
-            color: #2b6cb0;
-        }
+        .tree-group.active .count, .tree-group-direct.active .count { background: #bee3f8; color: #2b6cb0; }
 
-        /* Direct group (no sub-industry) */
-        .tree-group-direct {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 16px 7px 20px;
-            font-size: 13px;
-            color: #718096;
-            cursor: pointer;
-            border-radius: 6px;
-            margin: 1px 8px;
-            transition: all 0.1s;
-        }
-        .tree-group-direct:hover { background: #edf2f7; color: #4a5568; }
-        .tree-group-direct.active {
-            background: #ebf4ff;
-            color: #3182ce;
-            font-weight: 600;
-        }
-        .tree-group-direct .count {
-            margin-left: auto;
-            font-size: 11px;
-            background: #edf2f7;
-            color: #a0aec0;
-            padding: 1px 7px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        .tree-group-direct.active .count {
-            background: #bee3f8;
-            color: #2b6cb0;
-        }
-
-        /* ===== Column 2: Design List ===== */
+        /* ===== List Column (Pattern A only) ===== */
         .col-list {
-            width: 320px;
-            border-right: 1px solid #e2e8f0;
-            background: #fff;
-            overflow-y: auto;
-            flex-shrink: 0;
+            width: 320px; border-right: 1px solid #e2e8f0; background: #fff;
+            overflow-y: auto; flex-shrink: 0;
         }
         .col-list-header {
-            padding: 16px 20px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #edf2f7;
-            position: sticky;
-            top: 0;
-            background: #fff;
-            z-index: 1;
+            padding: 16px 20px 12px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #edf2f7; position: sticky; top: 0; background: #fff; z-index: 1;
         }
-        .col-list-header .title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #718096;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .col-list-header .title { font-size: 13px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-add {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #4169e1;
-            background: #ebf4ff;
-            border: 1px solid #bee3f8;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.15s;
+            display: flex; align-items: center; gap: 4px; padding: 6px 12px; font-size: 12px;
+            font-weight: 600; color: #4169e1; background: #ebf4ff; border: 1px solid #bee3f8;
+            border-radius: 6px; cursor: pointer;
         }
         .btn-add:hover { background: #bee3f8; }
 
         .design-card {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 20px;
-            border-bottom: 1px solid #f7fafc;
-            cursor: pointer;
-            transition: background 0.1s;
+            display: flex; align-items: center; gap: 14px; padding: 14px 20px;
+            border-bottom: 1px solid #f7fafc; cursor: pointer;
         }
         .design-card:hover { background: #f7fafc; }
         .design-card.active { background: #ebf4ff; border-left: 3px solid #4169e1; padding-left: 17px; }
-
         .design-thumb {
-            width: 56px;
-            height: 56px;
-            border-radius: 8px;
-            background: #edf2f7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
+            width: 56px; height: 56px; border-radius: 8px; background: #edf2f7;
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
+            flex-shrink: 0; border: 1px solid #e2e8f0;
         }
-        .design-thumb img { width: 100%; height: 100%; object-fit: cover; }
-
         .design-info { flex: 1; min-width: 0; }
         .design-name { font-size: 14px; font-weight: 600; color: #2d3748; margin-bottom: 3px; }
         .design-meta { font-size: 11px; color: #a0aec0; display: flex; gap: 8px; align-items: center; }
-        .design-size-badge {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: #edf2f7;
-            color: #718096;
-        }
-        .design-delete {
-            color: #e53e3e;
-            font-size: 16px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.15s;
-            padding: 4px;
-        }
+        .design-size-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: #edf2f7; color: #718096; }
+        .design-delete { color: #e53e3e; font-size: 16px; cursor: pointer; opacity: 0; padding: 4px; }
         .design-card:hover .design-delete { opacity: 0.6; }
-        .design-delete:hover { opacity: 1 !important; }
 
-        /* ===== Column 3: Edit Panel ===== */
-        .col-edit {
-            flex: 1;
-            background: #f8fafc;
-            overflow-y: auto;
-        }
+        /* ===== Edit Column (shared) ===== */
+        .col-edit { flex: 1; background: #f8fafc; overflow-y: auto; }
         .col-edit-header {
-            padding: 16px 28px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #edf2f7;
-            background: #fff;
-            position: sticky;
-            top: 0;
-            z-index: 1;
+            padding: 16px 28px 12px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #edf2f7; background: #fff; position: sticky; top: 0; z-index: 1;
         }
-        .col-edit-header .title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #718096;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .col-edit-header .title { font-size: 13px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; }
         .edit-actions { display: flex; gap: 8px; }
-        .btn-save {
-            padding: 8px 20px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #fff;
-            background: #4169e1;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
+        .btn-save { padding: 8px 20px; font-size: 13px; font-weight: 600; color: #fff; background: #4169e1; border: none; border-radius: 8px; cursor: pointer; }
         .btn-save:hover { background: #3457c9; }
-        .btn-delete-outline {
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #e53e3e;
-            background: #fff;
-            border: 1px solid #feb2b2;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
+        .btn-delete-outline { padding: 8px 14px; font-size: 13px; font-weight: 600; color: #e53e3e; background: #fff; border: 1px solid #feb2b2; border-radius: 8px; cursor: pointer; }
         .btn-delete-outline:hover { background: #fff5f5; }
 
         .edit-form { padding: 24px 28px; }
         .form-section { margin-bottom: 28px; }
         .form-section-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: #a0aec0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 14px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #edf2f7;
+            font-size: 12px; font-weight: 700; color: #a0aec0; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #edf2f7;
         }
         .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
         .form-group { flex: 1; }
         .form-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 6px; }
         .form-input, .form-select {
-            width: 100%;
-            padding: 10px 14px;
-            font-size: 14px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background: #fff;
-            color: #2d3748;
-            outline: none;
-            transition: border-color 0.15s;
-            font-family: inherit;
+            width: 100%; padding: 10px 14px; font-size: 14px; border: 1px solid #e2e8f0;
+            border-radius: 8px; background: #fff; color: #2d3748; outline: none; font-family: inherit;
         }
         .form-input:focus, .form-select:focus { border-color: #4169e1; box-shadow: 0 0 0 3px rgba(65,105,225,0.1); }
         .form-hint { font-size: 11px; color: #a0aec0; margin-top: 4px; }
 
-        /* Image upload */
-        .upload-area {
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-        }
+        .edit-breadcrumb { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; font-size: 12px; color: #a0aec0; }
+        .edit-breadcrumb span { color: #718096; font-weight: 600; }
+        .edit-breadcrumb .sep { color: #cbd5e0; }
+
+        /* Upload (Pattern A) */
+        .upload-area { display: flex; gap: 16px; align-items: flex-start; }
         .upload-preview {
-            width: 200px;
-            height: 200px;
-            border-radius: 12px;
-            background: #fff;
-            border: 2px dashed #cbd5e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 8px;
-            color: #a0aec0;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.15s;
-            overflow: hidden;
-            flex-shrink: 0;
+            width: 200px; height: 200px; border-radius: 12px; background: #fff; border: 2px dashed #cbd5e0;
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            gap: 8px; color: #a0aec0; font-size: 13px; cursor: pointer; overflow: hidden; flex-shrink: 0;
         }
         .upload-preview:hover { border-color: #4169e1; color: #4169e1; }
         .upload-preview.has-image { border-style: solid; border-color: #e2e8f0; }
-        .upload-preview img { width: 100%; height: 100%; object-fit: contain; }
-        .upload-preview .upload-icon { font-size: 32px; }
-        .upload-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding-top: 8px;
-        }
+        .upload-actions { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
         .btn-upload {
-            padding: 8px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #4a5568;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            cursor: pointer;
+            padding: 8px 16px; font-size: 12px; font-weight: 600; color: #4a5568;
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer;
         }
         .btn-upload:hover { background: #f7fafc; }
 
-        /* Empty state */
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #cbd5e0;
-            gap: 12px;
+        /* ===== Pattern B: Design Grid ===== */
+        .design-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px; margin-top: 4px;
         }
-        .empty-state .empty-icon { font-size: 48px; }
-        .empty-state p { font-size: 14px; }
+        .design-grid-item {
+            background: #fff; border: 2px solid #e2e8f0; border-radius: 12px;
+            overflow: hidden; cursor: pointer; transition: all 0.15s;
+        }
+        .design-grid-item:hover { border-color: #4169e1; box-shadow: 0 2px 8px rgba(65,105,225,0.12); }
+        .design-grid-thumb {
+            height: 140px; background: #f7fafc; display: flex; align-items: center;
+            justify-content: center; font-size: 48px; border-bottom: 1px solid #edf2f7; position: relative;
+        }
+        .design-grid-thumb .size-tag {
+            position: absolute; top: 8px; right: 8px; font-size: 10px; font-weight: 700;
+            padding: 2px 8px; border-radius: 4px; background: #fff; color: #718096; border: 1px solid #e2e8f0;
+        }
+        .design-grid-body { padding: 12px 14px; }
+        .design-grid-name { font-size: 13px; font-weight: 600; color: #2d3748; margin-bottom: 4px; }
+        .design-grid-meta { font-size: 11px; color: #a0aec0; }
+        .design-grid-actions {
+            display: flex; gap: 6px; padding: 0 14px 12px; justify-content: flex-end;
+        }
+        .grid-btn {
+            padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: 4px;
+            border: 1px solid #e2e8f0; background: #fff; color: #718096; cursor: pointer;
+        }
+        .grid-btn:hover { background: #f7fafc; }
+        .grid-btn.danger { color: #e53e3e; border-color: #feb2b2; }
+        .grid-btn.danger:hover { background: #fff5f5; }
 
-        /* Breadcrumb in edit */
-        .edit-breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 20px;
-            font-size: 12px;
-            color: #a0aec0;
+        /* Add card */
+        .design-grid-add {
+            border: 2px dashed #cbd5e0; border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; flex-direction: column; gap: 8px; min-height: 220px;
+            color: #a0aec0; cursor: pointer; transition: all 0.15s;
         }
-        .edit-breadcrumb span { color: #718096; font-weight: 600; }
-        .edit-breadcrumb .sep { color: #cbd5e0; }
+        .design-grid-add:hover { border-color: #4169e1; color: #4169e1; }
+        .design-grid-add .add-icon { font-size: 32px; }
+        .design-grid-add .add-text { font-size: 13px; font-weight: 600; }
+
+        /* Upload form card */
+        .design-grid-upload {
+            border: 2px solid #4169e1; border-radius: 12px; background: #fff;
+            overflow: hidden; animation: fadeSlideIn 0.2s ease;
+        }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .upload-card-header {
+            background: #ebf4ff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .upload-card-header .title { font-size: 13px; font-weight: 700; color: #3182ce; }
+        .upload-card-close {
+            width: 24px; height: 24px; border-radius: 6px; border: none; background: none;
+            color: #a0aec0; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .upload-card-close:hover { background: #bee3f8; color: #2b6cb0; }
+        .upload-card-body { padding: 16px; }
+        .upload-drop {
+            border: 2px dashed #cbd5e0; border-radius: 10px; padding: 24px 16px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            color: #a0aec0; cursor: pointer; transition: all 0.15s; text-align: center; margin-bottom: 12px;
+        }
+        .upload-drop:hover { border-color: #4169e1; color: #4169e1; background: #f7faff; }
+        .upload-drop.dragover { border-color: #4169e1; background: #ebf4ff; color: #3182ce; }
+        .upload-drop .drop-icon { font-size: 28px; }
+        .upload-drop .drop-main { font-size: 13px; font-weight: 600; }
+        .upload-drop .drop-sub { font-size: 11px; }
+        .upload-card-fields { display: flex; flex-direction: column; gap: 10px; }
+        .upload-card-fields .form-input, .upload-card-fields .form-select { padding: 8px 12px; font-size: 13px; }
+        .upload-card-fields .form-label { font-size: 11px; margin-bottom: 3px; }
+        .upload-card-footer { padding: 0 16px 16px; display: flex; gap: 8px; justify-content: flex-end; }
+        .upload-card-footer .btn-save { padding: 7px 16px; font-size: 12px; }
+        .upload-card-footer .btn-cancel {
+            padding: 7px 16px; font-size: 12px; font-weight: 600; color: #718096;
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer;
+        }
+        .upload-card-footer .btn-cancel:hover { background: #f7fafc; }
+
+        /* Preview in upload */
+        .upload-file-preview {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+            background: #f7fafc; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 12px;
+        }
+        .upload-file-preview .file-thumb {
+            width: 40px; height: 40px; border-radius: 6px; background: #edf2f7;
+            display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+        }
+        .upload-file-preview .file-info { flex: 1; min-width: 0; }
+        .upload-file-preview .file-name { font-size: 12px; font-weight: 600; color: #2d3748; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .upload-file-preview .file-size { font-size: 11px; color: #a0aec0; }
+        .upload-file-preview .file-remove { color: #e53e3e; cursor: pointer; font-size: 14px; padding: 4px; }
+        /* ===== Edit Modal ===== */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            z-index: 1000; align-items: center; justify-content: center;
+            animation: fadeIn 0.15s ease;
+        }
+        .modal-overlay.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal {
+            background: #fff; border-radius: 16px; width: 520px; max-height: 90vh;
+            overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: modalSlide 0.2s ease;
+        }
+        @keyframes modalSlide { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header {
+            padding: 20px 24px; border-bottom: 1px solid #edf2f7;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .modal-header h2 { font-size: 16px; font-weight: 700; color: #1a202c; }
+        .modal-close {
+            width: 32px; height: 32px; border-radius: 8px; border: none; background: none;
+            color: #a0aec0; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .modal-close:hover { background: #edf2f7; color: #4a5568; }
+        .modal-body { padding: 24px; }
+        .modal-footer {
+            padding: 16px 24px; border-top: 1px solid #edf2f7;
+            display: flex; gap: 8px; justify-content: flex-end;
+        }
+
+        .modal-image-area {
+            display: flex; gap: 20px; align-items: flex-start; margin-bottom: 24px;
+        }
+        .modal-image-preview {
+            width: 180px; height: 180px; border-radius: 12px; border: 2px solid #e2e8f0;
+            background: #f7fafc; display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 4px; flex-shrink: 0; overflow: hidden;
+        }
+        .modal-image-actions {
+            display: flex; flex-direction: column; gap: 8px; padding-top: 4px;
+        }
+        .modal-image-info {
+            font-size: 12px; color: #a0aec0; padding: 8px 0;
+        }
     </style>
 </head>
 <body>
 
+<!-- Edit Modal -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="edit-modal-title">デザイン編集</h2>
+            <button class="modal-close" onclick="closeEditModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-image-area">
+                <div class="modal-image-preview" id="edit-image-preview">
+                    <span style="font-size:64px" id="edit-image-icon">&#9940;</span>
+                    <span style="font-size:12px;font-weight:600;color:#e53e3e" id="edit-image-label">立入禁止</span>
+                </div>
+                <div class="modal-image-actions">
+                    <div class="modal-image-info">現在の画像</div>
+                    <button class="btn-upload" onclick="document.getElementById('edit-file-input').click()">&#128228; 画像を変更</button>
+                    <button class="btn-upload" style="color:#e53e3e;border-color:#feb2b2">&#128465; 画像を削除</button>
+                    <input type="file" id="edit-file-input" accept="image/*,.pdf" style="display:none" onchange="handleEditFileSelect(this)">
+                    <div id="edit-file-info" style="display:none;"></div>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+                <div>
+                    <label class="form-label">印刷物名</label>
+                    <input type="text" class="form-input" id="edit-name" value="立入禁止">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-delete-outline" onclick="closeEditModal()">&#128465; このデザインを削除</button>
+            <button class="btn-save" onclick="closeEditModal()">保存する</button>
+        </div>
+    </div>
+</div>
+
+<!-- Pattern Switcher -->
+<div class="pattern-switcher">
+    <span class="label">UI案</span>
+    <button class="pattern-btn active" onclick="showPattern('a')">パターン A：3カラム</button>
+    <button class="pattern-btn" onclick="showPattern('b')">パターン B：2カラム</button>
+    <span class="pattern-desc" id="pattern-desc">デザインを一覧から選んで個別編集する方式</span>
+</div>
+
+<!-- ========== PATTERN A: 3 Column ========== -->
+<div id="pattern-a" class="pattern-view active">
 <div class="app">
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-logo">Logo</div>
         <div class="sidebar-nav">
@@ -462,262 +379,413 @@
         </div>
         <div class="sidebar-bottom">&#127968; ログアウト</div>
     </div>
-
-    <!-- Main -->
     <div class="main">
-        <div class="main-header">
-            <h1>共通印刷物</h1>
-        </div>
+        <div class="main-header"><h1>共通印刷物</h1></div>
         <div class="main-body">
-
-            <!-- Column 1: Tree -->
-            <div class="col-tree">
+            <!-- Tree -->
+            <div class="col-tree" id="tree-a">
                 <div class="col-tree-header">業界・グループ選択</div>
-
-                <!-- 全業界共通 -->
                 <div class="tree-section">
                     <div class="tree-section-label"><span class="badge badge-all">共通</span> 全業界共通</div>
-                    <div class="tree-group-direct" onclick="selectGroup(this, '案内サイン')">
-                        <span>&#128204;</span> 案内サイン
-                        <span class="count">4</span>
-                    </div>
-                    <div class="tree-group-direct" onclick="selectGroup(this, '注意書き')">
-                        <span>&#128203;</span> 注意書き
-                        <span class="count">3</span>
-                    </div>
+                    <div class="tree-group-direct active" onclick="selectGroup(this)"><span>&#128204;</span> 案内サイン <span class="count">4</span></div>
+                    <div class="tree-group-direct" onclick="selectGroup(this)"><span>&#128203;</span> 注意書き <span class="count">3</span></div>
                 </div>
-
-                <!-- 第一業界 -->
                 <div class="tree-section">
-                    <div class="tree-section-label"><span class="badge badge-l1">第一</span> 業界別</div>
-
-                    <div class="tree-industry open" onclick="toggleIndustry(this)">
-                        <span class="arrow">&#9654;</span> 宗教法人
-                    </div>
+                    <div class="tree-industry open" onclick="toggleIndustry(this)" style="padding-top:10px"><span class="arrow">&#9654;</span><span class="badge badge-l1" style="font-size:9px">第一</span> 宗教法人</div>
                     <div class="tree-groups">
-                        <div class="tree-group active" onclick="selectGroup(this, '法語')">
-                            <span>&#128220;</span> 法語
-                            <span class="count">5</span>
+                        <div class="tree-group" onclick="selectGroup(this)"><span>&#128220;</span> 法語 <span class="count">5</span></div>
+                        <div class="tree-group" onclick="selectGroup(this)"><span>&#128695;</span> サイン <span class="count">3</span></div>
+                        <div class="tree-industry" onclick="toggleIndustry(this)" style="padding-left:28px"><span class="arrow">&#9654;</span><span class="badge badge-l2" style="font-size:9px">第二</span> 神社</div>
+                        <div class="tree-groups">
+                            <div class="tree-group" onclick="selectGroup(this)" style="padding-left:52px"><span>&#9961;&#65039;</span> 神社サイン <span class="count">3</span></div>
+                            <div class="tree-group" onclick="selectGroup(this)" style="padding-left:52px"><span>&#128220;</span> 御朱印案内 <span class="count">2</span></div>
                         </div>
-                        <div class="tree-group" onclick="selectGroup(this, 'サイン')">
-                            <span>&#128695;</span> サイン
-                            <span class="count">3</span>
-                        </div>
-                    </div>
-
-                    <div class="tree-industry" onclick="toggleIndustry(this)">
-                        <span class="arrow">&#9654;</span> 教育機関
-                    </div>
-                    <div class="tree-groups">
-                        <div class="tree-group" onclick="selectGroup(this, '掲示物')">
-                            <span>&#128203;</span> 掲示物
-                            <span class="count">2</span>
+                        <div class="tree-industry" onclick="toggleIndustry(this)" style="padding-left:28px"><span class="arrow">&#9654;</span><span class="badge badge-l2" style="font-size:9px">第二</span> 寺院</div>
+                        <div class="tree-groups">
+                            <div class="tree-group" onclick="selectGroup(this)" style="padding-left:52px"><span>&#127969;</span> 寺院掲示 <span class="count">4</span></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- 第二業界 -->
                 <div class="tree-section">
-                    <div class="tree-section-label"><span class="badge badge-l2">第二</span> 小分類別</div>
-
-                    <div class="tree-industry" onclick="toggleIndustry(this)">
-                        <span class="arrow">&#9654;</span> 神社
-                    </div>
+                    <div class="tree-industry" onclick="toggleIndustry(this)" style="padding-top:10px"><span class="arrow">&#9654;</span><span class="badge badge-l1" style="font-size:9px">第一</span> 教育機関</div>
                     <div class="tree-groups">
-                        <div class="tree-group" onclick="selectGroup(this, '神社サイン')">
-                            <span>&#9961;&#65039;</span> 神社サイン
-                            <span class="count">3</span>
-                        </div>
-                        <div class="tree-group" onclick="selectGroup(this, '御朱印案内')">
-                            <span>&#128220;</span> 御朱印案内
-                            <span class="count">2</span>
-                        </div>
-                    </div>
-
-                    <div class="tree-industry" onclick="toggleIndustry(this)">
-                        <span class="arrow">&#9654;</span> 寺院
-                    </div>
-                    <div class="tree-groups">
-                        <div class="tree-group" onclick="selectGroup(this, '寺院掲示')">
-                            <span>&#127969;</span> 寺院掲示
-                            <span class="count">4</span>
+                        <div class="tree-group" onclick="selectGroup(this)"><span>&#128203;</span> 掲示物 <span class="count">2</span></div>
+                        <div class="tree-industry" onclick="toggleIndustry(this)" style="padding-left:28px"><span class="arrow">&#9654;</span><span class="badge badge-l2" style="font-size:9px">第二</span> 小学校</div>
+                        <div class="tree-groups">
+                            <div class="tree-group" onclick="selectGroup(this)" style="padding-left:52px"><span>&#128218;</span> 学校案内 <span class="count">2</span></div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Column 2: List -->
+            <!-- List -->
             <div class="col-list">
                 <div class="col-list-header">
                     <span class="title">法語（5件）</span>
-                    <button class="btn-add" onclick="void(0)">+ 追加</button>
+                    <button class="btn-add">+ 追加</button>
                 </div>
-
                 <div class="design-card active" onclick="selectDesign(this)">
-                    <div class="design-thumb" style="background: #fef3c7; font-size: 18px;">&#128220;</div>
-                    <div class="design-info">
-                        <div class="design-name">立入禁止</div>
-                        <div class="design-meta">
-                            <span class="design-size-badge">A3</span>
-                            宗教法人
-                        </div>
-                    </div>
+                    <div class="design-thumb" style="background:#fef3c7;font-size:18px">&#128220;</div>
+                    <div class="design-info"><div class="design-name">立入禁止</div><div class="design-meta"><span class="design-size-badge">A3</span> 宗教法人</div></div>
                     <span class="design-delete">&#128465;</span>
                 </div>
-
                 <div class="design-card" onclick="selectDesign(this)">
-                    <div class="design-thumb" style="background: #fef3c7; font-size: 18px;">&#128220;</div>
-                    <div class="design-info">
-                        <div class="design-name">土足禁止</div>
-                        <div class="design-meta">
-                            <span class="design-size-badge">A4</span>
-                            宗教法人
-                        </div>
-                    </div>
+                    <div class="design-thumb" style="background:#fef3c7;font-size:18px">&#128220;</div>
+                    <div class="design-info"><div class="design-name">土足禁止</div><div class="design-meta"><span class="design-size-badge">A4</span> 宗教法人</div></div>
                     <span class="design-delete">&#128465;</span>
                 </div>
-
                 <div class="design-card" onclick="selectDesign(this)">
-                    <div class="design-thumb" style="background: #fef3c7; font-size: 18px;">&#128220;</div>
-                    <div class="design-info">
-                        <div class="design-name">土足厳禁</div>
-                        <div class="design-meta">
-                            <span class="design-size-badge">A4</span>
-                            宗教法人
-                        </div>
-                    </div>
+                    <div class="design-thumb" style="background:#fef3c7;font-size:18px">&#128220;</div>
+                    <div class="design-info"><div class="design-name">土足厳禁</div><div class="design-meta"><span class="design-size-badge">A4</span> 宗教法人</div></div>
                     <span class="design-delete">&#128465;</span>
                 </div>
-
                 <div class="design-card" onclick="selectDesign(this)">
-                    <div class="design-thumb" style="background: #e9d8fd; font-size: 18px;">&#128220;</div>
-                    <div class="design-info">
-                        <div class="design-name">撮影禁止</div>
-                        <div class="design-meta">
-                            <span class="design-size-badge">長尺タテ</span>
-                            宗教法人
-                        </div>
-                    </div>
+                    <div class="design-thumb" style="background:#e9d8fd;font-size:18px">&#128220;</div>
+                    <div class="design-info"><div class="design-name">撮影禁止</div><div class="design-meta"><span class="design-size-badge">長尺タテ</span> 宗教法人</div></div>
                     <span class="design-delete">&#128465;</span>
                 </div>
-
                 <div class="design-card" onclick="selectDesign(this)">
-                    <div class="design-thumb" style="background: #c6f6d5; font-size: 18px;">&#128220;</div>
-                    <div class="design-info">
-                        <div class="design-name">参拝順路</div>
-                        <div class="design-meta">
-                            <span class="design-size-badge">長尺ヨコ</span>
-                            宗教法人
-                        </div>
-                    </div>
+                    <div class="design-thumb" style="background:#c6f6d5;font-size:18px">&#128220;</div>
+                    <div class="design-info"><div class="design-name">参拝順路</div><div class="design-meta"><span class="design-size-badge">長尺ヨコ</span> 宗教法人</div></div>
                     <span class="design-delete">&#128465;</span>
                 </div>
             </div>
-
-            <!-- Column 3: Edit -->
+            <!-- Edit -->
             <div class="col-edit">
                 <div class="col-edit-header">
                     <span class="title">印刷物編集</span>
-                    <div class="edit-actions">
-                        <button class="btn-save">保存する</button>
-                        <button class="btn-delete-outline">&#128465; 削除</button>
-                    </div>
+                    <div class="edit-actions"><button class="btn-save">保存する</button><button class="btn-delete-outline">&#128465; 削除</button></div>
                 </div>
                 <div class="edit-form">
-                    <div class="edit-breadcrumb">
-                        <span>宗教法人</span>
-                        <span class="sep">/</span>
-                        <span>法語</span>
-                        <span class="sep">/</span>
-                        <span style="color: #2d3748;">立入禁止</span>
-                    </div>
-
+                    <div class="edit-breadcrumb"><span>宗教法人</span><span class="sep">/</span><span>法語</span><span class="sep">/</span><span style="color:#2d3748">立入禁止</span></div>
                     <div class="form-section">
                         <div class="form-section-title">業界情報</div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">大分類</label>
-                                <select class="form-select">
-                                    <option>宗教・宗教法人</option>
-                                    <option>教育機関</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">小分類</label>
-                                <select class="form-select">
-                                    <option>（指定なし）</option>
-                                    <option>神社</option>
-                                    <option>寺院</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">グループ</label>
-                                <select class="form-select">
-                                    <option>法語</option>
-                                    <option>サイン</option>
-                                </select>
-                            </div>
-                        </div>
+                        <div class="form-row"><div class="form-group"><label class="form-label">大分類</label><select class="form-select"><option>宗教・宗教法人</option></select></div><div class="form-group"><label class="form-label">小分類</label><select class="form-select"><option>（指定なし）</option><option>神社</option><option>寺院</option></select></div></div>
+                        <div class="form-row"><div class="form-group"><label class="form-label">グループ</label><select class="form-select"><option>法語</option><option>サイン</option></select></div></div>
                     </div>
-
                     <div class="form-section">
                         <div class="form-section-title">印刷物情報</div>
+                        <div class="form-row"><div class="form-group"><label class="form-label">印刷物名</label><input type="text" class="form-input" value="立入禁止"></div><div class="form-group"><label class="form-label">サイズ</label><select class="form-select"><option>A3</option><option>A4</option><option>長尺タテ</option><option>長尺ヨコ</option></select></div></div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">画像</div>
+                        <div class="form-hint" style="margin-bottom:12px;margin-top:-8px">※ 最大20MBまで</div>
+                        <div class="upload-area">
+                            <div class="upload-preview has-image">
+                                <div style="width:100%;height:100%;background:#fff3f3;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
+                                    <span style="font-size:64px">&#9940;</span><span style="font-size:14px;font-weight:700;color:#e53e3e">立入禁止</span><span style="font-size:10px;color:#a0aec0">サンプル画像</span>
+                                </div>
+                            </div>
+                            <div class="upload-actions"><button class="btn-upload">&#128228; 再アップロード</button><button class="btn-upload" style="color:#e53e3e;border-color:#feb2b2">&#128465; 画像を削除</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- ========== PATTERN B: 2 Column ========== -->
+<div id="pattern-b" class="pattern-view">
+<div class="app">
+    <div class="sidebar">
+        <div class="sidebar-logo">Logo</div>
+        <div class="sidebar-nav">
+            <div class="sidebar-item"><span class="icon">&#128202;</span> ログ管理</div>
+            <div class="sidebar-item"><span class="icon">&#128197;</span> 業界・行事テンプレ</div>
+            <div class="sidebar-item"><span class="icon">&#127912;</span> デザインテンプレ</div>
+            <div class="sidebar-item active"><span class="icon">&#128196;</span> 共通印刷物</div>
+        </div>
+        <div class="sidebar-bottom">&#127968; ログアウト</div>
+    </div>
+    <div class="main">
+        <div class="main-header"><h1>共通印刷物</h1></div>
+        <div class="main-body">
+            <!-- Tree -->
+            <div class="col-tree" id="tree-b">
+                <div class="col-tree-header">業界・グループ選択</div>
+                <div class="tree-section">
+                    <div class="tree-section-label"><span class="badge badge-all">共通</span> 全業界共通</div>
+                    <div class="tree-group-direct" onclick="selectGroup(this)"><span>&#128204;</span> 案内サイン <span class="count">4</span></div>
+                    <div class="tree-group-direct" onclick="selectGroup(this)"><span>&#128203;</span> 注意書き <span class="count">3</span></div>
+                </div>
+                <div class="tree-section">
+                    <div class="tree-industry open" onclick="toggleIndustry(this)" style="padding-top:10px"><span class="arrow">&#9654;</span><span class="badge badge-l1" style="font-size:9px">第一</span> 宗教法人</div>
+                    <div class="tree-groups">
+                        <div class="tree-group active" onclick="selectGroup(this)"><span>&#128220;</span> 法語 <span class="count">5</span></div>
+                        <div class="tree-group" onclick="selectGroup(this)"><span>&#128695;</span> サイン <span class="count">3</span></div>
+                        <div class="tree-industry" onclick="toggleIndustry(this)" style="padding-left:28px"><span class="arrow">&#9654;</span><span class="badge badge-l2" style="font-size:9px">第二</span> 神社</div>
+                        <div class="tree-groups">
+                            <div class="tree-group" onclick="selectGroup(this)" style="padding-left:52px"><span>&#9961;&#65039;</span> 神社サイン <span class="count">3</span></div>
+                            <div class="tree-group" onclick="selectGroup(this)" style="padding-left:52px"><span>&#128220;</span> 御朱印案内 <span class="count">2</span></div>
+                        </div>
+                        <div class="tree-industry" onclick="toggleIndustry(this)" style="padding-left:28px"><span class="arrow">&#9654;</span><span class="badge badge-l2" style="font-size:9px">第二</span> 寺院</div>
+                        <div class="tree-groups">
+                            <div class="tree-group" onclick="selectGroup(this)" style="padding-left:52px"><span>&#127969;</span> 寺院掲示 <span class="count">4</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tree-section">
+                    <div class="tree-industry" onclick="toggleIndustry(this)" style="padding-top:10px"><span class="arrow">&#9654;</span><span class="badge badge-l1" style="font-size:9px">第一</span> 教育機関</div>
+                    <div class="tree-groups">
+                        <div class="tree-group" onclick="selectGroup(this)"><span>&#128203;</span> 掲示物 <span class="count">2</span></div>
+                        <div class="tree-industry" onclick="toggleIndustry(this)" style="padding-left:28px"><span class="arrow">&#9654;</span><span class="badge badge-l2" style="font-size:9px">第二</span> 小学校</div>
+                        <div class="tree-groups">
+                            <div class="tree-group" onclick="selectGroup(this)" style="padding-left:52px"><span>&#128218;</span> 学校案内 <span class="count">2</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Grid Edit (2 column - no list) -->
+            <div class="col-edit">
+                <div class="col-edit-header">
+                    <span class="title" style="display:flex;align-items:center;gap:10px;">
+                        法語
+                        <span style="font-size:11px;font-weight:600;color:#a0aec0;text-transform:none;letter-spacing:0">宗教法人</span>
+                    </span>
+                    <div class="edit-actions"><button class="btn-save">グループを保存</button></div>
+                </div>
+                <div class="edit-form">
+                    <!-- Group info -->
+                    <div class="form-section">
+                        <div class="form-section-title">グループ情報</div>
                         <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">印刷物名</label>
-                                <input type="text" class="form-input" value="立入禁止">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">サイズ</label>
-                                <select class="form-select">
-                                    <option>A3</option>
-                                    <option>A4</option>
-                                    <option>長尺タテ</option>
-                                    <option>長尺ヨコ</option>
-                                </select>
-                            </div>
+                            <div class="form-group"><label class="form-label">グループ名</label><input type="text" class="form-input" value="法語"></div>
+                            <div class="form-group"><label class="form-label">大分類</label><select class="form-select"><option>宗教・宗教法人</option></select></div>
+                            <div class="form-group"><label class="form-label">小分類</label><select class="form-select"><option>（指定なし）</option><option>神社</option><option>寺院</option></select></div>
                         </div>
                     </div>
 
+                    <!-- Designs grid -->
                     <div class="form-section">
-                        <div class="form-section-title">画像</div>
-                        <div class="form-hint" style="margin-bottom: 12px; margin-top: -8px;">※ 最大20MBまで</div>
-                        <div class="upload-area">
-                            <div class="upload-preview has-image">
-                                <div style="width: 100%; height: 100%; background: #fff3f3; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px;">
-                                    <span style="font-size: 64px;">&#9940;</span>
-                                    <span style="font-size: 14px; font-weight: 700; color: #e53e3e;">立入禁止</span>
-                                    <span style="font-size: 10px; color: #a0aec0;">サンプル画像</span>
+                        <div class="form-section-title" style="display:flex;align-items:center;justify-content:space-between;">
+                            デザイン一覧（5件）
+                        </div>
+                        <div class="design-grid">
+                            <div class="design-grid-item" data-name="立入禁止" data-icon="&#9940;" data-bg="#fff3f3" data-label-color="#e53e3e">
+                                <div class="design-grid-thumb" style="background:#fff3f3">
+                                    <span style="font-size:48px">&#9940;</span>
+                                </div>
+                                <div class="design-grid-body">
+                                    <div class="design-grid-name">立入禁止</div>
+                                    <div class="design-grid-meta">宗教法人</div>
+                                </div>
+                                <div class="design-grid-actions">
+                                    <button class="grid-btn" onclick="openEditModal(this.closest('.design-grid-item'))">&#9998; 編集</button>
+                                    <button class="grid-btn danger">&#128465;</button>
                                 </div>
                             </div>
-                            <div class="upload-actions">
-                                <button class="btn-upload">&#128228; 再アップロード</button>
-                                <button class="btn-upload" style="color: #e53e3e; border-color: #feb2b2;">&#128465; 画像を削除</button>
+                            <div class="design-grid-item" data-name="土足禁止" data-icon="&#128695;" data-bg="#fef3c7" data-label-color="#975a16">
+                                <div class="design-grid-thumb" style="background:#fef3c7">
+                                    <span style="font-size:48px">&#128695;</span>
+                                </div>
+                                <div class="design-grid-body">
+                                    <div class="design-grid-name">土足禁止</div>
+                                    <div class="design-grid-meta">宗教法人</div>
+                                </div>
+                                <div class="design-grid-actions">
+                                    <button class="grid-btn" onclick="openEditModal(this.closest('.design-grid-item'))">&#9998; 編集</button>
+                                    <button class="grid-btn danger">&#128465;</button>
+                                </div>
+                            </div>
+                            <div class="design-grid-item" data-name="土足厳禁" data-icon="&#128695;" data-bg="#fef3c7" data-label-color="#975a16">
+                                <div class="design-grid-thumb" style="background:#fef3c7">
+                                    <span style="font-size:48px">&#128695;</span>
+                                </div>
+                                <div class="design-grid-body">
+                                    <div class="design-grid-name">土足厳禁</div>
+                                    <div class="design-grid-meta">宗教法人</div>
+                                </div>
+                                <div class="design-grid-actions">
+                                    <button class="grid-btn" onclick="openEditModal(this.closest('.design-grid-item'))">&#9998; 編集</button>
+                                    <button class="grid-btn danger">&#128465;</button>
+                                </div>
+                            </div>
+                            <div class="design-grid-item" data-name="撮影禁止" data-icon="&#128247;" data-bg="#e9d8fd" data-label-color="#6b46c1">
+                                <div class="design-grid-thumb" style="background:#e9d8fd">
+                                    <span style="font-size:48px">&#128247;</span>
+                                </div>
+                                <div class="design-grid-body">
+                                    <div class="design-grid-name">撮影禁止</div>
+                                    <div class="design-grid-meta">宗教法人</div>
+                                </div>
+                                <div class="design-grid-actions">
+                                    <button class="grid-btn" onclick="openEditModal(this.closest('.design-grid-item'))">&#9998; 編集</button>
+                                    <button class="grid-btn danger">&#128465;</button>
+                                </div>
+                            </div>
+                            <div class="design-grid-item" data-name="参拝順路" data-icon="&#128694;" data-bg="#c6f6d5" data-label-color="#276749">
+                                <div class="design-grid-thumb" style="background:#c6f6d5">
+                                    <span style="font-size:48px">&#128694;</span>
+                                </div>
+                                <div class="design-grid-body">
+                                    <div class="design-grid-name">参拝順路</div>
+                                    <div class="design-grid-meta">宗教法人</div>
+                                </div>
+                                <div class="design-grid-actions">
+                                    <button class="grid-btn" onclick="openEditModal(this.closest('.design-grid-item'))">&#9998; 編集</button>
+                                    <button class="grid-btn danger">&#128465;</button>
+                                </div>
+                            </div>
+                            <!-- Upload form (always visible) -->
+                            <div class="design-grid-upload" id="upload-card">
+                                <div class="upload-card-header">
+                                    <span class="title">デザインを追加</span>
+                                </div>
+                                <div class="upload-card-body">
+                                    <div class="upload-drop" id="upload-drop" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+                                        <span class="drop-icon">&#128228;</span>
+                                        <span class="drop-main">クリックまたはドラッグ&ドロップ</span>
+                                        <span class="drop-sub">PNG / JPG / PDF（最大20MB）</span>
+                                    </div>
+                                    <input type="file" id="file-input" accept="image/*,.pdf" style="display:none" onchange="handleFileSelect(this)">
+                                    <div id="file-preview" style="display:none;"></div>
+                                    <div class="upload-card-fields">
+                                        <div>
+                                            <label class="form-label">印刷物名</label>
+                                            <input type="text" class="form-input" id="upload-name" placeholder="例: 立入禁止">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="upload-card-footer">
+                                    <button class="btn-save" onclick="addDesign()">追加する</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+</div>
 
 <script>
-function toggleIndustry(el) {
-    el.classList.toggle('open');
-}
-
-function selectGroup(el, name) {
-    document.querySelectorAll('.tree-group, .tree-group-direct').forEach(g => g.classList.remove('active'));
+function toggleIndustry(el) { el.classList.toggle('open'); }
+function selectGroup(el) {
+    const root = el.closest('.pattern-view') || document;
+    root.querySelectorAll('.tree-group, .tree-group-direct').forEach(g => g.classList.remove('active'));
     el.classList.add('active');
 }
-
 function selectDesign(el) {
     document.querySelectorAll('.design-card').forEach(c => c.classList.remove('active'));
     el.classList.add('active');
+}
+function showPattern(id) {
+    document.querySelectorAll('.pattern-view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.pattern-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('pattern-' + id).classList.add('active');
+    event.target.classList.add('active');
+    const descs = { a: 'デザインを一覧から選んで個別編集する方式', b: 'グループ単位でデザインをまとめて管理する方式（中央カラムなし）' };
+    document.getElementById('pattern-desc').textContent = descs[id];
+}
+
+// Edit modal
+function openEditModal(card) {
+    var name = card.dataset.name;
+    var icon = card.dataset.icon;
+    var bg = card.dataset.bg || '#f7fafc';
+    var labelColor = card.dataset.labelColor || '#2d3748';
+    document.getElementById('edit-modal-title').textContent = name + ' を編集';
+    document.getElementById('edit-name').value = name;
+    document.getElementById('edit-image-icon').innerHTML = icon;
+    document.getElementById('edit-image-label').textContent = name;
+    document.getElementById('edit-image-label').style.color = labelColor;
+    document.getElementById('edit-image-preview').style.background = bg;
+    document.getElementById('edit-file-info').style.display = 'none';
+    document.getElementById('edit-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeEditModal() {
+    document.getElementById('edit-modal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+function handleEditFileSelect(input) {
+    if (!input.files || !input.files[0]) return;
+    var file = input.files[0];
+    var sizeMB = (file.size / 1024 / 1024).toFixed(1);
+    var info = document.getElementById('edit-file-info');
+    info.innerHTML = '<div style="font-size:12px;color:#3182ce;margin-top:8px;padding:8px 10px;background:#ebf4ff;border-radius:6px">' +
+        '<div style="font-weight:600">' + file.name + '</div>' +
+        '<div style="color:#718096;font-size:11px">' + sizeMB + ' MB</div></div>';
+    info.style.display = '';
+    if (file.type.startsWith('image/')) {
+        var url = URL.createObjectURL(file);
+        var preview = document.getElementById('edit-image-preview');
+        preview.innerHTML = '<img src="' + url + '" style="width:100%;height:100%;object-fit:contain">';
+    }
+}
+
+// Upload form
+function resetUploadForm() {
+    document.getElementById('file-preview').style.display = 'none';
+    document.getElementById('file-preview').innerHTML = '';
+    document.getElementById('upload-name').value = '';
+    document.getElementById('upload-drop').style.display = '';
+    document.getElementById('file-input').value = '';
+}
+function handleFileSelect(input) {
+    if (input.files && input.files[0]) showFilePreview(input.files[0]);
+}
+function handleDrop(e) {
+    e.preventDefault();
+    e.target.closest('.upload-drop').classList.remove('dragover');
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) showFilePreview(e.dataTransfer.files[0]);
+}
+function showFilePreview(file) {
+    const preview = document.getElementById('file-preview');
+    const drop = document.getElementById('upload-drop');
+    const nameInput = document.getElementById('upload-name');
+    const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+    const baseName = file.name.replace(/\.[^.]+$/, '');
+    if (!nameInput.value) nameInput.value = baseName;
+
+    // Check if image for thumbnail
+    const isImage = file.type.startsWith('image/');
+    let thumbHtml = '<span style="font-size:20px">&#128196;</span>';
+    if (isImage) {
+        const url = URL.createObjectURL(file);
+        thumbHtml = '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover;border-radius:4px">';
+    }
+
+    preview.innerHTML =
+        '<div class="upload-file-preview">' +
+            '<div class="file-thumb">' + thumbHtml + '</div>' +
+            '<div class="file-info">' +
+                '<div class="file-name">' + file.name + '</div>' +
+                '<div class="file-size">' + sizeMB + ' MB</div>' +
+            '</div>' +
+            '<span class="file-remove" onclick="removeFile()">&#10005;</span>' +
+        '</div>';
+    preview.style.display = '';
+    drop.style.display = 'none';
+}
+function removeFile() {
+    document.getElementById('file-preview').style.display = 'none';
+    document.getElementById('file-preview').innerHTML = '';
+    document.getElementById('upload-drop').style.display = '';
+    document.getElementById('file-input').value = '';
+}
+function addDesign() {
+    const name = document.getElementById('upload-name').value || '新しいデザイン';
+    const grid = document.querySelector('.design-grid');
+    const card = document.createElement('div');
+    card.className = 'design-grid-item';
+    card.innerHTML =
+        '<div class="design-grid-thumb" style="background:#ebf4ff">' +
+            '<span style="font-size:48px">&#128196;</span>' +
+        '</div>' +
+        '<div class="design-grid-body">' +
+            '<div class="design-grid-name">' + name + '</div>' +
+            '<div class="design-grid-meta">宗教法人</div>' +
+        '</div>' +
+        '<div class="design-grid-actions">' +
+            '<button class="grid-btn">&#9998; 編集</button>' +
+            '<button class="grid-btn danger">&#128465;</button>' +
+        '</div>';
+    var uploadCard = document.getElementById('upload-card');
+    grid.insertBefore(card, uploadCard);
+    resetUploadForm();
 }
 </script>
 

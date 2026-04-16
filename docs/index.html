@@ -978,14 +978,14 @@
                         <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#128279; <strong>URL：</strong>appname.bubbleapps.io</p>
                         <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#128274; 独自ドメイン設定が可能</p>
                         <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#127757; 「Deploy to Live」で反映</p>
-                        <p style="font-size: 13px; color: #4a5568;">&#128176; Growth Plan以上が必要</p>
+                        <p style="font-size: 13px; color: #4a5568;">&#128176; Growth Plan以上が必要（<strong>購入済み</strong>）</p>
                     </div>
                     <div style="flex: 1; min-width: 260px; background: #f0fff4; border: 2px solid #68d391; border-radius: 12px; padding: 20px;">
                         <p style="font-weight: 700; font-size: 15px; color: #276749; margin-bottom: 12px;">テスト環境（version-test）</p>
                         <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#128279; <strong>URL：</strong>appname.bubbleapps.io<strong>/version-test</strong></p>
                         <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#128274; 独自ドメインは設定不可</p>
                         <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#127757; 保存すると即時反映（デプロイ不要）</p>
-                        <p style="font-size: 13px; color: #4a5568;">&#128176; Agency Plan（現在利用中）で利用可能</p>
+                        <p style="font-size: 13px; color: #4a5568;">&#128176; 現在のプランで利用可能</p>
                     </div>
                 </div>
             </div>
@@ -1024,7 +1024,6 @@
                             <div style="display: inline-block; background: #fed7d7; color: #9b2c2c; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-bottom: 12px;">デメリット</div>
                             <div style="font-size: 13px; color: #4a5568; line-height: 2;">
                                 ・<strong>検索エンジンに登録されやすい</strong><br>
-                                ・Growth Planの購入が必要（費用増）<br>
                                 ・変更のたびにデプロイ作業が発生<br>
                                 ・URL/サイト名にブラザー名が残るリスク
                             </div>
@@ -1032,17 +1031,15 @@
                     </div>
                 </div>
                 <!-- version-test -->
-                <div style="background: #fff; border-radius: 16px; border: 2px solid #48bb78; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                    <div style="background: linear-gradient(135deg, #68d391, #38a169); padding: 16px 24px; display: flex; align-items: center; gap: 10px;">
+                <div style="background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                    <div style="background: linear-gradient(135deg, #68d391, #38a169); padding: 16px 24px;">
                         <span style="color: #fff; font-size: 16px; font-weight: 700;">テスト環境（version-test）で運用する場合</span>
-                        <span style="background: rgba(255,255,255,0.3); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px;">推奨</span>
                     </div>
                     <div style="display: flex; gap: 0;">
                         <div style="flex: 1; padding: 20px 24px; border-right: 1px solid #edf2f7;">
                             <div style="display: inline-block; background: #c6f6d5; color: #276749; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-bottom: 12px;">メリット</div>
                             <div style="font-size: 13px; color: #4a5568; line-height: 2;">
                                 ・<strong>検索エンジンに登録されにくい</strong>（後述の対策でほぼ防止可能）<br>
-                                ・追加のプラン購入が不要（現行プランで対応可能）<br>
                                 ・保存＝即反映でデプロイ不要、開発効率が高い<br>
                                 ・POCとして十分な検証が可能
                             </div>
@@ -1099,41 +1096,23 @@
         </div>
     </div>
 
+
     <div class="question-card">
         <div class="question-header" style="background: linear-gradient(135deg, #4299e1, #3182ce);">
-            <span class="question-number">提案</span>
-            <span class="question-title">弊社からの推奨</span>
+            <span class="question-number">参考</span>
+            <span class="question-title">正式リリースまでのステップ（想定）</span>
         </div>
         <div class="question-body">
-            <div style="background: linear-gradient(135deg, #276749, #2f855a); border-radius: 16px; padding: 32px; color: #fff; margin-bottom: 24px;">
-                <h4 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">POC期間中は「テスト環境（version-test）」での運用を推奨します</h4>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px 16px; font-size: 14px;">
-                        <strong>理由 1：</strong>検索エンジンに載るリスクが最も低い。version-test はクローラーが巡回しにくく、noindex設定と合わせればほぼ確実に防止できる。
-                    </div>
-                    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px 16px; font-size: 14px;">
-                        <strong>理由 2：</strong>追加のプラン購入（Growth Plan）が不要。現在のAgency Planのまま運用でき、コストを抑えられる。
-                    </div>
-                    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px 16px; font-size: 14px;">
-                        <strong>理由 3：</strong>デプロイ作業が不要。修正・改善が即座に反映され、POCのスピード感を維持できる。
-                    </div>
-                    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px 16px; font-size: 14px;">
-                        <strong>理由 4：</strong>URLに「/version-test」がつく点は、POCの検証目的であれば問題にならない。正式リリース時に本番環境＋独自ドメインへ移行すればよい。
-                    </div>
-                </div>
-            </div>
-
             <div class="visual-example">
-                <h4>正式リリースまでのステップ（想定）</h4>
                 <div style="display: flex; gap: 8px; flex-wrap: nowrap; justify-content: center; align-items: center;">
                     <div class="dl-box" style="background: #f0fff4; border: 2px solid #48bb78; min-width: 0; flex: 1; padding: 16px 12px;">
                         <div class="dl-title" style="color: #276749;">STEP 1</div>
-                        <div class="dl-desc">POC期間<br>version-test で運用</div>
+                        <div class="dl-desc">POC期間中の<br>運用・検証</div>
                     </div>
                     <span class="dl-arrow" style="font-size: 20px; flex-shrink: 0;">&#8594;</span>
                     <div class="dl-box" style="background: #ebf8ff; border: 2px solid #4299e1; min-width: 0; flex: 1; padding: 16px 12px;">
                         <div class="dl-title" style="color: #2b6cb0;">STEP 2</div>
-                        <div class="dl-desc">POC評価完了<br>Growth Plan購入</div>
+                        <div class="dl-desc">POC評価完了<br>正式リリース判断</div>
                     </div>
                     <span class="dl-arrow" style="font-size: 20px; flex-shrink: 0;">&#8594;</span>
                     <div class="dl-box" style="background: #fefcbf; border: 2px solid #ecc94b; min-width: 0; flex: 1; padding: 16px 12px;">
@@ -1146,6 +1125,10 @@
                         <div class="dl-desc">正式サービス開始<br>SEO設定をON</div>
                     </div>
                 </div>
+            </div>
+            <div class="note-box">
+                <span class="note-icon">&#128161;</span>
+                <span>Growth Planは購入済みのため、正式リリース判断後すぐにDeploy to Liveと独自ドメイン設定に進めます。</span>
             </div>
         </div>
     </div>
