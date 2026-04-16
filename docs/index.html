@@ -137,6 +137,7 @@
         .home-card.card-dup { border-left-color: #9f7aea; }
         .home-card.card-seo { border-left-color: #ed8936; }
         .home-card.card-env { border-left-color: #4299e1; }
+        .home-card.card-prints { border-left-color: #38a169; }
 
         .home-card .card-num {
             font-size: 11px;
@@ -151,6 +152,7 @@
         .card-dup .card-num { color: #9f7aea; }
         .card-seo .card-num { color: #ed8936; }
         .card-env .card-num { color: #4299e1; }
+        .card-prints .card-num { color: #38a169; }
 
         .home-card .card-title {
             font-size: 17px;
@@ -401,6 +403,7 @@
             <button class="nav-tab" onclick="showPage('dup')">サイズ重複</button>
             <button class="nav-tab" onclick="showPage('env')">運用環境</button>
             <button class="nav-tab" onclick="showPage('seo')">検索エンジン表示項目</button>
+            <button class="nav-tab" onclick="window.open('common_prints.html','_blank')">共通印刷物UI案 &#8599;</button>
         </div>
     </div>
 </nav>
@@ -435,6 +438,11 @@
                 <div class="card-num">資料 5</div>
                 <div class="card-title">検索エンジンの検索結果に表示される項目</div>
                 <div class="card-desc">Google検索結果に表示される要素と、Bubbleでの設定方法について</div>
+            </div>
+            <div class="home-card card-prints" onclick="window.open('common_prints.html','_blank')">
+                <div class="card-num">資料 6 &#8599;</div>
+                <div class="card-title">共通印刷物 管理画面UI案</div>
+                <div class="card-desc">3カラム / 2カラムの2パターンを比較できるインタラクティブなプロトタイプ</div>
             </div>
         </div>
     </div>
