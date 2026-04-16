@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パワーポイントのダウンロード方式</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.8;
+        }
+
+        /* ========== NAV ========== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .nav-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            height: 56px;
+            gap: 16px;
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #667eea;
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+
+        .nav-back:hover {
+            background: #edf2f7;
+        }
+
+        .nav-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        /* ========== PAGE ========== */
+        .page {
+            padding: 80px 20px 40px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== PPTX Styles ========== */
+        .p3 .container { max-width: 960px; margin: 0 auto; }
+        .p3 .header { text-align: center; margin-bottom: 48px; }
+        .p3 .header h1 { font-size: 24px; font-weight: 700; color: #1a202c; margin-bottom: 8px; }
+        .p3 .header .subtitle { font-size: 14px; color: #718096; }
+
+        .p3 .question-card { background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 32px; overflow: hidden; }
+        .p3 .question-header { padding: 24px 32px; display: flex; align-items: center; gap: 16px; }
+        .p3 .question-header.q-pptx { background: linear-gradient(135deg, #38b2ac, #2c7a7b); }
+        .p3 .question-number { background: rgba(255,255,255,0.25); color: #fff; font-size: 14px; font-weight: 700; padding: 6px 14px; border-radius: 20px; white-space: nowrap; }
+        .p3 .question-title { color: #fff; font-size: 18px; font-weight: 600; }
+        .p3 .question-body { padding: 32px; }
+
+        .p3 .ask-box { background: #ebf4ff; border-left: 4px solid #4299e1; border-radius: 0 8px 8px 0; padding: 20px 24px; margin-bottom: 28px; }
+        .p3 .ask-box .label { font-size: 12px; font-weight: 700; color: #2b6cb0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .p3 .ask-box p { font-size: 15px; color: #2d3748; }
+
+        .p3 .explanation { margin-bottom: 24px; }
+        .p3 .explanation h3 { font-size: 15px; font-weight: 700; color: #4a5568; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .p3 .explanation h3 .icon { font-size: 18px; }
+        .p3 .explanation p { font-size: 14px; color: #4a5568; margin-bottom: 8px; padding-left: 4px; }
+
+        .p3 .visual-example { background: #fafbfc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 28px; margin: 24px 0; }
+        .p3 .visual-example h4 { font-size: 14px; font-weight: 700; color: #718096; margin-bottom: 20px; text-align: center; }
+
+        .p3 .options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+        .p3 .option-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; }
+        .p3 .option-card.option-a { border-color: #48bb78; background: #f0fff4; }
+        .p3 .option-card.option-b { border-color: #ed8936; background: #fffaf0; }
+        .p3 .option-card.option-c { border-color: #4299e1; background: #ebf8ff; }
+        .p3 .option-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .p3 .option-a .option-label { color: #276749; }
+        .p3 .option-b .option-label { color: #9c4221; }
+        .p3 .option-c .option-label { color: #2b6cb0; }
+        .p3 .option-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .p3 .option-a h4 { color: #22543d; }
+        .p3 .option-b h4 { color: #7b341e; }
+        .p3 .option-c h4 { color: #2c5282; }
+        .p3 .option-card p { font-size: 13px; color: #4a5568; line-height: 1.7; }
+
+        .p3 .footer-note { text-align: center; font-size: 12px; color: #a0aec0; margin-top: 48px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+
+        /* DL flow diagram */
+        .dl-flow { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin: 20px 0; align-items: center; }
+        .dl-box { border-radius: 12px; padding: 20px 24px; text-align: center; min-width: 160px; }
+        .dl-box.dl-event { background: #ebf8ff; border: 2px solid #4299e1; }
+        .dl-box.dl-pptx-single { background: #c6f6d5; border: 2px solid #48bb78; }
+        .dl-box.dl-pptx-multi { background: #fefcbf; border: 2px solid #ecc94b; }
+        .dl-box .dl-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+        .dl-box .dl-desc { font-size: 12px; color: #4a5568; }
+        .dl-box .dl-files { margin-top: 8px; }
+        .dl-box .dl-files span { display: inline-block; background: rgba(255,255,255,0.7); padding: 2px 8px; border-radius: 4px; margin: 2px; font-size: 12px; font-weight: 600; }
+        .dl-arrow { font-size: 28px; color: #a0aec0; }
+
+        .p3 .note-box { background: #f0fff4; border: 1px solid #48bb78; border-radius: 8px; padding: 16px 20px; margin-top: 24px; font-size: 13px; color: #276749; display: flex; align-items: flex-start; gap: 10px; }
+        .p3 .note-box .note-icon { font-size: 18px; flex-shrink: 0; }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 640px) {
+            .p3 .options { grid-template-columns: 1fr; }
+            .p3 .question-body { padding: 20px; }
+            .dl-flow { flex-direction: column; align-items: center; }
+            .dl-arrow { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-back">&larr; TOP に戻る</a>
+        <span class="nav-title">パワポDL方式</span>
+    </div>
+</nav>
+
+<!-- ===== PAGE CONTENT ===== -->
+<div class="page p3">
+<div class="container">
+    <div class="header">
+        <h1>パワーポイントのダウンロード方式</h1>
+        <p class="subtitle">行事テンプレートのデザインデータをダウンロードする際の方式についてご確認ください</p>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header q-pptx">
+            <span class="question-number">質問</span>
+            <span class="question-title">デザインデータのダウンロード方式はどちらが望ましいですか？</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">お聞きしたいこと</div>
+                <p>行事テンプレートに登録されたデザインデータを<strong>パワーポイント形式でダウンロード</strong>する際、<br><strong>サイズごとに個別ファイル</strong>にするか、<strong>1つのファイルに全サイズをまとめる</strong>か、どちらがよいでしょうか？</p>
+            </div>
+
+            <div class="explanation">
+                <h3><span class="icon">&#128203;</span> 背景</h3>
+                <p>ダウンロードしたパワーポイントを御社側で編集して利用されるケースを想定しています。</p>
+                <p>サイズごとにファイルを分けると1つ1つは軽量ですが、ダウンロードの手間が増えます。まとめると1回で済みますが、ファイルが大きくなります。</p>
+            </div>
+
+            <div class="visual-example">
+                <h4>具体例：「夏祭り」のデザインデータをダウンロードする場合</h4>
+
+                <div style="display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;">
+                    <div style="flex: 1; min-width: 260px;">
+                        <p style="text-align: center; font-weight: 700; font-size: 13px; color: #276749; margin-bottom: 12px;">パターン A：サイズごとに個別DL</p>
+                        <div class="dl-flow" style="flex-direction: column; gap: 8px;">
+                            <div class="dl-box dl-pptx-single">
+                                <div class="dl-title">&#128196; 夏祭り_A4.pptx</div>
+                            </div>
+                            <div class="dl-box dl-pptx-single">
+                                <div class="dl-title">&#128196; 夏祭り_A3.pptx</div>
+                            </div>
+                            <div class="dl-box dl-pptx-single">
+                                <div class="dl-title">&#128196; 夏祭り_長尺タテ.pptx</div>
+                            </div>
+                            <div class="dl-box dl-pptx-single">
+                                <div class="dl-title">&#128196; 夏祭り_長尺ヨコ.pptx</div>
+                            </div>
+                        </div>
+                        <p style="text-align: center; font-size: 12px; color: #718096; margin-top: 8px;">4回ダウンロードが必要</p>
+                    </div>
+                    <div style="flex: 1; min-width: 260px;">
+                        <p style="text-align: center; font-weight: 700; font-size: 13px; color: #975a16; margin-bottom: 12px;">パターン B：1ファイルにまとめてDL</p>
+                        <div class="dl-flow" style="flex-direction: column; gap: 8px;">
+                            <div class="dl-box dl-pptx-multi" style="min-width: 240px;">
+                                <div class="dl-title">&#128196; 夏祭り_全サイズ.pptx</div>
+                                <div class="dl-desc">スライド1: A4デザイン</div>
+                                <div class="dl-desc">スライド2: A3デザイン</div>
+                                <div class="dl-desc">スライド3: 長尺タテ</div>
+                                <div class="dl-desc">スライド4: 長尺ヨコ</div>
+                            </div>
+                        </div>
+                        <p style="text-align: center; font-size: 12px; color: #718096; margin-top: 8px;">1回のダウンロードで完了</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="options" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div class="option-card option-a">
+                    <div class="option-label">パターン A</div>
+                    <h4>サイズごとに個別DL</h4>
+                    <p>各サイズのファイルを<strong>1つずつダウンロード</strong>する。ファイルが軽量で扱いやすい</p>
+                </div>
+                <div class="option-card option-b">
+                    <div class="option-label">パターン B</div>
+                    <h4>1ファイルにまとめてDL</h4>
+                    <p>全サイズを<strong>1つのパワポにまとめて</strong>ダウンロード。手間が少なく一括編集しやすい</p>
+                </div>
+                <div class="option-card option-c">
+                    <div class="option-label">パターン C</div>
+                    <h4>両方対応</h4>
+                    <p>個別DLとまとめてDLの<strong>両方のボタンを用意</strong>する。利用者が選べるが開発コストは増加</p>
+                </div>
+            </div>
+
+            <div class="note-box" style="margin-top: 24px;">
+                <span class="note-icon">&#128161;</span>
+                <span><strong>弊社からの提案：</strong>パターンBの「1ファイルにまとめてDL」を推奨します。ダウンロードの手間が少なく、編集もしやすいためです。</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">ご不明点がございましたらお気軽にご連絡ください</div>
+</div>
+</div>
+
+</body>
+</html>

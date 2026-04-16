@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>検索エンジンの検索結果に表示される項目</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.8;
+        }
+
+        /* ========== NAV ========== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .nav-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            height: 56px;
+            gap: 16px;
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #667eea;
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+
+        .nav-back:hover {
+            background: #edf2f7;
+        }
+
+        .nav-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        /* ========== PAGE ========== */
+        .page {
+            padding: 80px 20px 40px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== SEO Styles ========== */
+        .p2 .container { max-width: 960px; margin: 0 auto; }
+        .p2 .header { text-align: center; margin-bottom: 48px; }
+        .p2 .header h1 { font-size: 24px; font-weight: 700; color: #1a202c; margin-bottom: 8px; }
+        .p2 .header .subtitle { font-size: 14px; color: #718096; }
+
+        .p2 .serp-mockup { background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04); padding: 32px; margin-bottom: 40px; }
+        .p2 .serp-mockup h2 { font-size: 16px; color: #718096; font-weight: 600; margin-bottom: 24px; text-align: center; }
+
+        .p2 .serp-result-annotated { border: 2px solid #e2e8f0; border-radius: 12px; padding: 0; max-width: 640px; margin: 0 auto; overflow: hidden; }
+        .p2 .serp-row { display: flex; align-items: center; padding: 10px 20px; gap: 12px; border-bottom: 1px dashed #edf2f7; }
+        .p2 .serp-row:last-child { border-bottom: none; }
+        .p2 .serp-row .num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; }
+        .p2 .num-1 { background: #ed64a6; }
+        .p2 .num-2 { background: #ecc94b; color: #744210 !important; }
+        .p2 .num-3 { background: #48bb78; }
+        .p2 .num-4 { background: #4299e1; }
+        .p2 .num-5 { background: #9f7aea; }
+        .p2 .serp-row .content { flex: 1; }
+        .p2 .mock-favicon { display: inline-block; width: 18px; height: 18px; background: #e2e8f0; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
+        .p2 .mock-title { color: #1a0dab; font-weight: 600; font-size: 17px; }
+        .p2 .mock-url { color: #718096; font-size: 12px; }
+        .p2 .mock-sitename { color: #4a5568; font-size: 13px; font-weight: 600; }
+        .p2 .mock-desc { color: #4d5156; font-size: 13px; }
+
+        .p2 .section-card { background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 28px; overflow: hidden; }
+        .p2 .section-header { padding: 20px 28px; display: flex; align-items: center; gap: 12px; }
+        .p2 .section-header .num-badge { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0; }
+        .p2 .section-header h3 { font-size: 17px; color: #fff; font-weight: 600; }
+        .p2 .sh-1 { background: linear-gradient(135deg, #ed64a6, #d53f8c); }
+        .p2 .sh-2 { background: linear-gradient(135deg, #ecc94b, #d69e2e); }
+        .p2 .sh-3 { background: linear-gradient(135deg, #48bb78, #38a169); }
+        .p2 .sh-4 { background: linear-gradient(135deg, #4299e1, #3182ce); }
+        .p2 .sh-5 { background: linear-gradient(135deg, #9f7aea, #805ad5); }
+        .p2 .sh-6 { background: linear-gradient(135deg, #ed8936, #dd6b20); }
+
+        .p2 .section-body { padding: 24px 28px; }
+        .p2 .section-body p { font-size: 14px; color: #4a5568; margin-bottom: 12px; }
+
+        .p2 .highlight-box { background: #ebf8ff; border-left: 4px solid #4299e1; border-radius: 0 8px 8px 0; padding: 14px 18px; font-size: 13px; color: #2c5282; margin: 12px 0; }
+        .p2 .control-level { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-left: 4px; }
+        .p2 .cl-high { background: #c6f6d5; color: #276749; }
+        .p2 .cl-medium { background: #fefcbf; color: #975a16; }
+
+        .p2 .ogp-preview { background: #fff; border: 1px solid #dadce0; border-radius: 12px; overflow: hidden; max-width: 480px; margin: 16px auto; }
+        .p2 .ogp-image { background: linear-gradient(135deg, #e2e8f0, #cbd5e0); height: 200px; display: flex; align-items: center; justify-content: center; color: #a0aec0; font-size: 14px; font-weight: 600; }
+        .p2 .ogp-text { padding: 14px 16px; }
+        .p2 .ogp-text .ogp-url { font-size: 11px; color: #718096; text-transform: uppercase; }
+        .p2 .ogp-text .ogp-title { font-size: 15px; font-weight: 600; color: #1a202c; margin: 4px 0; }
+        .p2 .ogp-text .ogp-desc { font-size: 12px; color: #718096; }
+
+        .p2 .summary-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; margin: 16px 0; }
+        .p2 .summary-table thead th { background: #edf2f7; padding: 12px 14px; text-align: left; font-weight: 600; color: #4a5568; border-bottom: 2px solid #cbd5e0; }
+        .p2 .summary-table thead th:first-child { border-radius: 8px 0 0 0; }
+        .p2 .summary-table thead th:last-child { border-radius: 0 8px 0 0; }
+        .p2 .summary-table tbody td { padding: 12px 14px; border-bottom: 1px solid #edf2f7; vertical-align: top; }
+        .p2 .summary-table tbody tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+        .p2 .summary-table tbody tr:last-child td:last-child { border-radius: 0 0 8px 0; }
+        .p2 .summary-table tbody tr:hover { background: #f7fafc; }
+
+        .p2 .conclusion-card { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 16px; padding: 36px; margin: 40px 0; color: #fff; }
+        .p2 .conclusion-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+        .p2 .conclusion-card p { font-size: 14px; line-height: 1.9; margin-bottom: 12px; opacity: 0.95; }
+        .p2 .conclusion-list { list-style: none; padding: 0; margin: 16px 0; }
+        .p2 .conclusion-list li { font-size: 14px; padding: 10px 16px; background: rgba(255,255,255,0.15); border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .p2 .conclusion-list li .check { flex-shrink: 0; width: 24px; height: 24px; background: rgba(255,255,255,0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+        .p2 .conclusion-note { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 16px 20px; margin-top: 20px; font-size: 13px; line-height: 1.8; }
+
+        .p2 .footer-note { text-align: center; font-size: 12px; color: #a0aec0; margin-top: 48px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-back">&larr; TOP に戻る</a>
+        <span class="nav-title">検索エンジン表示項目</span>
+    </div>
+</nav>
+
+<!-- ===== PAGE CONTENT ===== -->
+<div class="page p2">
+<div class="container">
+    <div class="header">
+        <h1>検索エンジンの検索結果に表示される項目</h1>
+        <p class="subtitle">Google / Bing で検索したときに表示される要素と、Bubbleでの設定方法のご説明</p>
+    </div>
+
+    <div class="serp-mockup">
+        <h2>実際の検索結果画面（イメージ）</h2>
+        <div class="serp-result-annotated">
+            <div class="serp-row" style="background: #fff5f7;">
+                <span class="num num-1">1</span>
+                <div class="content">
+                    <span class="mock-text"><span class="mock-favicon"></span></span>
+                    <span style="font-size: 12px; color: #718096;">&#8592; ファビコン（サイトのアイコン）</span>
+                </div>
+            </div>
+            <div class="serp-row" style="background: #fffff0;">
+                <span class="num num-2">2</span>
+                <div class="content">
+                    <span class="mock-sitename">サイト名</span>
+                    <span style="font-size: 12px; color: #718096; margin-left: 8px;">&#8592; サイトの名前</span>
+                </div>
+            </div>
+            <div class="serp-row" style="background: #f0fff4;">
+                <span class="num num-3">3</span>
+                <div class="content">
+                    <span class="mock-url">example.com &gt; カテゴリ &gt; ページ名</span>
+                    <span style="font-size: 12px; color: #718096; margin-left: 8px;">&#8592; URL / パンくずリスト</span>
+                </div>
+            </div>
+            <div class="serp-row" style="background: #ebf8ff;">
+                <span class="num num-4">4</span>
+                <div class="content">
+                    <span class="mock-title">ページのタイトルがここに表示されます</span>
+                </div>
+            </div>
+            <div class="serp-row" style="background: #faf5ff;">
+                <span class="num num-5">5</span>
+                <div class="content">
+                    <span class="mock-desc">ページの説明文（ディスクリプション）がここに表示されます。検索した人がクリックするかどうかを判断するための文章です…</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header sh-1">
+            <span class="num-badge" style="background: rgba(255,255,255,0.25);">1</span>
+            <h3>ファビコン（サイトのアイコン）</h3>
+        </div>
+        <div class="section-body">
+            <p>ブラウザのタブや検索結果に表示される<strong>小さなアイコン画像</strong>です。</p>
+            <div class="highlight-box">
+                <strong>設定が必要なもの：</strong>アイコン画像（48px x 48px 以上、正方形）<br>
+                <strong>Bubbleでの設定場所：</strong>Settings &gt; General &gt; Favicon<br>
+                <strong>コントロール度：</strong><span class="control-level cl-high">自分で設定可能</span>
+            </div>
+            <p>サイト全体で1つ用意すればOKです。ブランドのロゴマークなどを使うのが一般的です。<br>Bubbleでは画像をアップロードするだけで自動的に反映されます。</p>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header sh-2">
+            <span class="num-badge" style="background: rgba(255,255,255,0.25);">2</span>
+            <h3>サイト名</h3>
+        </div>
+        <div class="section-body">
+            <p>検索結果でURLの上に表示される<strong>サイトの名前</strong>です。</p>
+            <div class="highlight-box">
+                <strong>設定が必要なもの：</strong>サイト名の登録（1箇所）<br>
+                <strong>Bubbleでの設定場所：</strong>Settings &gt; SEO / metatags &gt; Application title<br>
+                <strong>コントロール度：</strong><span class="control-level cl-high">自分で設定可能</span>
+            </div>
+            <p>Bubbleの「Application title」に入力した名前がサイト名として使われます。</p>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header sh-3">
+            <span class="num-badge" style="background: rgba(255,255,255,0.25);">3</span>
+            <h3>URL / パンくずリスト</h3>
+        </div>
+        <div class="section-body">
+            <p>ページの<strong>住所（URL）</strong>が表示される部分です。サイトの構造がわかりやすい場合、「トップ &gt; カテゴリ &gt; ページ名」のような<strong>パンくずリスト</strong>形式で表示されます。</p>
+            <div class="highlight-box">
+                <strong>Bubbleでの仕組み：</strong>URLはページ名から自動生成されます（例：yourdomain.com/page-name）<br>
+                <strong>注意点：</strong>Bubbleでは深い階層のURL（例：/blog/category/記事名）は作れません<br>
+                <strong>コントロール度：</strong><span class="control-level cl-medium">ページ名で間接的に設定</span>
+            </div>
+            <p>Bubbleでは、ページ作成時につけるページ名がそのままURLになります。わかりやすい英語の名前をつけましょう。<br>パンくずリストはBubble標準機能にはないため、必要な場合は別途実装が必要です。</p>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header sh-4">
+            <span class="num-badge" style="background: rgba(255,255,255,0.25);">4</span>
+            <h3>ページタイトル</h3>
+        </div>
+        <div class="section-body">
+            <p>検索結果で<strong>一番目立つ青い文字のリンク</strong>です。ここをクリックしてサイトに訪問します。</p>
+            <div class="highlight-box">
+                <strong>設定が必要なもの：</strong>各ページにタイトル（全角30文字程度が目安）<br>
+                <strong>Bubbleでの設定場所：</strong>各ページのプロパティ &gt; Page title<br>
+                <strong>動的データ：</strong>データベースの値を使って動的に変更可能（例：「商品名 - サイト名」）<br>
+                <strong>コントロール度：</strong><span class="control-level cl-medium">自分で設定可能（ただしGoogleが書き換える場合あり）</span>
+            </div>
+            <p>検索結果に最も大きく表示されるため、<strong>最も重要な項目</strong>です。ページの内容を端的に表す魅力的なタイトルをつけることが大切です。</p>
+            <p>Bubbleでは、ページごとに固定テキストを設定するほか、データベースの値を組み合わせて<strong>動的なタイトル</strong>も設定できます。</p>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header sh-5">
+            <span class="num-badge" style="background: rgba(255,255,255,0.25);">5</span>
+            <h3>説明文（メタディスクリプション）</h3>
+        </div>
+        <div class="section-body">
+            <p>タイトルの下に表示される<strong>ページの紹介文</strong>です。検索した人が「このページを見るかどうか」を判断する材料になります。</p>
+            <div class="highlight-box">
+                <strong>設定が必要なもの：</strong>各ページに説明文（全角80〜120文字程度が目安）<br>
+                <strong>Bubbleでの設定場所：</strong>各ページのプロパティ &gt; Page description<br>
+                <strong>動的データ：</strong>タイトル同様、データベースの値を使って動的に変更可能<br>
+                <strong>コントロール度：</strong><span class="control-level cl-medium">自分で設定可能（ただしGoogleが書き換える場合あり）</span>
+            </div>
+            <p>設定しない場合、Googleがページの中身から自動で抜き出して表示します。意図した文章を表示したい場合は、必ず設定してください。<br>Bubbleでは未設定のページには Settings &gt; SEO で登録した「Application description」が代わりに使われます。</p>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header sh-6">
+            <span class="num-badge" style="background: rgba(255,255,255,0.25);">+</span>
+            <h3>SNSシェア時の表示（OGP設定）</h3>
+        </div>
+        <div class="section-body">
+            <p>検索結果ではなく、<strong>SNS（Facebook、X/Twitter、LINEなど）でリンクを共有したとき</strong>に表示される画像・タイトル・説明文です。</p>
+            <div class="ogp-preview">
+                <div class="ogp-image">OGP画像（1200 x 630 px 推奨）</div>
+                <div class="ogp-text">
+                    <div class="ogp-url">example.com</div>
+                    <div class="ogp-title">SNS用のタイトル</div>
+                    <div class="ogp-desc">SNS用の説明文がここに表示されます</div>
+                </div>
+            </div>
+            <div class="highlight-box">
+                <strong>設定が必要なもの：</strong><br>
+                ・OGP画像（1200 x 630 px 推奨）<br>
+                ・SNS用タイトル / 説明文（ページタイトル・説明文から自動流用）<br>
+                <strong>Bubbleでの設定場所：</strong><br>
+                ・サイト共通のデフォルト画像 → Settings &gt; SEO / metatags &gt; OGP image<br>
+                ・ページ別に上書き → 各ページのプロパティ &gt; OGP image<br>
+                <strong>コントロール度：</strong><span class="control-level cl-high">自分で設定可能</span>
+            </div>
+            <p>設定しないと、SNSで共有されたときに画像が出なかったり、意図しないテキストが表示されたりします。</p>
+            <p>Bubbleでは、OGPのタイトルと説明文はページタイトル・説明文から<strong>自動的に流用</strong>されます。画像だけ別途設定すればOKです。</p>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header" style="background: linear-gradient(135deg, #4a5568, #2d3748);">
+            <h3>まとめ：Bubbleでの設定場所一覧</h3>
+        </div>
+        <div class="section-body">
+            <table class="summary-table">
+                <thead><tr><th>項目</th><th>何が表示されるか</th><th>Bubbleでの設定場所</th><th>設定単位</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>1. ファビコン</strong></td><td>サイトの小さなアイコン</td><td>Settings &gt; General &gt; Favicon</td><td>サイト共通</td></tr>
+                    <tr><td><strong>2. サイト名</strong></td><td>サイトの名称</td><td>Settings &gt; SEO / metatags &gt; Application title</td><td>サイト共通</td></tr>
+                    <tr><td><strong>3. URL</strong></td><td>ページの場所</td><td>ページ名から自動生成</td><td>ページごと（自動）</td></tr>
+                    <tr><td><strong>4. ページタイトル</strong></td><td>青い大きなリンク文字</td><td>各ページ &gt; プロパティ &gt; Page title</td><td>ページごと（動的可）</td></tr>
+                    <tr><td><strong>5. 説明文</strong></td><td>タイトル下の紹介文</td><td>各ページ &gt; プロパティ &gt; Page description</td><td>ページごと（動的可）</td></tr>
+                    <tr><td><strong>+ OGP画像</strong></td><td>SNS共有時の画像</td><td>Settings &gt; SEO（共通）/ 各ページ &gt; OGP image（個別）</td><td>共通 + ページ別上書き</td></tr>
+                    <tr><td><strong>+ OGPタイトル</strong></td><td>SNS共有時のタイトル</td><td>ページタイトルから自動流用</td><td>自動（設定不要）</td></tr>
+                    <tr><td><strong>+ OGP説明文</strong></td><td>SNS共有時の説明文</td><td>ページ説明文から自動流用</td><td>自動（設定不要）</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="conclusion-card">
+        <h2>結論：Bubbleでは標準機能でほぼ対応可能</h2>
+        <p>Bubbleには検索結果やSNS表示に必要なSEO設定が<strong>標準で組み込まれている</strong>ため、追加開発なしで以下の設定ができます。</p>
+        <ul class="conclusion-list">
+            <li><span class="check">&#10003;</span><span><strong>ページタイトル</strong> → 各ページのプロパティで設定（動的データもOK）</span></li>
+            <li><span class="check">&#10003;</span><span><strong>説明文</strong> → 各ページのプロパティで設定（動的データもOK）</span></li>
+            <li><span class="check">&#10003;</span><span><strong>OGP画像</strong> → サイト共通のデフォルト + ページ別に上書き可能</span></li>
+            <li><span class="check">&#10003;</span><span><strong>ファビコン</strong> → Settings画面から画像アップロードのみ</span></li>
+            <li><span class="check">&#10003;</span><span><strong>サイト名</strong> → Settings画面で1箇所入力のみ</span></li>
+        </ul>
+        <div class="conclusion-note">
+            <strong>つまり：</strong>SEO関連の表示項目について、Bubble上で<strong>独自の管理画面を作る必要はありません。</strong><br>
+            Bubbleの設定画面（Settings &gt; SEO / metatags）と、各ページのプロパティで完結します。<br><br>
+            <strong>ただし、Bubbleの注意点：</strong><br>
+            ・URLの階層を深くすることはできません（例：/blog/category/記事名 のような構造は不可）<br>
+            ・パンくずリストは標準機能にないため、必要であれば別途実装が必要です<br>
+            ・サイトマップは自動生成されます（「公開ページ」に設定したページが対象）<br>
+            ・OGPタイトル / 説明文はページタイトル / 説明文から自動流用されるため、別途設定は不要です
+        </div>
+    </div>
+
+    <div class="footer-note">ご不明点がございましたらお気軽にご連絡ください</div>
+</div>
+</div>
+
+</body>
+</html>

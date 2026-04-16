@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1サイズに複数デザインの可能性</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.8;
+        }
+
+        /* ========== NAV ========== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .nav-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            height: 56px;
+            gap: 16px;
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #667eea;
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+
+        .nav-back:hover {
+            background: #edf2f7;
+        }
+
+        .nav-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        /* ========== PAGE ========== */
+        .page {
+            padding: 80px 20px 40px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== Size Duplication Styles ========== */
+        .p4 .container { max-width: 960px; margin: 0 auto; }
+        .p4 .header { text-align: center; margin-bottom: 48px; }
+        .p4 .header h1 { font-size: 24px; font-weight: 700; color: #1a202c; margin-bottom: 8px; }
+        .p4 .header .subtitle { font-size: 14px; color: #718096; }
+
+        .p4 .question-card { background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 32px; overflow: hidden; }
+        .p4 .question-header { padding: 24px 32px; display: flex; align-items: center; gap: 16px; }
+        .p4 .question-header.q-dup { background: linear-gradient(135deg, #9f7aea, #6b46c1); }
+        .p4 .question-number { background: rgba(255,255,255,0.25); color: #fff; font-size: 14px; font-weight: 700; padding: 6px 14px; border-radius: 20px; white-space: nowrap; }
+        .p4 .question-title { color: #fff; font-size: 18px; font-weight: 600; }
+        .p4 .question-body { padding: 32px; }
+
+        .p4 .ask-box { background: #ebf4ff; border-left: 4px solid #4299e1; border-radius: 0 8px 8px 0; padding: 20px 24px; margin-bottom: 28px; }
+        .p4 .ask-box .label { font-size: 12px; font-weight: 700; color: #2b6cb0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .p4 .ask-box p { font-size: 15px; color: #2d3748; }
+
+        .p4 .explanation { margin-bottom: 24px; }
+        .p4 .explanation h3 { font-size: 15px; font-weight: 700; color: #4a5568; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .p4 .explanation h3 .icon { font-size: 18px; }
+        .p4 .explanation p { font-size: 14px; color: #4a5568; margin-bottom: 8px; padding-left: 4px; }
+
+        .p4 .visual-example { background: #fafbfc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 28px; margin: 24px 0; }
+        .p4 .visual-example h4 { font-size: 14px; font-weight: 700; color: #718096; margin-bottom: 20px; text-align: center; }
+
+        .p4 .options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+        .p4 .option-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; }
+        .p4 .option-card.option-a { border-color: #48bb78; background: #f0fff4; }
+        .p4 .option-card.option-b { border-color: #ed8936; background: #fffaf0; }
+        .p4 .option-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .p4 .option-a .option-label { color: #276749; }
+        .p4 .option-b .option-label { color: #9c4221; }
+        .p4 .option-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .p4 .option-a h4 { color: #22543d; }
+        .p4 .option-b h4 { color: #7b341e; }
+        .p4 .option-card p { font-size: 13px; color: #4a5568; line-height: 1.7; }
+
+        .p4 .footer-note { text-align: center; font-size: 12px; color: #a0aec0; margin-top: 48px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+
+        /* Size dup diagram */
+        .dup-example { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+        .dup-box { border-radius: 12px; padding: 16px 20px; text-align: center; min-width: 200px; }
+        .dup-box.dup-single { background: #c6f6d5; border: 2px solid #48bb78; }
+        .dup-box.dup-multi { background: #fed7e2; border: 2px solid #ed64a6; }
+        .dup-box .dup-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+        .dup-box .dup-items { font-size: 13px; color: #4a5568; text-align: left; }
+        .dup-box .dup-items div { padding: 3px 0; border-bottom: 1px dashed #e2e8f0; }
+        .dup-box .dup-items div:last-child { border-bottom: none; }
+        .dup-highlight { background: #fed7e2; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+
+        .p4 .note-box { background: #f0fff4; border: 1px solid #48bb78; border-radius: 8px; padding: 16px 20px; margin-top: 24px; font-size: 13px; color: #276749; display: flex; align-items: flex-start; gap: 10px; }
+        .p4 .note-box .note-icon { font-size: 18px; flex-shrink: 0; }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 640px) {
+            .p4 .options { grid-template-columns: 1fr; }
+            .p4 .question-body { padding: 20px; }
+            .dup-example { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-back">&larr; TOP に戻る</a>
+        <span class="nav-title">サイズ重複</span>
+    </div>
+</nav>
+
+<!-- ===== PAGE CONTENT ===== -->
+<div class="page p4">
+<div class="container">
+    <div class="header">
+        <h1>1サイズに複数デザインの可能性</h1>
+        <p class="subtitle">同じサイズのデザインを複数登録できる必要があるかご確認ください</p>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header q-dup">
+            <span class="question-number">質問</span>
+            <span class="question-title">1つのテンプレート内で、同じサイズのデザインを複数持つことはありますか？</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">お聞きしたいこと</div>
+                <p>1つのデザインテンプレート内で、たとえば<strong>A3サイズのデザインを2種類以上</strong>登録したいケースはありますか？<br>それとも、<strong>各サイズにつき1種類</strong>で十分でしょうか？</p>
+            </div>
+
+            <div class="explanation">
+                <h3><span class="icon">&#128203;</span> 具体的にはこういうことです</h3>
+                <p>現在は「1つのデザインテンプレートに対して、各サイズ（A4・A3・長尺タテ・長尺ヨコ）のデザインは1つずつ」という前提で開発を進めています。</p>
+            </div>
+
+            <div class="visual-example">
+                <h4>「春のデザイン」テンプレートの場合</h4>
+                <div class="dup-example">
+                    <div class="dup-box dup-single">
+                        <div class="dup-title" style="color: #276749;">現在の想定：各サイズ1種類</div>
+                        <div class="dup-items">
+                            <div>A4 → デザイン 1つ</div>
+                            <div>A3 → デザイン 1つ</div>
+                            <div>長尺タテ → デザイン 1つ</div>
+                            <div>長尺ヨコ → デザイン 1つ</div>
+                        </div>
+                    </div>
+                    <div class="dup-box dup-multi">
+                        <div class="dup-title" style="color: #97266d;">もしサイズ重複ありの場合</div>
+                        <div class="dup-items">
+                            <div>A4 → デザイン 1つ</div>
+                            <div>A3 → <span class="dup-highlight">デザイン 2つ</span></div>
+                            <div>長尺タテ → デザイン 1つ</div>
+                            <div>長尺ヨコ → <span class="dup-highlight">デザイン 3つ</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="options">
+                <div class="option-card option-a">
+                    <div class="option-label">パターン A</div>
+                    <h4>各サイズ1種類で十分</h4>
+                    <p>1つのデザインテンプレート内で、同じサイズのデザインは<strong>1つだけ</strong>。シンプルな構成で管理しやすい</p>
+                </div>
+                <div class="option-card option-b">
+                    <div class="option-label">パターン B</div>
+                    <h4>同じサイズで複数必要</h4>
+                    <p>将来的にA3で2パターン等の可能性があるため、<strong>同じサイズに複数デザイン</strong>を登録できるようにする</p>
+                </div>
+            </div>
+
+            <div class="note-box" style="margin-top: 24px;">
+                <span class="note-icon">&#128161;</span>
+                <span><strong>現在の開発方針：</strong>パターンA（各サイズ1種類）で進めています。パターンBの場合はアップロード画面のUI設計が変わるため、お早めにご連絡いただけると助かります。</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">ご不明点がございましたらお気軽にご連絡ください</div>
+</div>
+</div>
+
+</body>
+</html>
