@@ -136,7 +136,7 @@
         .home-card.card-pptx { border-left-color: #38b2ac; }
         .home-card.card-dup { border-left-color: #9f7aea; }
         .home-card.card-seo { border-left-color: #ed8936; }
-        .home-card.card-env { border-left-color: #e53e3e; }
+        .home-card.card-env { border-left-color: #4299e1; }
 
         .home-card .card-num {
             font-size: 11px;
@@ -150,7 +150,7 @@
         .card-pptx .card-num { color: #38b2ac; }
         .card-dup .card-num { color: #9f7aea; }
         .card-seo .card-num { color: #ed8936; }
-        .card-env .card-num { color: #e53e3e; }
+        .card-env .card-num { color: #4299e1; }
 
         .home-card .card-title {
             font-size: 17px;
@@ -943,7 +943,7 @@
     </div>
 
     <div class="question-card">
-        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+        <div class="question-header" style="background: linear-gradient(135deg, #4299e1, #3182ce);">
             <span class="question-number">背景</span>
             <span class="question-title">4/9 定例会での議論</span>
         </div>
@@ -965,7 +965,7 @@
     </div>
 
     <div class="question-card">
-        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+        <div class="question-header" style="background: linear-gradient(135deg, #4299e1, #3182ce);">
             <span class="question-number">解説</span>
             <span class="question-title">Bubbleの2つの環境とは</span>
         </div>
@@ -999,59 +999,71 @@
     </div>
 
     <div class="question-card">
-        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+        <div class="question-header" style="background: linear-gradient(135deg, #4299e1, #3182ce);">
             <span class="question-number">比較</span>
             <span class="question-title">メリット・デメリット比較表</span>
         </div>
         <div class="question-body">
-            <div class="visual-example">
-                <h4 style="margin-bottom: 16px;">本番環境（Live）で運用する場合</h4>
-                <table class="size-table" style="font-size: 13px; table-layout: fixed; width: 100%;">
-                    <thead><tr><th>メリット</th><th>デメリット</th></tr></thead>
-                    <tbody>
-                        <tr>
-                            <td style="text-align: left; font-weight: normal; vertical-align: top; padding: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Live -->
+                <div style="background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                    <div style="background: linear-gradient(135deg, #a0aec0, #718096); padding: 16px 24px;">
+                        <span style="color: #fff; font-size: 16px; font-weight: 700;">本番環境（Live）で運用する場合</span>
+                    </div>
+                    <div style="display: flex; gap: 0;">
+                        <div style="flex: 1; padding: 20px 24px; border-right: 1px solid #edf2f7;">
+                            <div style="display: inline-block; background: #c6f6d5; color: #276749; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-bottom: 12px;">メリット</div>
+                            <div style="font-size: 13px; color: #4a5568; line-height: 2;">
                                 ・URLがきれい（/version-test がつかない）<br>
                                 ・独自ドメインを設定できる<br>
                                 ・本番と同じ挙動で検証できる<br>
                                 ・そのまま正式リリースに移行しやすい
-                            </td>
-                            <td style="text-align: left; vertical-align: top; padding: 16px;">
+                            </div>
+                        </div>
+                        <div style="flex: 1; padding: 20px 24px;">
+                            <div style="display: inline-block; background: #fed7d7; color: #9b2c2c; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-bottom: 12px;">デメリット</div>
+                            <div style="font-size: 13px; color: #4a5568; line-height: 2;">
                                 ・<strong>検索エンジンに登録されやすい</strong><br>
                                 ・Growth Planの購入が必要（費用増）<br>
                                 ・変更のたびにデプロイ作業が発生<br>
                                 ・URL/サイト名にブラザー名が残るリスク
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h4 style="margin-top: 28px; margin-bottom: 16px;">テスト環境（version-test）で運用する場合</h4>
-                <table class="size-table" style="font-size: 13px; table-layout: fixed; width: 100%;">
-                    <thead><tr><th>メリット</th><th>デメリット</th></tr></thead>
-                    <tbody>
-                        <tr>
-                            <td style="text-align: left; font-weight: normal; vertical-align: top; padding: 16px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- version-test -->
+                <div style="background: #fff; border-radius: 16px; border: 2px solid #48bb78; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                    <div style="background: linear-gradient(135deg, #68d391, #38a169); padding: 16px 24px; display: flex; align-items: center; gap: 10px;">
+                        <span style="color: #fff; font-size: 16px; font-weight: 700;">テスト環境（version-test）で運用する場合</span>
+                        <span style="background: rgba(255,255,255,0.3); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px;">推奨</span>
+                    </div>
+                    <div style="display: flex; gap: 0;">
+                        <div style="flex: 1; padding: 20px 24px; border-right: 1px solid #edf2f7;">
+                            <div style="display: inline-block; background: #c6f6d5; color: #276749; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-bottom: 12px;">メリット</div>
+                            <div style="font-size: 13px; color: #4a5568; line-height: 2;">
                                 ・<strong>検索エンジンに登録されにくい</strong>（後述の対策でほぼ防止可能）<br>
                                 ・追加のプラン購入が不要（現行プランで対応可能）<br>
                                 ・保存＝即反映でデプロイ不要、開発効率が高い<br>
                                 ・POCとして十分な検証が可能
-                            </td>
-                            <td style="text-align: left; vertical-align: top; padding: 16px;">
+                            </div>
+                        </div>
+                        <div style="flex: 1; padding: 20px 24px;">
+                            <div style="display: inline-block; background: #fed7d7; color: #9b2c2c; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-bottom: 12px;">デメリット</div>
+                            <div style="font-size: 13px; color: #4a5568; line-height: 2;">
                                 ・URLに「/version-test」がつく<br>
                                 ・独自ドメインが使えない<br>
                                 ・正式リリース時に環境移行が必要<br>
                                 ・URLが bubbleapps.io サブドメインになる
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="question-card">
-        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+        <div class="question-header" style="background: linear-gradient(135deg, #4299e1, #3182ce);">
             <span class="question-number">対策</span>
             <span class="question-title">検索エンジンに載せないための方法</span>
         </div>
@@ -1088,7 +1100,7 @@
     </div>
 
     <div class="question-card">
-        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+        <div class="question-header" style="background: linear-gradient(135deg, #4299e1, #3182ce);">
             <span class="question-number">提案</span>
             <span class="question-title">弊社からの推奨</span>
         </div>
