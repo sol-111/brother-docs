@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>共通印刷物 管理画面デザイン案</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+            background: #eef2f7;
+            color: #2d3748;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ===== Layout ===== */
+        .app { display: flex; height: 100vh; }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            width: 200px;
+            background: #f8faff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        .sidebar-logo {
+            padding: 20px 20px 16px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #4169e1;
+        }
+        .sidebar-nav { flex: 1; padding: 0 8px; }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #4a5568;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 2px;
+            transition: all 0.15s;
+        }
+        .sidebar-item:hover { background: #edf2f7; }
+        .sidebar-item.active {
+            background: #4169e1;
+            color: #fff;
+        }
+        .sidebar-item .icon { font-size: 16px; width: 20px; text-align: center; }
+        .sidebar-bottom {
+            padding: 16px 20px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 13px;
+            color: #a0aec0;
+            cursor: pointer;
+        }
+
+        /* ===== Main ===== */
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .main-header {
+            padding: 20px 28px 16px;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .main-header h1 { font-size: 18px; font-weight: 700; color: #1a202c; }
+        .main-body { flex: 1; display: flex; overflow: hidden; }
+
+        /* ===== Column 1: Industry + Group ===== */
+        .col-tree {
+            width: 280px;
+            border-right: 1px solid #e2e8f0;
+            background: #fff;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .col-tree-header {
+            padding: 16px 20px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #edf2f7;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 1;
+        }
+
+        /* Tree */
+        .tree-section { padding: 8px 0; }
+        .tree-section + .tree-section { border-top: 1px solid #edf2f7; }
+        .tree-section-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tree-section-label .badge {
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+        .badge-all { background: #ebf8ff; color: #2b6cb0; }
+        .badge-l1 { background: #fefcbf; color: #975a16; }
+        .badge-l2 { background: #e9d8fd; color: #6b46c1; }
+
+        .tree-industry {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .tree-industry:hover { background: #f7fafc; }
+        .tree-industry .arrow {
+            font-size: 10px;
+            color: #a0aec0;
+            transition: transform 0.2s;
+            width: 14px;
+            text-align: center;
+        }
+        .tree-industry.open .arrow { transform: rotate(90deg); }
+
+        .tree-groups { display: none; padding-left: 18px; }
+        .tree-industry.open + .tree-groups { display: block; }
+
+        .tree-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px 7px 28px;
+            font-size: 13px;
+            color: #718096;
+            cursor: pointer;
+            border-radius: 6px;
+            margin: 1px 8px;
+            transition: all 0.1s;
+        }
+        .tree-group:hover { background: #edf2f7; color: #4a5568; }
+        .tree-group.active {
+            background: #ebf4ff;
+            color: #3182ce;
+            font-weight: 600;
+        }
+        .tree-group .count {
+            margin-left: auto;
+            font-size: 11px;
+            background: #edf2f7;
+            color: #a0aec0;
+            padding: 1px 7px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .tree-group.active .count {
+            background: #bee3f8;
+            color: #2b6cb0;
+        }
+
+        /* Direct group (no sub-industry) */
+        .tree-group-direct {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px 7px 20px;
+            font-size: 13px;
+            color: #718096;
+            cursor: pointer;
+            border-radius: 6px;
+            margin: 1px 8px;
+            transition: all 0.1s;
+        }
+        .tree-group-direct:hover { background: #edf2f7; color: #4a5568; }
+        .tree-group-direct.active {
+            background: #ebf4ff;
+            color: #3182ce;
+            font-weight: 600;
+        }
+        .tree-group-direct .count {
+            margin-left: auto;
+            font-size: 11px;
+            background: #edf2f7;
+            color: #a0aec0;
+            padding: 1px 7px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .tree-group-direct.active .count {
+            background: #bee3f8;
+            color: #2b6cb0;
+        }
+
+        /* ===== Column 2: Design List ===== */
+        .col-list {
+            width: 320px;
+            border-right: 1px solid #e2e8f0;
+            background: #fff;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .col-list-header {
+            padding: 16px 20px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #edf2f7;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 1;
+        }
+        .col-list-header .title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-add {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4169e1;
+            background: #ebf4ff;
+            border: 1px solid #bee3f8;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-add:hover { background: #bee3f8; }
+
+        .design-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f7fafc;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .design-card:hover { background: #f7fafc; }
+        .design-card.active { background: #ebf4ff; border-left: 3px solid #4169e1; padding-left: 17px; }
+
+        .design-thumb {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            background: #edf2f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        .design-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+        .design-info { flex: 1; min-width: 0; }
+        .design-name { font-size: 14px; font-weight: 600; color: #2d3748; margin-bottom: 3px; }
+        .design-meta { font-size: 11px; color: #a0aec0; display: flex; gap: 8px; align-items: center; }
+        .design-size-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #edf2f7;
+            color: #718096;
+        }
+        .design-delete {
+            color: #e53e3e;
+            font-size: 16px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.15s;
+            padding: 4px;
+        }
+        .design-card:hover .design-delete { opacity: 0.6; }
+        .design-delete:hover { opacity: 1 !important; }
+
+        /* ===== Column 3: Edit Panel ===== */
+        .col-edit {
+            flex: 1;
+            background: #f8fafc;
+            overflow-y: auto;
+        }
+        .col-edit-header {
+            padding: 16px 28px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #edf2f7;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .col-edit-header .title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .edit-actions { display: flex; gap: 8px; }
+        .btn-save {
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            background: #4169e1;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-save:hover { background: #3457c9; }
+        .btn-delete-outline {
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #e53e3e;
+            background: #fff;
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-delete-outline:hover { background: #fff5f5; }
+
+        .edit-form { padding: 24px 28px; }
+        .form-section { margin-bottom: 28px; }
+        .form-section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+        .form-group { flex: 1; }
+        .form-label { display: block; font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 6px; }
+        .form-input, .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #fff;
+            color: #2d3748;
+            outline: none;
+            transition: border-color 0.15s;
+            font-family: inherit;
+        }
+        .form-input:focus, .form-select:focus { border-color: #4169e1; box-shadow: 0 0 0 3px rgba(65,105,225,0.1); }
+        .form-hint { font-size: 11px; color: #a0aec0; margin-top: 4px; }
+
+        /* Image upload */
+        .upload-area {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .upload-preview {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+            background: #fff;
+            border: 2px dashed #cbd5e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            color: #a0aec0;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .upload-preview:hover { border-color: #4169e1; color: #4169e1; }
+        .upload-preview.has-image { border-style: solid; border-color: #e2e8f0; }
+        .upload-preview img { width: 100%; height: 100%; object-fit: contain; }
+        .upload-preview .upload-icon { font-size: 32px; }
+        .upload-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 8px;
+        }
+        .btn-upload {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a5568;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-upload:hover { background: #f7fafc; }
+
+        /* Empty state */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #cbd5e0;
+            gap: 12px;
+        }
+        .empty-state .empty-icon { font-size: 48px; }
+        .empty-state p { font-size: 14px; }
+
+        /* Breadcrumb in edit */
+        .edit-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #a0aec0;
+        }
+        .edit-breadcrumb span { color: #718096; font-weight: 600; }
+        .edit-breadcrumb .sep { color: #cbd5e0; }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">Logo</div>
+        <div class="sidebar-nav">
+            <div class="sidebar-item"><span class="icon">&#128202;</span> ログ管理</div>
+            <div class="sidebar-item"><span class="icon">&#128197;</span> 業界・行事テンプレ</div>
+            <div class="sidebar-item"><span class="icon">&#127912;</span> デザインテンプレ</div>
+            <div class="sidebar-item active"><span class="icon">&#128196;</span> 共通印刷物</div>
+        </div>
+        <div class="sidebar-bottom">&#127968; ログアウト</div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+        <div class="main-header">
+            <h1>共通印刷物</h1>
+        </div>
+        <div class="main-body">
+
+            <!-- Column 1: Tree -->
+            <div class="col-tree">
+                <div class="col-tree-header">業界・グループ選択</div>
+
+                <!-- 全業界共通 -->
+                <div class="tree-section">
+                    <div class="tree-section-label"><span class="badge badge-all">共通</span> 全業界共通</div>
+                    <div class="tree-group-direct" onclick="selectGroup(this, '案内サイン')">
+                        <span>&#128204;</span> 案内サイン
+                        <span class="count">4</span>
+                    </div>
+                    <div class="tree-group-direct" onclick="selectGroup(this, '注意書き')">
+                        <span>&#128203;</span> 注意書き
+                        <span class="count">3</span>
+                    </div>
+                </div>
+
+                <!-- 第一業界 -->
+                <div class="tree-section">
+                    <div class="tree-section-label"><span class="badge badge-l1">第一</span> 業界別</div>
+
+                    <div class="tree-industry open" onclick="toggleIndustry(this)">
+                        <span class="arrow">&#9654;</span> 宗教法人
+                    </div>
+                    <div class="tree-groups">
+                        <div class="tree-group active" onclick="selectGroup(this, '法語')">
+                            <span>&#128220;</span> 法語
+                            <span class="count">5</span>
+                        </div>
+                        <div class="tree-group" onclick="selectGroup(this, 'サイン')">
+                            <span>&#128695;</span> サイン
+                            <span class="count">3</span>
+                        </div>
+                    </div>
+
+                    <div class="tree-industry" onclick="toggleIndustry(this)">
+                        <span class="arrow">&#9654;</span> 教育機関
+                    </div>
+                    <div class="tree-groups">
+                        <div class="tree-group" onclick="selectGroup(this, '掲示物')">
+                            <span>&#128203;</span> 掲示物
+                            <span class="count">2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第二業界 -->
+                <div class="tree-section">
+                    <div class="tree-section-label"><span class="badge badge-l2">第二</span> 小分類別</div>
+
+                    <div class="tree-industry" onclick="toggleIndustry(this)">
+                        <span class="arrow">&#9654;</span> 神社
+                    </div>
+                    <div class="tree-groups">
+                        <div class="tree-group" onclick="selectGroup(this, '神社サイン')">
+                            <span>&#9961;&#65039;</span> 神社サイン
+                            <span class="count">3</span>
+                        </div>
+                        <div class="tree-group" onclick="selectGroup(this, '御朱印案内')">
+                            <span>&#128220;</span> 御朱印案内
+                            <span class="count">2</span>
+                        </div>
+                    </div>
+
+                    <div class="tree-industry" onclick="toggleIndustry(this)">
+                        <span class="arrow">&#9654;</span> 寺院
+                    </div>
+                    <div class="tree-groups">
+                        <div class="tree-group" onclick="selectGroup(this, '寺院掲示')">
+                            <span>&#127969;</span> 寺院掲示
+                            <span class="count">4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: List -->
+            <div class="col-list">
+                <div class="col-list-header">
+                    <span class="title">法語（5件）</span>
+                    <button class="btn-add" onclick="void(0)">+ 追加</button>
+                </div>
+
+                <div class="design-card active" onclick="selectDesign(this)">
+                    <div class="design-thumb" style="background: #fef3c7; font-size: 18px;">&#128220;</div>
+                    <div class="design-info">
+                        <div class="design-name">立入禁止</div>
+                        <div class="design-meta">
+                            <span class="design-size-badge">A3</span>
+                            宗教法人
+                        </div>
+                    </div>
+                    <span class="design-delete">&#128465;</span>
+                </div>
+
+                <div class="design-card" onclick="selectDesign(this)">
+                    <div class="design-thumb" style="background: #fef3c7; font-size: 18px;">&#128220;</div>
+                    <div class="design-info">
+                        <div class="design-name">土足禁止</div>
+                        <div class="design-meta">
+                            <span class="design-size-badge">A4</span>
+                            宗教法人
+                        </div>
+                    </div>
+                    <span class="design-delete">&#128465;</span>
+                </div>
+
+                <div class="design-card" onclick="selectDesign(this)">
+                    <div class="design-thumb" style="background: #fef3c7; font-size: 18px;">&#128220;</div>
+                    <div class="design-info">
+                        <div class="design-name">土足厳禁</div>
+                        <div class="design-meta">
+                            <span class="design-size-badge">A4</span>
+                            宗教法人
+                        </div>
+                    </div>
+                    <span class="design-delete">&#128465;</span>
+                </div>
+
+                <div class="design-card" onclick="selectDesign(this)">
+                    <div class="design-thumb" style="background: #e9d8fd; font-size: 18px;">&#128220;</div>
+                    <div class="design-info">
+                        <div class="design-name">撮影禁止</div>
+                        <div class="design-meta">
+                            <span class="design-size-badge">長尺タテ</span>
+                            宗教法人
+                        </div>
+                    </div>
+                    <span class="design-delete">&#128465;</span>
+                </div>
+
+                <div class="design-card" onclick="selectDesign(this)">
+                    <div class="design-thumb" style="background: #c6f6d5; font-size: 18px;">&#128220;</div>
+                    <div class="design-info">
+                        <div class="design-name">参拝順路</div>
+                        <div class="design-meta">
+                            <span class="design-size-badge">長尺ヨコ</span>
+                            宗教法人
+                        </div>
+                    </div>
+                    <span class="design-delete">&#128465;</span>
+                </div>
+            </div>
+
+            <!-- Column 3: Edit -->
+            <div class="col-edit">
+                <div class="col-edit-header">
+                    <span class="title">印刷物編集</span>
+                    <div class="edit-actions">
+                        <button class="btn-save">保存する</button>
+                        <button class="btn-delete-outline">&#128465; 削除</button>
+                    </div>
+                </div>
+                <div class="edit-form">
+                    <div class="edit-breadcrumb">
+                        <span>宗教法人</span>
+                        <span class="sep">/</span>
+                        <span>法語</span>
+                        <span class="sep">/</span>
+                        <span style="color: #2d3748;">立入禁止</span>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">業界情報</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">大分類</label>
+                                <select class="form-select">
+                                    <option>宗教・宗教法人</option>
+                                    <option>教育機関</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">小分類</label>
+                                <select class="form-select">
+                                    <option>（指定なし）</option>
+                                    <option>神社</option>
+                                    <option>寺院</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">グループ</label>
+                                <select class="form-select">
+                                    <option>法語</option>
+                                    <option>サイン</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">印刷物情報</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">印刷物名</label>
+                                <input type="text" class="form-input" value="立入禁止">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">サイズ</label>
+                                <select class="form-select">
+                                    <option>A3</option>
+                                    <option>A4</option>
+                                    <option>長尺タテ</option>
+                                    <option>長尺ヨコ</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">画像</div>
+                        <div class="form-hint" style="margin-bottom: 12px; margin-top: -8px;">※ 最大20MBまで</div>
+                        <div class="upload-area">
+                            <div class="upload-preview has-image">
+                                <div style="width: 100%; height: 100%; background: #fff3f3; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px;">
+                                    <span style="font-size: 64px;">&#9940;</span>
+                                    <span style="font-size: 14px; font-weight: 700; color: #e53e3e;">立入禁止</span>
+                                    <span style="font-size: 10px; color: #a0aec0;">サンプル画像</span>
+                                </div>
+                            </div>
+                            <div class="upload-actions">
+                                <button class="btn-upload">&#128228; 再アップロード</button>
+                                <button class="btn-upload" style="color: #e53e3e; border-color: #feb2b2;">&#128465; 画像を削除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleIndustry(el) {
+    el.classList.toggle('open');
+}
+
+function selectGroup(el, name) {
+    document.querySelectorAll('.tree-group, .tree-group-direct').forEach(g => g.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function selectDesign(el) {
+    document.querySelectorAll('.design-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+}
+</script>
+
+</body>
+</html>
