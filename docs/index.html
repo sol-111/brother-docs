@@ -399,8 +399,8 @@
             <button class="nav-tab" onclick="showPage('design')">デザインテンプレート</button>
             <button class="nav-tab" onclick="showPage('pptx')">パワポDL方式</button>
             <button class="nav-tab" onclick="showPage('dup')">サイズ重複</button>
-            <button class="nav-tab" onclick="showPage('seo')">検索エンジン表示項目</button>
             <button class="nav-tab" onclick="showPage('env')">運用環境</button>
+            <button class="nav-tab" onclick="showPage('seo')">検索エンジン表示項目</button>
         </div>
     </div>
 </nav>
@@ -426,15 +426,15 @@
                 <div class="card-title">1サイズに複数デザインの可能性</div>
                 <div class="card-desc">同じサイズ（例：A3）のデザインを1テンプレート内に複数持てるかどうか</div>
             </div>
-            <div class="home-card card-seo" onclick="showPage('seo')">
-                <div class="card-num">資料 4</div>
-                <div class="card-title">検索エンジンの検索結果に表示される項目</div>
-                <div class="card-desc">Google検索結果に表示される要素と、Bubbleでの設定方法について</div>
-            </div>
             <div class="home-card card-env" onclick="showPage('env')">
-                <div class="card-num">資料 5</div>
+                <div class="card-num">資料 4</div>
                 <div class="card-title">運用環境の選択：本番リリース vs テスト環境運用</div>
                 <div class="card-desc">POC期間中の運用環境について、検索エンジン対策・クライアント名の非表示を踏まえた比較</div>
+            </div>
+            <div class="home-card card-seo" onclick="showPage('seo')">
+                <div class="card-num">資料 5</div>
+                <div class="card-title">検索エンジンの検索結果に表示される項目</div>
+                <div class="card-desc">Google検索結果に表示される要素と、Bubbleでの設定方法について</div>
             </div>
         </div>
     </div>
@@ -1158,7 +1158,7 @@ function showPage(pageId) {
     }
 
     // Activate matching tab
-    const tabMap = { home: 0, design: 1, pptx: 2, dup: 3, seo: 4, env: 5 };
+    const tabMap = { home: 0, design: 1, pptx: 2, dup: 3, env: 4, seo: 5 };
     const tabs = document.querySelectorAll('.nav-tab');
     if (tabs[tabMap[pageId]]) {
         tabs[tabMap[pageId]].classList.add('active');
