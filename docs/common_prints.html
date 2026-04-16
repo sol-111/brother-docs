@@ -339,7 +339,6 @@
                 <div class="modal-image-actions">
                     <div class="modal-image-info">現在の画像</div>
                     <button class="btn-upload" onclick="document.getElementById('edit-file-input').click()">&#128228; 画像を変更</button>
-                    <button class="btn-upload" style="color:#e53e3e;border-color:#feb2b2">&#128465; 画像を削除</button>
                     <input type="file" id="edit-file-input" accept="image/*,.pdf" style="display:none" onchange="handleEditFileSelect(this)">
                     <div id="edit-file-info" style="display:none;"></div>
                 </div>
@@ -381,6 +380,35 @@
         <div class="modal-footer">
             <button class="btn-cancel" onclick="closeAddModal()" style="padding:8px 16px;font-size:13px;font-weight:600;color:#718096;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;">キャンセル</button>
             <button class="btn-save" onclick="addDesign()">追加する</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Modal for Pattern A -->
+<div class="modal-overlay" id="add-modal-a" onclick="if(event.target===this)closeAddModalA()">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>印刷物を追加</h2>
+            <button class="modal-close" onclick="closeAddModalA()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="upload-drop" id="addA-upload-drop" onclick="document.getElementById('addA-file-input').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleAddADrop(event)" style="margin-bottom:16px">
+                <span class="drop-icon">&#128228;</span>
+                <span class="drop-main">クリックまたはドラッグ&ドロップ</span>
+                <span class="drop-sub">PNG / JPG / PDF（最大20MB）</span>
+            </div>
+            <input type="file" id="addA-file-input" accept="image/*,.pdf" style="display:none" onchange="handleAddAFileSelect(this)">
+            <div id="addA-file-preview" style="display:none;margin-bottom:16px;"></div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <div>
+                    <label class="form-label">印刷物名</label>
+                    <input type="text" class="form-input" id="addA-name" placeholder="例: 立入禁止">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeAddModalA()" style="padding:8px 16px;font-size:13px;font-weight:600;color:#718096;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;">キャンセル</button>
+            <button class="btn-save" onclick="addDesignA()">追加する</button>
         </div>
     </div>
 </div>
@@ -448,7 +476,7 @@
             <div class="col-list">
                 <div class="col-list-header">
                     <span class="title">法語（5件）</span>
-                    <button class="btn-add">+ 追加</button>
+                    <button class="btn-add" onclick="openAddModalA()">+ 追加</button>
                 </div>
                 <div class="design-card active" onclick="selectDesign(this)">
                     <div class="design-thumb" style="background:#fef3c7;font-size:18px">&#128220;</div>
@@ -491,18 +519,22 @@
                     </div>
                     <div class="form-section">
                         <div class="form-section-title">印刷物情報</div>
-                        <div class="form-row"><div class="form-group"><label class="form-label">印刷物名</label><input type="text" class="form-input" value="立入禁止"></div><div class="form-group"><label class="form-label">サイズ</label><select class="form-select"><option>A3</option><option>A4</option><option>長尺タテ</option><option>長尺ヨコ</option></select></div></div>
+                        <div class="form-row"><div class="form-group"><label class="form-label">印刷物名</label><input type="text" class="form-input" value="立入禁止"></div></div>
                     </div>
                     <div class="form-section">
                         <div class="form-section-title">画像</div>
                         <div class="form-hint" style="margin-bottom:12px;margin-top:-8px">※ 最大20MBまで</div>
                         <div class="upload-area">
-                            <div class="upload-preview has-image">
-                                <div style="width:100%;height:100%;background:#fff3f3;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
+                            <div class="upload-preview has-image" id="patternA-preview" onclick="document.getElementById('patternA-file-input').click()" style="cursor:pointer">
+                                <div style="width:100%;height:100%;background:#fff3f3;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px" id="patternA-preview-inner">
                                     <span style="font-size:64px">&#9940;</span><span style="font-size:14px;font-weight:700;color:#e53e3e">立入禁止</span><span style="font-size:10px;color:#a0aec0">サンプル画像</span>
                                 </div>
                             </div>
-                            <div class="upload-actions"><button class="btn-upload">&#128228; 再アップロード</button><button class="btn-upload" style="color:#e53e3e;border-color:#feb2b2">&#128465; 画像を削除</button></div>
+                            <div class="upload-actions">
+                                <button class="btn-upload" onclick="document.getElementById('patternA-file-input').click()">&#128228; 再アップロード</button>
+                                <input type="file" id="patternA-file-input" accept="image/*,.pdf" style="display:none" onchange="handlePatternAFile(this)">
+                                <div id="patternA-file-info" style="display:none;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -577,9 +609,9 @@
                     <div class="form-section">
                         <div class="form-section-title">グループ情報</div>
                         <div class="form-row">
-                            <div class="form-group"><label class="form-label">グループ名</label><input type="text" class="form-input" value="法語"></div>
                             <div class="form-group"><label class="form-label">大分類</label><select class="form-select"><option>宗教・宗教法人</option></select></div>
                             <div class="form-group"><label class="form-label">小分類</label><select class="form-select"><option>（指定なし）</option><option>神社</option><option>寺院</option></select></div>
+                            <div class="form-group"><label class="form-label">グループ名</label><select class="form-select"><option>法語</option><option>サイン</option><option>神社サイン</option><option>御朱印案内</option><option>寺院掲示</option></select></div>
                         </div>
                     </div>
 
@@ -801,6 +833,90 @@ function addDesign() {
         '</div>';
     grid.insertBefore(card, addCard);
     closeAddModal();
+}
+
+// Pattern A: Edit - file upload in right column
+function handlePatternAFile(input) {
+    if (!input.files || !input.files[0]) return;
+    var file = input.files[0];
+    var sizeMB = (file.size / 1024 / 1024).toFixed(1);
+    var info = document.getElementById('patternA-file-info');
+    info.innerHTML = '<div style="font-size:12px;color:#3182ce;margin-top:8px;padding:8px 10px;background:#ebf4ff;border-radius:6px">' +
+        '<div style="font-weight:600">' + file.name + '</div>' +
+        '<div style="color:#718096;font-size:11px">' + sizeMB + ' MB</div></div>';
+    info.style.display = '';
+    if (file.type.startsWith('image/')) {
+        var url = URL.createObjectURL(file);
+        var preview = document.getElementById('patternA-preview');
+        preview.innerHTML = '<img src="' + url + '" style="width:100%;height:100%;object-fit:contain;border-radius:10px">';
+    }
+}
+
+// Pattern A: Add modal
+function openAddModalA() {
+    document.getElementById('addA-name').value = '';
+    document.getElementById('addA-file-preview').style.display = 'none';
+    document.getElementById('addA-file-preview').innerHTML = '';
+    document.getElementById('addA-upload-drop').style.display = '';
+    document.getElementById('addA-file-input').value = '';
+    document.getElementById('add-modal-a').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeAddModalA() {
+    document.getElementById('add-modal-a').classList.remove('active');
+    document.body.style.overflow = '';
+}
+function handleAddAFileSelect(input) {
+    if (input.files && input.files[0]) showAddAFilePreview(input.files[0]);
+}
+function handleAddADrop(e) {
+    e.preventDefault();
+    e.target.closest('.upload-drop').classList.remove('dragover');
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) showAddAFilePreview(e.dataTransfer.files[0]);
+}
+function showAddAFilePreview(file) {
+    var preview = document.getElementById('addA-file-preview');
+    var drop = document.getElementById('addA-upload-drop');
+    var nameInput = document.getElementById('addA-name');
+    var sizeMB = (file.size / 1024 / 1024).toFixed(1);
+    var baseName = file.name.replace(/\.[^.]+$/, '');
+    if (!nameInput.value) nameInput.value = baseName;
+    var isImage = file.type.startsWith('image/');
+    var thumbHtml = '<span style="font-size:20px">&#128196;</span>';
+    if (isImage) {
+        var url = URL.createObjectURL(file);
+        thumbHtml = '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover;border-radius:4px">';
+    }
+    preview.innerHTML =
+        '<div class="upload-file-preview">' +
+            '<div class="file-thumb">' + thumbHtml + '</div>' +
+            '<div class="file-info">' +
+                '<div class="file-name">' + file.name + '</div>' +
+                '<div class="file-size">' + sizeMB + ' MB</div>' +
+            '</div>' +
+            '<span class="file-remove" onclick="removeAddAFile()">&#10005;</span>' +
+        '</div>';
+    preview.style.display = '';
+    drop.style.display = 'none';
+}
+function removeAddAFile() {
+    document.getElementById('addA-file-preview').style.display = 'none';
+    document.getElementById('addA-file-preview').innerHTML = '';
+    document.getElementById('addA-upload-drop').style.display = '';
+    document.getElementById('addA-file-input').value = '';
+}
+function addDesignA() {
+    var name = document.getElementById('addA-name').value || '新しい印刷物';
+    var list = document.querySelector('.col-list');
+    var card = document.createElement('div');
+    card.className = 'design-card';
+    card.setAttribute('onclick', 'selectDesign(this)');
+    card.innerHTML =
+        '<div class="design-thumb" style="background:#ebf4ff;font-size:18px">&#128196;</div>' +
+        '<div class="design-info"><div class="design-name">' + name + '</div><div class="design-meta"><span class="design-size-badge">新規</span> 宗教法人</div></div>' +
+        '<span class="design-delete">&#128465;</span>';
+    list.appendChild(card);
+    closeAddModalA();
 }
 </script>
 
