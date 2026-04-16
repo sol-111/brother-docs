@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>デザインテンプレートに関するご確認事項</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 880px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .question-header {
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .question-header.q1 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .question-header.q2 {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .question-number {
+            background: rgba(255,255,255,0.25);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .question-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .question-body {
+            padding: 32px;
+        }
+
+        /* What we want to know */
+        .ask-box {
+            background: #ebf4ff;
+            border-left: 4px solid #4299e1;
+            border-radius: 0 8px 8px 0;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+        }
+
+        .ask-box .label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #2b6cb0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .ask-box p {
+            font-size: 15px;
+            color: #2d3748;
+        }
+
+        /* Explanation section */
+        .explanation {
+            margin-bottom: 24px;
+        }
+
+        .explanation h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #4a5568;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explanation h3 .icon {
+            font-size: 18px;
+        }
+
+        .explanation p {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        /* Visual Example */
+        .visual-example {
+            background: #fafbfc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 28px;
+            margin: 24px 0;
+        }
+
+        .visual-example h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #718096;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Size table */
+        .size-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .size-table thead th {
+            background: #edf2f7;
+            padding: 12px 16px;
+            text-align: center;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 2px solid #cbd5e0;
+        }
+
+        .size-table thead th:first-child {
+            text-align: left;
+            border-radius: 8px 0 0 0;
+        }
+
+        .size-table thead th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .size-table tbody td {
+            padding: 14px 16px;
+            text-align: center;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .size-table tbody td:first-child {
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .size-table tbody tr:last-child td:first-child {
+            border-radius: 0 0 0 8px;
+        }
+
+        .size-table tbody tr:last-child td:last-child {
+            border-radius: 0 0 8px 0;
+        }
+
+        .badge-ok {
+            display: inline-block;
+            background: #c6f6d5;
+            color: #276749;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .badge-none {
+            display: inline-block;
+            background: #fed7d7;
+            color: #9b2c2c;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        /* Mismatch highlight */
+        .mismatch-row td {
+            background: #fffbeb;
+        }
+
+        /* Options section */
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .option-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            transition: border-color 0.2s;
+        }
+
+        .option-card.option-a {
+            border-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .option-card.option-b {
+            border-color: #ed8936;
+            background: #fffaf0;
+        }
+
+        .option-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .option-a .option-label { color: #276749; }
+        .option-b .option-label { color: #9c4221; }
+
+        .option-card h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .option-a h4 { color: #22543d; }
+        .option-b h4 { color: #7b341e; }
+
+        .option-card p {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.7;
+        }
+
+        /* Conditional note */
+        .condition-note {
+            background: #fefcbf;
+            border: 1px solid #ecc94b;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 24px 0 0;
+            font-size: 13px;
+            color: #744210;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .condition-note .note-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* Arrow between Q1 and Q2 */
+        .flow-connector {
+            text-align: center;
+            margin: -8px 0 24px;
+            font-size: 14px;
+            color: #a0aec0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .flow-connector .arrow {
+            font-size: 24px;
+        }
+
+        .flow-connector .flow-text {
+            background: #edf2f7;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        /* Diagram */
+        .diagram {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .template-box {
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 180px;
+            text-align: center;
+        }
+
+        .template-box.spring {
+            background: #fefcbf;
+            border: 2px solid #ecc94b;
+        }
+
+        .template-box.sakura {
+            background: #fed7e2;
+            border: 2px solid #ed64a6;
+        }
+
+        .template-box.nanohana {
+            background: #c6f6d5;
+            border: 2px solid #48bb78;
+        }
+
+        .template-box .tpl-name {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .template-box .tpl-sizes {
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        .template-box .tpl-sizes span {
+            display: inline-block;
+            background: rgba(255,255,255,0.7);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 2px;
+            font-weight: 600;
+        }
+
+        .event-wrapper {
+            background: #ebf8ff;
+            border: 2px dashed #4299e1;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .event-wrapper .event-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin-bottom: 16px;
+        }
+
+        /* Footer */
+        .footer-note {
+            text-align: center;
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 640px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .question-body {
+                padding: 20px;
+            }
+
+            .diagram {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h1>デザインテンプレートに関するご確認事項</h1>
+        <p class="subtitle">開発を進めるにあたり、下記2点についてご方針をお聞かせください</p>
+    </div>
+
+    <!-- ===== QUESTION 1 ===== -->
+    <div class="question-card">
+        <div class="question-header q1">
+            <span class="question-number">質問 1</span>
+            <span class="question-title">サイズ別デザインは全サイズ分つくる必要がありますか？</span>
+        </div>
+        <div class="question-body">
+
+            <div class="ask-box">
+                <div class="label">お聞きしたいこと</div>
+                <p>1つのデザインパターンに対して、<strong>すべてのサイズ（A4・A3・長尺縦・長尺横 など）</strong>のデザインを用意する必要がありますか？<br>それとも、<strong>一部のサイズだけでもOK</strong>でしょうか？</p>
+            </div>
+
+            <div class="explanation">
+                <h3><span class="icon">&#128196;</span> もう少し詳しく言うと…</h3>
+                <p>たとえば「春のデザイン」というデザインテンプレートをつくるとき、以下のどちらになるかを確認させてください。</p>
+            </div>
+
+            <div class="visual-example">
+                <h4>「春のデザイン」テンプレートの場合</h4>
+                <table class="size-table">
+                    <thead>
+                        <tr>
+                            <th>サイズ</th>
+                            <th>全サイズ必須の場合</th>
+                            <th>一部だけでOKの場合</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>A4</td>
+                            <td><span class="badge-ok">&#10003; 必要</span></td>
+                            <td><span class="badge-ok">&#10003; あり</span></td>
+                        </tr>
+                        <tr>
+                            <td>A3</td>
+                            <td><span class="badge-ok">&#10003; 必要</span></td>
+                            <td><span class="badge-ok">&#10003; あり</span></td>
+                        </tr>
+                        <tr>
+                            <td>長尺 タテ</td>
+                            <td><span class="badge-ok">&#10003; 必要</span></td>
+                            <td><span class="badge-none">&#10005; なし</span></td>
+                        </tr>
+                        <tr>
+                            <td>長尺 ヨコ</td>
+                            <td><span class="badge-ok">&#10003; 必要</span></td>
+                            <td><span class="badge-none">&#10005; なし</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="options">
+                <div class="option-card option-a">
+                    <div class="option-label">パターン A</div>
+                    <h4>全サイズ必須</h4>
+                    <p>すべてのデザインテンプレートに対して、対応する全サイズのデザインを必ず登録する運用</p>
+                </div>
+                <div class="option-card option-b">
+                    <div class="option-label">パターン B</div>
+                    <h4>一部サイズだけでもOK</h4>
+                    <p>デザインテンプレートごとに、対応するサイズがバラバラでも問題ない運用</p>
+                </div>
+            </div>
+
+            <div class="condition-note">
+                <span class="note-icon">&#9888;&#65039;</span>
+                <span><strong>パターンBの場合</strong>、次の質問2も合わせてご確認させてください。</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Flow connector -->
+    <div class="flow-connector">
+        <span class="flow-text">パターンBの場合、続けてご確認ください</span>
+        <span class="arrow">&darr;</span>
+    </div>
+
+    <!-- ===== QUESTION 2 ===== -->
+    <div class="question-card">
+        <div class="question-header q2">
+            <span class="question-number">質問 2</span>
+            <span class="question-title">サイズの組み合わせが揃っていない場合、注意を出しますか？</span>
+        </div>
+        <div class="question-body">
+
+            <div class="ask-box">
+                <div class="label">お聞きしたいこと</div>
+                <p>行事テンプレートに<strong>複数のデザインテンプレート（最大3つ）</strong>を設定するとき、<br>それぞれが対応しているサイズが<strong>バラバラだった場合</strong>に注意メッセージを出す必要がありますか？</p>
+            </div>
+
+            <div class="explanation">
+                <h3><span class="icon">&#128209;</span> 前提のおさらい</h3>
+                <p>行事テンプレートを作成する際、<strong>デザインテンプレートを1つ以上、最大3つまで</strong>選んで設定しますね。</p>
+                <p>このとき、選んだデザインテンプレートごとに対応サイズが異なるケースが起こり得ます。</p>
+            </div>
+
+            <div class="visual-example">
+                <h4>具体例：ある行事テンプレートに3つのデザインを設定した場合</h4>
+
+                <div class="event-wrapper">
+                    <div class="event-label">&#127885; 行事テンプレート（例：入学式）</div>
+                    <div class="diagram">
+                        <div class="template-box spring">
+                            <div class="tpl-name">&#127800; 春のデザイン</div>
+                            <div class="tpl-sizes">
+                                <span>A4</span>
+                                <span>A3</span>
+                            </div>
+                        </div>
+                        <div class="template-box sakura">
+                            <div class="tpl-name">&#127800; 桜柄デザイン</div>
+                            <div class="tpl-sizes">
+                                <span>A4</span>
+                                <span>A3</span>
+                                <span>長尺タテ</span>
+                                <span>長尺ヨコ</span>
+                            </div>
+                        </div>
+                        <div class="template-box nanohana">
+                            <div class="tpl-name">&#127804; 菜の花デザイン</div>
+                            <div class="tpl-sizes">
+                                <span>A4</span>
+                                <span>長尺ヨコ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="size-table" style="margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>サイズ</th>
+                            <th>&#127800; 春のデザイン</th>
+                            <th>&#127800; 桜柄デザイン</th>
+                            <th>&#127804; 菜の花デザイン</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>A4</td>
+                            <td><span class="badge-ok">&#10003;</span></td>
+                            <td><span class="badge-ok">&#10003;</span></td>
+                            <td><span class="badge-ok">&#10003;</span></td>
+                        </tr>
+                        <tr class="mismatch-row">
+                            <td>A3</td>
+                            <td><span class="badge-ok">&#10003;</span></td>
+                            <td><span class="badge-ok">&#10003;</span></td>
+                            <td><span class="badge-none">&#10005;</span></td>
+                        </tr>
+                        <tr class="mismatch-row">
+                            <td>長尺 タテ</td>
+                            <td><span class="badge-none">&#10005;</span></td>
+                            <td><span class="badge-ok">&#10003;</span></td>
+                            <td><span class="badge-none">&#10005;</span></td>
+                        </tr>
+                        <tr class="mismatch-row">
+                            <td>長尺 ヨコ</td>
+                            <td><span class="badge-none">&#10005;</span></td>
+                            <td><span class="badge-ok">&#10003;</span></td>
+                            <td><span class="badge-ok">&#10003;</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p style="text-align: center; font-size: 13px; color: #e53e3e; margin-top: 12px; font-weight: 600;">
+                    &#9888; 黄色の行 ＝ デザイン間でサイズ対応が揃っていない箇所
+                </p>
+            </div>
+
+            <div class="explanation" style="margin-top: 28px;">
+                <h3><span class="icon">&#129300;</span> どうするかの選択肢</h3>
+            </div>
+
+            <div class="options">
+                <div class="option-card option-a">
+                    <div class="option-label">パターン A</div>
+                    <h4>注意メッセージを出す</h4>
+                    <p>サイズが揃っていない場合、管理画面上で<strong>「対応サイズが一致していません」</strong>等の注意を表示して、管理者にお知らせする</p>
+                </div>
+                <div class="option-card option-b">
+                    <div class="option-label">パターン B</div>
+                    <h4>特に何もしない</h4>
+                    <p>サイズの不一致はチェックせず、<strong>そのまま登録を許可</strong>する（利用者側で未対応サイズは選べないようにする等の対応のみ）</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer-note">
+        ご不明点がございましたらお気軽にご連絡ください
+    </div>
+
+</div>
+
+</body>
+</html>
