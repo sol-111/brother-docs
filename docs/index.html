@@ -1068,8 +1068,8 @@
                     <p style="font-size: 13px; color: #4a5568;">Settings &gt; SEO / metatags &gt; <strong>「Expose your app to search engines」をOFF</strong>にすると、Googleなどのクローラーにインデックスしないよう指示できます。これだけで大半のケースは防げます。</p>
                 </div>
                 <div style="background: #fff; border: 2px solid #4299e1; border-radius: 12px; padding: 20px;">
-                    <p style="font-weight: 700; font-size: 14px; color: #2b6cb0; margin-bottom: 8px;">2. パスワード保護をかける</p>
-                    <p style="font-size: 13px; color: #4a5568;">アプリ自体にログインが必須の設計のため、<strong>未ログイン状態ではコンテンツが表示されない</strong>構成にすれば、検索エンジンのクローラーは中身を読み取れません。本サービスはアカウント認証必須のため、この条件を満たしています。</p>
+                    <p style="font-weight: 700; font-size: 14px; color: #2b6cb0; margin-bottom: 8px;">2. Basic認証（アプリ全体にパスワードをかける）</p>
+                    <p style="font-size: 13px; color: #4a5568;">Bubbleには<strong>アプリ全体にユーザー名・パスワードをかける「Basic認証」機能</strong>があります（Settings &gt; General &gt; <strong>Application is password-protected</strong>）。<strong>本番環境・テスト環境どちらにも設定可能</strong>です。これを有効にすると、URLにアクセスした時点でブラウザがパスワードを求めるため、検索エンジンのクローラーも中身を一切読み取れません。POC期間中はこれを有効にしておくのが最も確実な対策です。</p>
                 </div>
                 <div style="background: #fff; border: 2px solid #9f7aea; border-radius: 12px; padding: 20px;">
                     <p style="font-weight: 700; font-size: 14px; color: #6b46c1; margin-bottom: 8px;">3. サイト名・タイトルにクライアント名を入れない</p>
