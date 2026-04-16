@@ -136,6 +136,7 @@
         .home-card.card-pptx { border-left-color: #38b2ac; }
         .home-card.card-dup { border-left-color: #9f7aea; }
         .home-card.card-seo { border-left-color: #ed8936; }
+        .home-card.card-env { border-left-color: #e53e3e; }
 
         .home-card .card-num {
             font-size: 11px;
@@ -149,6 +150,7 @@
         .card-pptx .card-num { color: #38b2ac; }
         .card-dup .card-num { color: #9f7aea; }
         .card-seo .card-num { color: #ed8936; }
+        .card-env .card-num { color: #e53e3e; }
 
         .home-card .card-title {
             font-size: 17px;
@@ -398,6 +400,7 @@
             <button class="nav-tab" onclick="showPage('pptx')">パワポDL方式</button>
             <button class="nav-tab" onclick="showPage('dup')">サイズ重複</button>
             <button class="nav-tab" onclick="showPage('seo')">検索エンジン表示項目</button>
+            <button class="nav-tab" onclick="showPage('env')">運用環境</button>
         </div>
     </div>
 </nav>
@@ -427,6 +430,11 @@
                 <div class="card-num">資料 4</div>
                 <div class="card-title">検索エンジンの検索結果に表示される項目</div>
                 <div class="card-desc">Google検索結果に表示される要素と、Bubbleでの設定方法について</div>
+            </div>
+            <div class="home-card card-env" onclick="showPage('env')">
+                <div class="card-num">資料 5</div>
+                <div class="card-title">運用環境の選択：本番リリース vs テスト環境運用</div>
+                <div class="card-desc">POC期間中の運用環境について、検索エンジン対策・クライアント名の非表示を踏まえた比較</div>
             </div>
         </div>
     </div>
@@ -926,6 +934,215 @@
 </div>
 </div>
 
+<!-- ===== PAGE 5: Environment ===== -->
+<div id="page-env" class="page p3">
+<div class="container">
+    <div class="header">
+        <h1>運用環境の選択：本番リリース vs テスト環境運用</h1>
+        <p class="subtitle">POC期間中の運用環境について、検索エンジン対策・クライアント名の非表示を踏まえて比較します</p>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+            <span class="question-number">背景</span>
+            <span class="question-title">4/9 定例会での議論</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">議事録より（2026/4/9）</div>
+                <p>
+                    ・PocレベルではランダムURLで対応可。正式サービス時は独自ドメイン取得を検討。<br>
+                    ・URLやサイト名に<strong>「ブラザー」が含まれる場合のリスク</strong>やサーチエンジン対策について議論。<br>
+                    ・サーチエンジンで検索すると出る項目の確認が宿題事項に。
+                </p>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#128270;</span> 検討すべきポイント</h3>
+                <p>Bubbleには<strong>「本番環境（Live）」</strong>と<strong>「テスト環境（version-test）」</strong>の2つの環境があります。</p>
+                <p>POC期間中にどちらで運用するかによって、<strong>検索エンジンへの露出</strong>や<strong>クライアント名の表示リスク</strong>が変わります。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+            <span class="question-number">解説</span>
+            <span class="question-title">Bubbleの2つの環境とは</span>
+        </div>
+        <div class="question-body">
+            <div class="visual-example">
+                <h4>本番環境とテスト環境の違い</h4>
+                <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                    <div style="flex: 1; min-width: 260px; background: #fff5f5; border: 2px solid #fc8181; border-radius: 12px; padding: 20px;">
+                        <p style="font-weight: 700; font-size: 15px; color: #c53030; margin-bottom: 12px;">本番環境（Live）</p>
+                        <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#128279; <strong>URL：</strong>appname.bubbleapps.io</p>
+                        <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#128274; 独自ドメイン設定が可能</p>
+                        <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#127757; 「Deploy to Live」で反映</p>
+                        <p style="font-size: 13px; color: #4a5568;">&#128176; Growth Plan以上が必要</p>
+                    </div>
+                    <div style="flex: 1; min-width: 260px; background: #f0fff4; border: 2px solid #68d391; border-radius: 12px; padding: 20px;">
+                        <p style="font-weight: 700; font-size: 15px; color: #276749; margin-bottom: 12px;">テスト環境（version-test）</p>
+                        <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#128279; <strong>URL：</strong>appname.bubbleapps.io<strong>/version-test</strong></p>
+                        <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#128274; 独自ドメインは設定不可</p>
+                        <p style="font-size: 13px; color: #4a5568; margin-bottom: 6px;">&#127757; 保存すると即時反映（デプロイ不要）</p>
+                        <p style="font-size: 13px; color: #4a5568;">&#128176; Agency Plan（現在利用中）で利用可能</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="explanation" style="margin-top: 24px;">
+                <h3><span class="icon">&#9888;&#65039;</span> 重要な事実</h3>
+                <p><strong>テスト環境（version-test）でも、URLを知っていれば誰でもアクセスできます。</strong></p>
+                <p>つまり、リリースしなくても検索エンジンに登録される可能性はゼロではありません。ただし、対策方法があります。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+            <span class="question-number">比較</span>
+            <span class="question-title">メリット・デメリット比較表</span>
+        </div>
+        <div class="question-body">
+            <div class="visual-example">
+                <h4>本番環境（Live）で運用する場合</h4>
+                <table class="size-table" style="font-size: 13px;">
+                    <thead><tr><th style="width: 50%;">メリット</th><th style="width: 50%;">デメリット</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: left; font-weight: normal; vertical-align: top;">
+                                ・URLがきれい（/version-test がつかない）<br>
+                                ・独自ドメインを設定できる<br>
+                                ・本番と同じ挙動で検証できる<br>
+                                ・そのまま正式リリースに移行しやすい
+                            </td>
+                            <td style="text-align: left; vertical-align: top;">
+                                ・<strong>検索エンジンに登録されやすい</strong><br>
+                                ・Growth Planの購入が必要（費用増）<br>
+                                ・変更のたびにデプロイ作業が発生<br>
+                                ・URL/サイト名にブラザー名が残るリスク
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="visual-example">
+                <h4>テスト環境（version-test）で運用する場合</h4>
+                <table class="size-table" style="font-size: 13px;">
+                    <thead><tr><th style="width: 50%;">メリット</th><th style="width: 50%;">デメリット</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: left; font-weight: normal; vertical-align: top;">
+                                ・<strong>検索エンジンに登録されにくい</strong>（後述の対策でほぼ防止可能）<br>
+                                ・追加のプラン購入が不要（現行プランで対応可能）<br>
+                                ・保存＝即反映でデプロイ不要、開発効率が高い<br>
+                                ・POCとして十分な検証が可能
+                            </td>
+                            <td style="text-align: left; vertical-align: top;">
+                                ・URLに「/version-test」がつく<br>
+                                ・独自ドメインが使えない<br>
+                                ・正式リリース時に環境移行が必要<br>
+                                ・URLが bubbleapps.io サブドメインになる
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+            <span class="question-number">対策</span>
+            <span class="question-title">検索エンジンに載せないための方法</span>
+        </div>
+        <div class="question-body">
+            <div class="explanation">
+                <h3><span class="icon">&#128737;&#65039;</span> どちらの環境でも実施可能な対策</h3>
+                <p>以下の対策を組み合わせることで、<strong>どちらの環境でも検索エンジンへの露出をほぼ防ぐ</strong>ことができます。</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 16px; margin: 20px 0;">
+                <div style="background: #fff; border: 2px solid #48bb78; border-radius: 12px; padding: 20px;">
+                    <p style="font-weight: 700; font-size: 14px; color: #276749; margin-bottom: 8px;">1. Bubbleの標準設定で「検索エンジンから非表示」にする</p>
+                    <p style="font-size: 13px; color: #4a5568;">Settings &gt; SEO / metatags &gt; <strong>「Expose your app to search engines」をOFF</strong>にすると、Googleなどのクローラーにインデックスしないよう指示できます。これだけで大半のケースは防げます。</p>
+                </div>
+                <div style="background: #fff; border: 2px solid #4299e1; border-radius: 12px; padding: 20px;">
+                    <p style="font-weight: 700; font-size: 14px; color: #2b6cb0; margin-bottom: 8px;">2. パスワード保護をかける</p>
+                    <p style="font-size: 13px; color: #4a5568;">アプリ自体にログインが必須の設計のため、<strong>未ログイン状態ではコンテンツが表示されない</strong>構成にすれば、検索エンジンのクローラーは中身を読み取れません。本サービスはアカウント認証必須のため、この条件を満たしています。</p>
+                </div>
+                <div style="background: #fff; border: 2px solid #9f7aea; border-radius: 12px; padding: 20px;">
+                    <p style="font-weight: 700; font-size: 14px; color: #6b46c1; margin-bottom: 8px;">3. サイト名・タイトルにクライアント名を入れない</p>
+                    <p style="font-size: 13px; color: #4a5568;">Bubbleの Application title や Page title に<strong>「ブラザー」等のクライアント名を含めない</strong>ことで、万が一インデックスされても社名が検索結果に表示されるリスクを回避できます。</p>
+                </div>
+                <div style="background: #fff; border: 2px solid #ed8936; border-radius: 12px; padding: 20px;">
+                    <p style="font-weight: 700; font-size: 14px; color: #9c4221; margin-bottom: 8px;">4. アプリ名（URL）にもクライアント名を使わない</p>
+                    <p style="font-size: 13px; color: #4a5568;">Bubbleのアプリ名がそのままURLのサブドメインになります（例：<strong>brother-design</strong>.bubbleapps.io）。アプリ名にもクライアント名を含めないランダムまたは汎用的な名前にすることを推奨します。</p>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <span class="note-icon">&#128161;</span>
+                <span><strong>つまり：</strong>上記の対策をすれば、<strong>リリースしてもしなくても検索エンジンに載ることはほぼ防げます</strong>。テスト環境ならさらに安全です。</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-card">
+        <div class="question-header" style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+            <span class="question-number">提案</span>
+            <span class="question-title">弊社からの推奨</span>
+        </div>
+        <div class="question-body">
+            <div style="background: linear-gradient(135deg, #276749, #2f855a); border-radius: 16px; padding: 32px; color: #fff; margin-bottom: 24px;">
+                <h4 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">POC期間中は「テスト環境（version-test）」での運用を推奨します</h4>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px 16px; font-size: 14px;">
+                        <strong>理由 1：</strong>検索エンジンに載るリスクが最も低い。version-test はクローラーが巡回しにくく、noindex設定と合わせればほぼ確実に防止できる。
+                    </div>
+                    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px 16px; font-size: 14px;">
+                        <strong>理由 2：</strong>追加のプラン購入（Growth Plan）が不要。現在のAgency Planのまま運用でき、コストを抑えられる。
+                    </div>
+                    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px 16px; font-size: 14px;">
+                        <strong>理由 3：</strong>デプロイ作業が不要。修正・改善が即座に反映され、POCのスピード感を維持できる。
+                    </div>
+                    <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 12px 16px; font-size: 14px;">
+                        <strong>理由 4：</strong>URLに「/version-test」がつく点は、POCの検証目的であれば問題にならない。正式リリース時に本番環境＋独自ドメインへ移行すればよい。
+                    </div>
+                </div>
+            </div>
+
+            <div class="visual-example">
+                <h4>正式リリースまでのステップ（想定）</h4>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+                    <div class="dl-box" style="background: #f0fff4; border: 2px solid #48bb78; min-width: 180px;">
+                        <div class="dl-title" style="color: #276749;">STEP 1</div>
+                        <div class="dl-desc">POC期間<br>version-test で運用</div>
+                    </div>
+                    <span class="dl-arrow">&#8594;</span>
+                    <div class="dl-box" style="background: #ebf8ff; border: 2px solid #4299e1; min-width: 180px;">
+                        <div class="dl-title" style="color: #2b6cb0;">STEP 2</div>
+                        <div class="dl-desc">POC評価完了<br>Growth Plan購入</div>
+                    </div>
+                    <span class="dl-arrow">&#8594;</span>
+                    <div class="dl-box" style="background: #fefcbf; border: 2px solid #ecc94b; min-width: 180px;">
+                        <div class="dl-title" style="color: #975a16;">STEP 3</div>
+                        <div class="dl-desc">独自ドメイン設定<br>Deploy to Live</div>
+                    </div>
+                    <span class="dl-arrow">&#8594;</span>
+                    <div class="dl-box" style="background: #fed7e2; border: 2px solid #ed64a6; min-width: 180px;">
+                        <div class="dl-title" style="color: #97266d;">STEP 4</div>
+                        <div class="dl-desc">正式サービス開始<br>SEO設定をON</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">ご不明点がございましたらお気軽にご連絡ください</div>
+</div>
+</div>
+
 <!-- ===== SPA Router ===== -->
 <script>
 function showPage(pageId) {
@@ -942,7 +1159,7 @@ function showPage(pageId) {
     }
 
     // Activate matching tab
-    const tabMap = { home: 0, design: 1, pptx: 2, dup: 3, seo: 4 };
+    const tabMap = { home: 0, design: 1, pptx: 2, dup: 3, seo: 4, env: 5 };
     const tabs = document.querySelectorAll('.nav-tab');
     if (tabs[tabMap[pageId]]) {
         tabs[tabMap[pageId]].classList.add('active');
