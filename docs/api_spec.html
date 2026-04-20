@@ -1429,9 +1429,10 @@ sequenceDiagram
             <div class="detail-section" style="margin-top:12px;">
               <div class="detail-label">リクエストパラメータ（想定）</div>
               <div class="detail-fields">
-                <span class="field-chip">category</span>
+                <span class="field-chip">category=???</span>
                 <span class="field-chip highlight">size（追加必要）</span>
               </div>
+              <p style="font-size:.8rem; color:var(--amber-600, #d97706); margin-top:8px;">※ 共通印刷物は <code>category=common</code>。行事側のcategory値はBrother側に要確認</p>
             </div>
             <div class="detail-section" style="margin-top:12px;">
               <div class="detail-label">レスポンス</div>
@@ -1651,44 +1652,6 @@ sequenceDiagram
                 <li>並列不可の場合、一括生成API（<code>POST /generated-images/batch</code> 等）を用意できるか？</li>
               </ul>
             </div>
-          </div>
-        </div>
-
-        <!-- 生成パターン -->
-        <div style="margin-top:20px; padding:20px; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius); box-shadow:var(--shadow);">
-          <h3 style="font-size:1rem; font-weight:600; color:var(--gray-700); margin-bottom:4px;">生成パターン（要検討）</h3>
-          <p style="font-size:.8rem; color:var(--gray-500); margin-bottom:16px;">前提: 非同期APIを並列で走らせられる / サイズは7サイズ / デザインテンプレートは最大3つ（1つ必須、2つ任意）</p>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-            <!-- パターン1 -->
-            <div style="padding:16px; background:var(--blue-bg); border-radius:var(--radius); border:1px solid #93c5fd;">
-              <h4 style="font-size:.9rem; font-weight:700; color:var(--blue); margin-bottom:10px;">パターン1: サイズタブごとに生成</h4>
-              <table class="field-table" style="margin:0;">
-                <tbody>
-                  <tr><td style="font-weight:600; width:40%;">トリガー</td><td>ユーザーがサイズタブ（A3等）で「生成」押下</td></tr>
-                  <tr><td style="font-weight:600;">API呼び出し</td><td><strong>3回</strong>（デザイン1,2,3）を並列</td></tr>
-                  <tr><td style="font-weight:600; color:var(--green);">メリット</td><td>API負荷が軽い（1回あたり最大3リクエスト）</td></tr>
-                  <tr><td style="font-weight:600; color:var(--red);">デメリット</td><td>ユーザーがサイズごとに生成ボタンを押す必要あり</td></tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- パターン2 -->
-            <div style="padding:16px; background:var(--primary-bg); border-radius:var(--radius); border:1px solid var(--primary-light);">
-              <h4 style="font-size:.9rem; font-weight:700; color:var(--primary); margin-bottom:10px;">パターン2: 全サイズ一括生成</h4>
-              <table class="field-table" style="margin:0;">
-                <tbody>
-                  <tr><td style="font-weight:600; width:40%;">トリガー</td><td>ユーザーが「生成」1回押下</td></tr>
-                  <tr><td style="font-weight:600;">API呼び出し</td><td><strong>最低7回</strong>（1デザイン×7サイズ）〜<strong>最大21回</strong>（3デザイン×7サイズ）を並列</td></tr>
-                  <tr><td style="font-weight:600; color:var(--green);">メリット</td><td>ユーザー体験が良い（1回押すだけ）</td></tr>
-                  <tr><td style="font-weight:600; color:var(--red);">デメリット</td><td>最大21回の並列リクエスト。Brother側のレート制限次第</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div style="margin-top:12px; padding:10px 14px; background:var(--amber-bg); border-radius:6px;">
-            <p style="font-size:.8rem; color:#b45309; font-weight:600; margin:0;">→ どちらのパターンにするか、Brother側のレート制限を踏まえて要検討</p>
           </div>
         </div>
 
