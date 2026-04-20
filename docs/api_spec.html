@@ -742,6 +742,44 @@
     margin-bottom: 2px;
   }
 
+  /* Flow accordion */
+  .flow-accordion { margin-bottom: 16px; }
+  .flow-accordion-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px;
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    user-select: none;
+    transition: all .2s;
+  }
+  .flow-accordion-header:hover { background: var(--gray-50); }
+  .flow-accordion.open .flow-accordion-header {
+    border-radius: var(--radius) var(--radius) 0 0;
+    border-bottom: none;
+  }
+  .flow-accordion-toggle {
+    margin-left: auto;
+    color: var(--gray-300);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .flow-accordion.open .flow-accordion-toggle { transform: rotate(180deg); }
+  .flow-accordion-body {
+    display: none;
+    border: 1px solid var(--gray-200);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    background: #fff;
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+  }
+  .flow-accordion.open .flow-accordion-body { display: block; }
+
   /* Responsive */
   @media (max-width: 768px) {
     .db-grid { grid-template-columns: 1fr; }
@@ -769,7 +807,8 @@
     <div class="nav-tab" data-tab="api">APIエンドポイント</div>
     <div class="nav-tab" data-tab="seq1">シーケンス: 原稿一覧・詳細</div>
     <div class="nav-tab" data-tab="seq2">シーケンス: AI画像生成</div>
-    <div class="nav-tab" data-tab="confirm">確認事項</div>
+    <div class="nav-tab" data-tab="flow">原稿登録〜ダウンロード</div>
+    <div class="nav-tab" data-tab="common">共通印刷物</div>
   </div>
 </nav>
 
@@ -777,121 +816,76 @@
 <div class="section active" id="overview">
   <div class="container">
     <h2 class="section-title">システム概要</h2>
-    <p class="section-desc">元原稿画像をベースに、生成AIでテキスト差し替え画像を作成するシステム</p>
+    <p class="section-desc">ブラザーが用意した背景画像に、行事情報のテキストをAIで配置して印刷物を生成するシステム</p>
 
-    <div class="arch-diagram">
-      <svg class="arch-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif">
-        <defs>
-          <marker id="ah" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#9ca3af"/></marker>
-          <marker id="ah-l" markerWidth="7" markerHeight="5" refX="0" refY="2.5" orient="auto"><path d="M7,0 L0,2.5 L7,5" fill="#9ca3af"/></marker>
-          <filter id="ds" x="-2%" y="-2%" width="104%" height="108%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity=".07"/></filter>
-        </defs>
+    <!-- 2つの機能 -->
+    <div class="db-grid" style="margin-bottom:28px;">
+      <div class="card" style="border-left:4px solid var(--primary);">
+        <div class="card-header"><h3>行事原稿</h3></div>
+        <div class="card-body">
+          <p style="font-size:.85rem; color:var(--gray-700); line-height:1.8;">
+            管理者がデザインテンプレート × 行事テンプレートを準備。<br>
+            ユーザーが行事情報を入力し、<strong>AIで背景画像にテキストを配置した原稿を生成</strong>。<br>
+            3デザイン × 4サイズで展開。評価後にダウンロード。
+          </p>
+        </div>
+      </div>
+      <div class="card" style="border-left:4px solid #b45309;">
+        <div class="card-header"><h3>共通印刷物</h3></div>
+        <div class="card-body">
+          <p style="font-size:.85rem; color:var(--gray-700); line-height:1.8;">
+            管理者が業界別にグループを作り、印刷物画像を登録。<br>
+            <strong>AI生成なし</strong>。ブラザーが用意した完成画像をそのまま配布。<br>
+            ユーザーはダウンロードするだけ。
+          </p>
+        </div>
+      </div>
+    </div>
 
-        <!-- ブラザー側囲み -->
-        <rect x="318" y="10" width="572" height="600" rx="14" fill="#f8f9ff" stroke="#c7d2fe" stroke-width="1.5" stroke-dasharray="6,4"/>
-        <text x="604" y="34" text-anchor="middle" font-size="11" font-weight="600" fill="#818cf8">ブラザー側で管理</text>
+    <!-- 管理分担 -->
+    <div style="background:#fff; border-radius:var(--radius); border:1px solid var(--gray-200); box-shadow:var(--shadow); padding:24px; margin-bottom:28px;">
+      <h3 style="font-size:1rem; font-weight:600; color:var(--gray-700); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--gray-100);">管理分担</h3>
+      <table class="field-table">
+        <thead><tr><th></th><th>Bubble側</th><th>Brother側</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:600;">管理するもの</td>
+            <td>デザインテンプレート（メタ情報）<br>行事テンプレート<br>行事データ<br>評価データ<br>共通印刷物グループ</td>
+            <td>背景画像（Source Image DB）<br>生成画像（Generated Image DB）<br>Generative AI<br>File Storage</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">画像の保存</td>
+            <td style="color:var(--red); font-weight:600;">保存しない<br><span style="font-weight:400; color:var(--gray-500);">sourceImageId / imageUrl をDBに保持するだけ</span></td>
+            <td style="color:var(--green); font-weight:600;">全画像をFile Storageで管理</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">APIを呼ぶタイミング</td>
+            <td colspan="2">
+              <span class="field-name" style="font-size:.8rem;">GET /source-images</span> テンプレート登録時の画像選択<br>
+              <span class="field-name" style="font-size:.8rem;">POST /generated-images</span> 原稿生成時<br>
+              <span class="field-name" style="font-size:.8rem;">POST /{id}/regenerate</span> 再生成時<br>
+              <span class="field-name" style="font-size:.8rem;">DELETE /{id}</span> 生成画像削除時
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <!-- ===== ユーザ ===== -->
-        <rect x="16" y="254" width="120" height="52" rx="10" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1.5" filter="url(#ds)"/>
-        <text x="76" y="277" text-anchor="middle" font-size="13" font-weight="600" fill="#374151">ユーザ</text>
-        <text x="76" y="294" text-anchor="middle" font-size="9.5" fill="#9ca3af">ブラウザで操作</text>
-
-        <!-- ユーザ → Frontend -->
-        <line x1="136" y1="280" x2="170" y2="280" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#ah)"/>
-
-        <!-- ===== Frontend ===== -->
-        <rect x="178" y="254" width="120" height="52" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5" filter="url(#ds)"/>
-        <text x="238" y="277" text-anchor="middle" font-size="13" font-weight="600" fill="#3b82f6">Frontend</text>
-        <text x="238" y="294" text-anchor="middle" font-size="9.5" fill="#9ca3af">Bubble（画面）</text>
-
-        <!-- 注釈 -->
-        <rect x="164" y="324" width="148" height="30" rx="6" fill="#fefce8" stroke="#fde68a" stroke-width="1"/>
-        <text x="238" y="338" text-anchor="middle" font-size="8.5" fill="#a16207">Bubbleには画像を保存しない</text>
-        <text x="238" y="348" text-anchor="middle" font-size="8.5" font-weight="600" fill="#a16207">APIで取得・表示するだけ</text>
-
-        <!-- Frontend ⇄ Backend -->
-        <line x1="298" y1="272" x2="346" y2="272" stroke="#6366f1" stroke-width="1.5" marker-end="url(#ah)"/>
-        <text x="322" y="266" text-anchor="middle" font-size="8" fill="#6366f1">リクエスト</text>
-        <line x1="346" y1="290" x2="298" y2="290" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ah-l)"/>
-        <text x="322" y="304" text-anchor="middle" font-size="8" fill="#9ca3af">画像URL等</text>
-
-        <!-- ===== Backend API ===== -->
-        <rect x="354" y="236" width="136" height="88" rx="10" fill="#eef2ff" stroke="#818cf8" stroke-width="2" filter="url(#ds)"/>
-        <text x="422" y="270" text-anchor="middle" font-size="14" font-weight="700" fill="#6366f1">Backend API</text>
-        <text x="422" y="288" text-anchor="middle" font-size="9.5" fill="#6b7280">ブラザー側サーバー</text>
-        <text x="422" y="302" text-anchor="middle" font-size="9.5" fill="#6b7280">全体の処理を制御</text>
-
-        <!-- ================================================================ -->
-        <!-- 1. Source Image DB                                               -->
-        <!-- ================================================================ -->
-        <rect x="610" y="52" width="260" height="52" rx="9" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1.5" filter="url(#ds)"/>
-        <text x="740" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#10b981">Source Image DB</text>
-        <text x="740" y="90" text-anchor="middle" font-size="9" fill="#6b7280">元原稿の情報 &#160;<tspan fill="#3b82f6" font-weight="600">Read Only</tspan></text>
-
-        <!-- 行き -->
-        <path d="M490,252 L530,252 L530,70 L602,70" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#ah)" stroke-linejoin="round"/>
-        <rect x="536" y="56" width="58" height="16" rx="4" fill="#ecfdf5"/>
-        <text x="565" y="68" text-anchor="middle" font-size="8" fill="#10b981" font-weight="600">検索</text>
-        <!-- 戻り -->
-        <path d="M610,86 L546,86 L546,262 L490,262" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#ah-l)" stroke-dasharray="4,3" stroke-linejoin="round"/>
-        <rect x="536" y="78" width="58" height="16" rx="4" fill="#ecfdf5"/>
-        <text x="565" y="90" text-anchor="middle" font-size="8" fill="#10b981">メタ情報</text>
-
-        <!-- ================================================================ -->
-        <!-- 2. Generated Image DB                                            -->
-        <!-- ================================================================ -->
-        <rect x="610" y="164" width="260" height="52" rx="9" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1.5" filter="url(#ds)"/>
-        <text x="740" y="185" text-anchor="middle" font-size="11.5" font-weight="600" fill="#10b981">Generated Image DB</text>
-        <text x="740" y="202" text-anchor="middle" font-size="9" fill="#6b7280">生成画像の情報 &#160;<tspan fill="#10b981" font-weight="600">CRUD</tspan></text>
-
-        <!-- 行き -->
-        <path d="M490,272 L560,272 L560,182 L602,182" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#ah)" stroke-linejoin="round"/>
-        <rect x="566" y="168" width="30" height="16" rx="4" fill="#ecfdf5"/>
-        <text x="581" y="180" text-anchor="middle" font-size="8" fill="#10b981" font-weight="600">保存</text>
-        <!-- 戻り -->
-        <path d="M610,198 L574,198 L574,282 L490,282" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#ah-l)" stroke-dasharray="4,3" stroke-linejoin="round"/>
-        <rect x="536" y="190" width="58" height="16" rx="4" fill="#ecfdf5"/>
-        <text x="565" y="202" text-anchor="middle" font-size="8" fill="#10b981">ID / status</text>
-
-        <!-- ================================================================ -->
-        <!-- 3. Generative AI                                                 -->
-        <!-- ================================================================ -->
-        <rect x="610" y="296" width="260" height="52" rx="9" fill="#faf5ff" stroke="#c084fc" stroke-width="1.5" filter="url(#ds)"/>
-        <text x="740" y="317" text-anchor="middle" font-size="12" font-weight="600" fill="#9333ea">Generative AI</text>
-        <text x="740" y="334" text-anchor="middle" font-size="9" fill="#6b7280">テキスト差替え画像を生成</text>
-
-        <!-- 行き -->
-        <path d="M490,296 L540,296 L540,314 L602,314" stroke="#9333ea" stroke-width="1.5" fill="none" marker-end="url(#ah)" stroke-linejoin="round"/>
-        <rect x="536" y="300" width="58" height="16" rx="4" fill="#faf5ff"/>
-        <text x="565" y="312" text-anchor="middle" font-size="8" fill="#9333ea" font-weight="600">元画像+テキスト</text>
-        <!-- 戻り -->
-        <path d="M610,330 L554,330 L554,306 L490,306" stroke="#9333ea" stroke-width="1.5" fill="none" marker-end="url(#ah-l)" stroke-dasharray="4,3" stroke-linejoin="round"/>
-        <rect x="536" y="322" width="58" height="16" rx="4" fill="#faf5ff"/>
-        <text x="565" y="334" text-anchor="middle" font-size="8" fill="#9333ea">生成画像</text>
-
-        <!-- ================================================================ -->
-        <!-- 4. File Storage                                                  -->
-        <!-- ================================================================ -->
-        <rect x="610" y="418" width="260" height="52" rx="9" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5" filter="url(#ds)"/>
-        <text x="740" y="439" text-anchor="middle" font-size="12" font-weight="600" fill="#b45309">File Storage</text>
-        <text x="740" y="456" text-anchor="middle" font-size="9" fill="#6b7280">画像ファイルの保管場所</text>
-
-        <!-- 行き -->
-        <path d="M490,316 L520,316 L520,436 L602,436" stroke="#b45309" stroke-width="1.5" fill="none" marker-end="url(#ah)" stroke-linejoin="round"/>
-        <rect x="558" y="428" width="36" height="16" rx="4" fill="#fffbeb"/>
-        <text x="576" y="440" text-anchor="middle" font-size="8" fill="#b45309" font-weight="600">保存</text>
-        <!-- 戻り -->
-        <path d="M610,452 L534,452 L534,324 L490,324" stroke="#b45309" stroke-width="1.5" fill="none" marker-end="url(#ah-l)" stroke-dasharray="4,3" stroke-linejoin="round"/>
-        <rect x="548" y="444" width="54" height="16" rx="4" fill="#fffbeb"/>
-        <text x="575" y="456" text-anchor="middle" font-size="8" fill="#b45309">画像URL</text>
-
-        <!-- 凡例 -->
-        <rect x="610" y="510" width="260" height="56" rx="8" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
-        <line x1="630" y1="528" x2="656" y2="528" stroke="#6366f1" stroke-width="1.5"/>
-        <text x="664" y="532" font-size="9" fill="#6b7280">実線 = リクエスト（送る）</text>
-        <line x1="630" y1="548" x2="656" y2="548" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <text x="664" y="552" font-size="9" fill="#6b7280">点線 = レスポンス（返る）</text>
-      </svg>
+    <!-- 全体フロー概要 -->
+    <div style="background:#fff; border-radius:var(--radius); border:1px solid var(--gray-200); box-shadow:var(--shadow); padding:24px;">
+      <h3 style="font-size:1rem; font-weight:600; color:var(--gray-700); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--gray-100);">行事原稿の全体フロー</h3>
+      <table class="field-table">
+        <thead><tr><th>STEP</th><th>やること</th><th>誰が</th><th>API</th></tr></thead>
+        <tbody>
+          <tr><td><strong>0</strong></td><td>背景画像をSource Image DBに登録</td><td>Brother</td><td>-</td></tr>
+          <tr><td><strong>1</strong></td><td>デザインテンプレート登録（画像選択 + メタ情報）</td><td>管理者</td><td>GET /source-images</td></tr>
+          <tr><td><strong>2</strong></td><td>行事テンプレート作成（業界×デザイン紐付け）</td><td>管理者</td><td style="color:var(--gray-400);">なし</td></tr>
+          <tr><td><strong>3</strong></td><td>行事を新規作成（テキスト入力）</td><td>ユーザー</td><td style="color:var(--gray-400);">なし</td></tr>
+          <tr><td><strong>4</strong></td><td>原稿を生成（AI生成）</td><td>ユーザー</td><td>POST /generated-images</td></tr>
+          <tr><td><strong>5</strong></td><td>評価・ダウンロード</td><td>ユーザー</td><td style="color:var(--gray-400);">なし（理想）</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.8rem; color:var(--gray-500); margin-top:12px;">詳細は「原稿登録〜ダウンロード」タブ参照</p>
     </div>
 
   </div>
@@ -1521,343 +1515,678 @@ sequenceDiagram
   </div>
 </div>
 
-<!-- ==================== 確認事項 ==================== -->
-<div class="section" id="confirm">
+
+<!-- ==================== 原稿登録〜ダウンロード ==================== -->
+<div class="section" id="flow">
   <div class="container">
-    <h2 class="section-title">確認事項</h2>
-    <p class="section-desc">04/17 共有のAPI仕様を確認した上で、ブラザー様に確認したい事項（04/20 作成）</p>
+    <h2 class="section-title">原稿登録〜ダウンロードの全体フロー</h2>
+    <p class="section-desc">管理者のテンプレート登録から、ユーザーの画像生成・ダウンロードまでの一連の流れ（整理中）</p>
 
-    <!-- A. データの保存先・アップロード -->
-    <div class="conf-group">
-      <div class="conf-group-header">
-        <span class="conf-group-id high">A</span>
-        <span class="conf-group-title">データの保存先・アップロード</span>
-        <span class="conf-group-priority priority-high">最優先</span>
+    <!-- ステップ0 -->
+    <div class="flow-accordion">
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+        <span class="phase-num">0</span>
+        <span style="font-weight:700; color:var(--gray-900);">ブラザー側がSource Image DBに画像を登録する</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">Brother</span>
+        <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">A-1. 元原稿データのアップロード手段が未定義</div>
-        <div class="conf-item-body">
-          API仕様上、Source Image DB（DB1）はFrontendから <strong>Read Only</strong> で、取得系APIしか存在しません。<br>
-          <code>GET /source-images</code>（一覧）と <code>GET /source-images/{sourceImageId}</code>（詳細）のみ。<br><br>
-          一方、Bubble側には「デザインテンプレート・共通印刷物の原稿デザインデータをアップロードする画面」が存在します。（宮田さん 04/17 メールで言及）
-        </div>
-        <ul class="conf-questions">
-          <li>元原稿データの登録は<strong>ブラザー側が管理者として直接DBに投入する想定</strong>か？</li>
-          <li>それとも <strong>Bubble側からアップロードするAPI</strong>が今後追加される予定か？（例: <code>POST /source-images</code>）</li>
-          <li>デフォルトの原稿データは<strong>ブラザー側サーバーに保存し、BubbleからはAPIで取得するだけ</strong>、という認識で合っているか？</li>
+      <div class="flow-accordion-body">
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">Brother</div>
+              <div class="step-text">ブラザー側が事前に<strong>元原稿画像をSource Image DBに登録</strong>する。Frontendからは Read Only。</div>
+            </div>
+          </li>
         </ul>
-        <div class="conf-context">Bubble側のアップロード画面を残すべきか、削除してAPI経由の表示だけにすべきかの判断に直結します。</div>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">A-2. Bubble側にデータを保存する必要があるケースの有無</div>
-        <div class="conf-item-body">
-          API仕様では画像・生成データはすべてBrother側に保存される設計です。
-        </div>
-        <ul class="conf-questions">
-          <li>Bubble側のDBには<strong>何も保存しなくてよいか？</strong>（キャッシュ・一時保存も不要？）</li>
-          <li>ユーザーのお気に入り・閲覧履歴など、<strong>Bubble側で独自に管理すべきデータ</strong>はあるか？</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- B. 非同期処理の完了通知方式 -->
-    <div class="conf-group">
-      <div class="conf-group-header">
-        <span class="conf-group-id high">B</span>
-        <span class="conf-group-title">非同期処理の完了通知方式</span>
-        <span class="conf-group-priority priority-high">最優先</span>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">B-1. 生成完了をFrontendにどう伝えるか</div>
-        <div class="conf-item-body">
-          シーケンス図では以下の流れが描かれています:<br><br>
-          <code>POST /generated-images</code> &rarr; <code>status=RUNNING</code> を即時返却<br>
-          &nbsp;&nbsp;&darr;（バックグラウンド処理）<br>
-          API &rarr; FE: <code>generatedImageId, status=COMPLETED</code><br><br>
-          この <strong>「API &rarr; FE: status=COMPLETED」の通知方法が不明</strong>です。
-        </div>
-        <ul class="conf-questions">
-          <li><strong>Webhook方式</strong>: 生成完了時にBubble側のURLに通知を送ってもらう形か？</li>
-          <li><strong>ポーリング方式</strong>: Bubble側が定期的に <code>GET /generated-images/{id}</code> でステータスを確認する形か？</li>
-          <li>その他の方式（WebSocket、Server-Sent Events 等）を想定しているか？</li>
-        </ul>
-        <div class="conf-context">Bubble側としてはWebhook方式が望ましいです。ポーリングの場合は推奨間隔も知りたいです。Bubble側の実装パターンが根本的に変わるため、最優先で確定したい事項です。</div>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">B-2. 生成にかかる想定時間</div>
-        <ul class="conf-questions">
-          <li>1回の画像生成の<strong>想定所要時間</strong>は？（数秒 / 数十秒 / 数分）</li>
-          <li>タイムアウトを設定する場合の推奨値は？</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- C. API仕様の詳細 -->
-    <div class="conf-group">
-      <div class="conf-group-header">
-        <span class="conf-group-id mid">C</span>
-        <span class="conf-group-title">API仕様の詳細</span>
-        <span class="conf-group-priority priority-mid">高</span>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">C-1. ステータス値の一覧</div>
-        <div class="conf-item-body">
-          シーケンス図から読み取れるステータス: <code>PENDING</code> / <code>RUNNING</code> / <code>COMPLETED</code>
-        </div>
-        <ul class="conf-questions">
-          <li>上記以外のステータスはあるか？（例: <code>FAILED</code>, <code>CANCELLED</code>, <code>EXPIRED</code> 等）</li>
-          <li><code>PENDING</code> と <code>RUNNING</code> の違い・使い分けは？</li>
-          <li>削除時のステータスは？（論理削除 <code>DELETED</code> ？ 物理削除？）</li>
-        </ul>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">C-2. originalText フィールドの意味</div>
-        <div class="conf-item-body">
-          <code>POST /generated-images</code> のリクエストに <code>originalText</code> と <code>replaceText</code> があります。
-        </div>
-        <ul class="conf-questions">
-          <li><code>originalText</code> = 元原稿画像内の差し替え対象テキスト、という理解で合っているか？</li>
-          <li>ユーザーが手動で入力するのか？元原稿のメタデータとしてAPI側が保持しているのか？</li>
-          <li>複数箇所のテキスト差し替えには対応するか？（配列で渡す等）</li>
-        </ul>
-        <div class="conf-context">入力画面のUI設計に直結します。ユーザーに「元テキスト」を手入力させるのか、選択させるのかで画面が変わります。</div>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">C-3. 一覧APIのページネーション・フィルタ</div>
-        <div class="conf-item-body">
-          <code>GET /source-images</code> と <code>GET /generated-images</code> について。
-        </div>
-        <ul class="conf-questions">
-          <li>ページネーションは対応しているか？（offset/limit、cursor方式 等）</li>
-          <li>ソート順の指定は可能か？（作成日時順、名前順 等）</li>
-          <li>フィルタリングパラメータは？（categoryでの絞り込み等）</li>
-          <li>1リクエストあたりの最大件数は？</li>
-        </ul>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">C-4. 再生成と元データの関係</div>
-        <div class="conf-item-body">
-          <code>POST /generated-images/{generatedImageId}/regenerate</code> について。
-        </div>
-        <ul class="conf-questions">
-          <li>再生成時、元の <code>generatedImageId</code> のレコードはどうなるか？（残る？上書き？）</li>
-          <li><code>parentGeneratedImageId</code> を辿って再生成の履歴を追えるか？</li>
-          <li>再生成の回数制限はあるか？</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- D. 継続確認事項 -->
-    <div class="conf-group">
-      <div class="conf-group-header">
-        <span class="conf-group-id mid">D</span>
-        <span class="conf-group-title">継続確認事項（04/16から未解決）</span>
-        <span class="conf-group-priority priority-mid">高</span>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">D-1. エラーハンドリング</div>
-        <ul class="conf-questions">
-          <li>エラー時のレスポンス形式は？（HTTPステータスコード + JSONボディ？）</li>
-          <li>生成失敗時、Bubble側で自動リトライしてよいか？（冪等性は保証されるか？）</li>
-          <li>バリデーションエラー時、どのフィールドが不正かわかる形式か？</li>
-        </ul>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">D-2. API認証・セキュリティ</div>
-        <ul class="conf-questions">
-          <li>認証方式は？（APIキー / Bearer Token / その他）</li>
-          <li>レート制限はあるか？（同時リクエスト数の上限）</li>
-          <li>APIのベースURLは？（環境ごと: 開発 / ステージング / 本番）</li>
-        </ul>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">D-3. 画像の保持期間</div>
-        <ul class="conf-questions">
-          <li>File Storage上の画像URLの<strong>有効期限</strong>は？</li>
-          <li>生成画像の保持期間は？（何日後に自動削除されるか）</li>
-          <li>DELETE API実行後、ファイルストレージからも即時削除されるか？</li>
-        </ul>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">D-4. 画像フォーマット・品質</div>
-        <ul class="conf-questions">
-          <li>生成画像のフォーマットは？（PNG / JPEG / PDF / その他）</li>
-          <li>解像度・DPIは？（印刷用途なら300dpi以上が必要）</li>
-          <li>最終的なPPTX変換はどちら側（ブラザー / アイビス）で行うか？</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- E. 開発・環境面 -->
-    <div class="conf-group">
-      <div class="conf-group-header">
-        <span class="conf-group-id low">E</span>
-        <span class="conf-group-title">開発・環境面</span>
-        <span class="conf-group-priority priority-low">中</span>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">E-1. 開発環境・モックAPI</div>
-        <div class="conf-item-body">
-          04/17メールで「Backendサーバの環境構築をしている段階」とのこと。
-        </div>
-        <ul class="conf-questions">
-          <li>開発環境のAPIが利用可能になる想定時期は？</li>
-          <li>モックAPIやSwagger/OpenAPI定義は先行して提供可能か？</li>
-          <li>テスト用のサンプル元原稿データは用意してもらえるか？</li>
-        </ul>
-      </div>
-
-      <div class="conf-item">
-        <div class="conf-item-title">E-2. 結合テストの進め方</div>
-        <ul class="conf-questions">
-          <li>結合テスト（5月予定）のスコープ・テストケースの共有時期は？</li>
-          <li>Bubble側から接続テストできる環境の提供時期は？</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- 優先度まとめ -->
-    <h2 class="section-title" style="margin-top:48px;">優先度まとめ</h2>
-    <p class="section-desc">回答をいただきたい順に並べています</p>
-
-    <div class="priority-summary">
-      <div class="priority-card">
-        <div class="priority-icon urgent">1</div>
-        <div class="priority-card-text">
-          <strong>A-1. 元原稿データのアップロード手段</strong>
-          画面設計・実装方針に直結。アップロード画面の要否が変わる
-        </div>
-      </div>
-      <div class="priority-card">
-        <div class="priority-icon urgent">2</div>
-        <div class="priority-card-text">
-          <strong>B-1. 非同期の完了通知方式</strong>
-          Bubble側の実装パターンが根本的に変わる
-        </div>
-      </div>
-      <div class="priority-card">
-        <div class="priority-icon high">3</div>
-        <div class="priority-card-text">
-          <strong>C-1. ステータス値の一覧</strong>
-          画面の状態表示・エラーハンドリングに必要
-        </div>
-      </div>
-      <div class="priority-card">
-        <div class="priority-icon high">4</div>
-        <div class="priority-card-text">
-          <strong>C-2. originalText の仕様</strong>
-          入力画面のUI設計に直結
-        </div>
-      </div>
-      <div class="priority-card">
-        <div class="priority-icon high">5</div>
-        <div class="priority-card-text">
-          <strong>D-1 ~ D-4. 継続未解決事項</strong>
-          エラー処理・認証・画像保持期間・フォーマット
-        </div>
-      </div>
-      <div class="priority-card">
-        <div class="priority-icon mid">6</div>
-        <div class="priority-card-text">
-          <strong>E-1 ~ E-2. 開発環境面</strong>
-          開発着手後でも調整可能だが、早めに知りたい
+        <div class="card db-card" style="margin-top:16px;">
+          <div class="card-header"><h3>Source Image DB（Brother側で管理）</h3></div>
+          <div class="card-body">
+            <div class="db-role">
+              <p>事前に用意された元原稿画像の情報を管理</p>
+              <p>一覧表示、詳細表示、選択対象として利用</p>
+              <span class="badge badge-readonly">Read Only</span>
+            </div>
+            <table class="field-table"><thead><tr><th>フィールド</th><th>説明</th></tr></thead><tbody>
+              <tr><td><span class="field-name">sourceImageId</span><span class="field-pk">PK</span></td><td>元原稿画像ID</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">category</span></td><td>分類（行事 / 共通印刷物？）</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td></tr>
+              <tr><td><span class="field-name">thumbnailKey</span></td><td>サムネイル識別子</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>状態</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+              <tr><td><span class="field-name">description</span><span class="field-optional">任意</span></td><td>説明</td></tr>
+              <tr><td><span class="field-name">tags</span><span class="field-optional">任意</span></td><td>タグ</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
+            </tbody></table>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- F. 実際の画面フローとのギャップ -->
-    <div class="conf-group" style="margin-top:48px; padding-top:32px; border-top: 2px solid var(--red);">
-      <div class="conf-group-header">
-        <span class="conf-group-id high">F</span>
-        <span class="conf-group-title">実際の画面フローとAPIのギャップ（04/20 追記）</span>
-        <span class="conf-group-priority priority-high">最優先</span>
+    <!-- ステップ1 -->
+    <div class="flow-accordion">
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+        <span class="phase-num">1</span>
+        <span style="font-weight:700; color:var(--gray-900);">デザインテンプレートを登録する</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">管理者 / GET /source-images → Bubble DB保存</span>
+        <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
+      <div class="flow-accordion-body">
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">管理者</div>
+              <div class="step-text">Bubbleの管理画面でデザインテンプレートを作成。<strong>開催月</strong>・<strong>テンプレート名</strong>を設定する。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble → Brother API</div>
+              <div class="step-text">背景画像はアップロードではなく、<strong>Brother側のSource Image DBから選択</strong>する。<br><code>GET /source-images</code> で画像一覧を取得し、サイズごとに画像を紐づける。</div>
+              <div class="step-note">現APIにはサイズでのフィルタパラメータがないため、size パラメータの追加が必要</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">テンプレートのメタ情報（名前・開催月）と、選択した画像の <code>sourceImageId</code> の紐付けを<strong>Bubble DBに保存</strong>する。</div>
+            </div>
+          </li>
+        </ul>
 
-      <div class="conf-item" style="border-left: 3px solid var(--red);">
-        <div class="conf-item-title">F-1. リクエストの情報量が全然違う</div>
-        <div class="conf-item-body">
-          現在のAPIの生成リクエスト:<br>
-          <code>POST /generated-images { sourceImageId, originalText, replaceText }</code><br><br>
-          実際に送りたい情報（画面から読み取れるもの）:<br>
-          <strong>行事名</strong>、<strong>開催期間</strong>、<strong>行事詳細</strong>、<strong>プログラム</strong>（複数行）、<strong>注釈</strong>、<strong>連絡先</strong> 等<br><br>
-          <code>originalText</code> / <code>replaceText</code> の1組だけでは、<strong>複数のテキスト項目を背景画像に配置できない</strong>。
+        <div class="card" style="margin-top:16px; border-left:4px solid var(--green);">
+          <div class="card-header"><h3>使用API: GET /source-images</h3></div>
+          <div class="card-body">
+            <div class="db-role">
+              <p>Brother側に登録済みの画像一覧を取得して、管理者が選択する</p>
+              <span class="badge badge-readonly" style="margin-right:8px;">既存API</span>
+              <span class="badge" style="background:var(--amber-bg);color:#b45309;">size パラメータの追加が必要</span>
+            </div>
+            <div class="detail-section" style="margin-top:12px;">
+              <div class="detail-label">リクエストパラメータ（想定）</div>
+              <div class="detail-fields">
+                <span class="field-chip">category</span>
+                <span class="field-chip highlight">size（追加必要）</span>
+              </div>
+            </div>
+            <div class="detail-section" style="margin-top:12px;">
+              <div class="detail-label">レスポンス</div>
+              <div class="detail-fields">
+                <span class="field-chip highlight">sourceImageId</span>
+                <span class="field-chip">title</span>
+                <span class="field-chip">thumbnailUrl</span>
+                <span class="field-chip">status</span>
+                <span class="field-chip">category</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <ul class="conf-questions">
-          <li>リクエスト構造を拡張して、複数のテキストフィールドを渡せるようにするか？</li>
-          <li>それとも originalText/replaceText を配列にして複数組渡す設計か？</li>
+
+        <div style="margin-top:16px;">
+          <h3 style="font-size:.9rem; font-weight:600; color:var(--gray-700); margin-bottom:12px;">画面イメージ: デザインテンプレート追加</h3>
+          <img src="images/design_template_add.png" alt="デザインテンプレート追加画面" style="width:100%; border-radius:8px; border:1px solid var(--gray-200);">
+        </div>
+      </div>
+    </div>
+
+    <!-- ステップ2 -->
+    <div class="flow-accordion">
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+        <span class="phase-num">2</span>
+        <span style="font-weight:700; color:var(--gray-900);">行事テンプレートを作成する</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">管理者 / Bubble DB保存（API呼ばない）</span>
+        <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+      </div>
+      <div class="flow-accordion-body">
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">管理者</div>
+              <div class="step-text">Bubbleの管理画面で<strong>業界</strong>（宗教法人等）・<strong>サブ業種</strong>（神社/寺院等）を選択し、行事テンプレートを作成する。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">管理者</div>
+              <div class="step-text"><strong>開催月</strong>・<strong>行事名</strong>・<strong>開催期間</strong>・行事詳細・プログラム・注釈などのデフォルト値を設定する。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">管理者</div>
+              <div class="step-text">ステップ1で作ったデザインテンプレートを<strong>最大3種</strong>紐づける（デザイン1は必須、デザイン2・3は任意）。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">すべて<strong>Bubble DBに保存</strong>。Brother APIは呼ばない。</div>
+              <div class="step-note">初期表示テンプレートをONにすると、新規登録ユーザーの行事一覧に自動で表示される</div>
+            </div>
+          </li>
+        </ul>
+
+        <div style="margin-top:16px;">
+          <h3 style="font-size:.9rem; font-weight:600; color:var(--gray-700); margin-bottom:12px;">画面イメージ: 行事テンプレート追加</h3>
+          <img src="images/event_template_add.png" alt="行事テンプレート追加画面" style="width:100%; border-radius:8px; border:1px solid var(--gray-200);">
+        </div>
+      </div>
+    </div>
+
+    <!-- ステップ3: 行事新規作成 -->
+    <div class="flow-accordion">
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+        <span class="phase-num">3</span>
+        <span style="font-weight:700; color:var(--gray-900);">行事を新規作成する</span>
+        <span style="font-size:.7rem; font-weight:600; padding:2px 8px; border-radius:4px; background:var(--blue-bg); color:var(--blue);">任意 - スキップ可</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / Bubble DB保存（API呼ばない）</span>
+        <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+      </div>
+      <div class="flow-accordion-body">
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text">行事テンプレートを選択して行事を作成できる（テンプレートの情報がデフォルト値として入る）。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text"><strong>テンプレートを選択しないで</strong>行事を作成することも可能。この場合、すべて手入力。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">行事データを<strong>Bubble DBに保存</strong>。Brother APIは呼ばない。</div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- 未解決ポイント -->
+        <div style="margin-top:16px; padding:12px 16px; background:var(--red-bg); border-radius:8px;">
+          <p style="font-size:.85rem; font-weight:600; color:var(--red); margin-bottom:4px;">これどうするの？</p>
+          <p style="font-size:.8rem; color:var(--gray-700); line-height:1.8; margin:0;">
+            テンプレートなしで行事を作成した場合、<strong>デザインテンプレート（背景画像）が紐づいていない</strong>。<br>
+            この状態で「生成」ボタンを押したらどうなる？<code>sourceImageId</code> がないので生成できないはず。<br><br>
+            → <strong>要確認</strong>
+          </p>
+        </div>
+
+        <div style="margin-top:16px;">
+          <h3 style="font-size:.9rem; font-weight:600; color:var(--gray-700); margin-bottom:12px;">画面イメージ: 行事新規作成（テンプレートあり / なし）</h3>
+          <img src="images/event_create_modal.png" alt="行事新規作成モーダル" style="width:100%; border-radius:8px; border:1px solid var(--gray-200);">
+        </div>
+      </div>
+    </div>
+
+    <!-- ステップ4: 原稿生成 -->
+    <div class="flow-accordion">
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+        <span class="phase-num">4</span>
+        <span style="font-weight:700; color:var(--gray-900);">原稿を生成する</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / POST /generated-images</span>
+        <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+      </div>
+      <div class="flow-accordion-body">
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text">行事一覧から行事を選択する。<strong>初期表示では原稿は何も表示されない</strong>（未生成状態）。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text">右上の<strong>「生成」ボタン</strong>を押下する。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble → Brother API</div>
+              <div class="step-text"><code>POST /generated-images</code> で<strong>行事情報をAPIに渡して原稿を生成</strong>する。<br>Bubble DBに保存済みの行事データ（行事名・期間・プログラム等）を展開してリクエストに含める。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">Brother（バックグラウンド）</div>
+              <div class="step-text">Source Image DBから背景画像を取得 → <strong>AIで背景画像にテキストを配置した原稿を生成</strong> → File Storageに保存。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">生成完了後、サイズタブごとに<strong>3種類のデザイン結果</strong>が表示される。</div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- 使用API -->
+        <div class="card" style="margin-top:16px; border-left:4px solid var(--red);">
+          <div class="card-header"><h3>使用API: POST /generated-images</h3></div>
+          <div class="card-body">
+            <div class="db-role">
+              <p>行事情報を渡して原稿画像を生成する（非同期）</p>
+              <span class="badge method-post" style="margin-right:8px;">既存API</span>
+              <span class="badge" style="background:var(--red-bg);color:var(--red);">リクエスト構造の拡張が必要</span>
+            </div>
+
+            <div class="detail-section" style="margin-top:16px;">
+              <div class="detail-label">現APIのリクエスト</div>
+              <div class="detail-fields">
+                <span class="field-chip">sourceImageId</span>
+                <span class="field-chip">originalText</span>
+                <span class="field-chip">replaceText</span>
+              </div>
+              <p style="font-size:.8rem; color:var(--red); font-weight:600; margin-top:8px;">originalText / replaceText の1組では複数テキスト項目を渡せない</p>
+            </div>
+
+            <div class="detail-section" style="margin-top:16px;">
+              <div class="detail-label">必要なリクエスト（想定）</div>
+              <div class="detail-fields">
+                <span class="field-chip highlight">sourceImageId</span>
+                <span class="field-chip highlight">eventName</span>
+                <span class="field-chip highlight">period</span>
+                <span class="field-chip highlight">details</span>
+                <span class="field-chip highlight">program</span>
+                <span class="field-chip highlight">notes</span>
+                <span class="field-chip highlight">size</span>
+                <span class="field-chip highlight">designIndex</span>
+              </div>
+            </div>
+
+            <div class="detail-section" style="margin-top:16px;">
+              <div class="detail-label">現APIのレスポンス</div>
+              <div class="detail-fields">
+                <span class="field-chip highlight">generatedImageId</span>
+                <span class="field-chip">sourceImageId</span>
+                <span class="field-chip">status</span>
+              </div>
+            </div>
+
+            <div style="margin-top:16px; padding:12px 16px; background:var(--red-bg); border-radius:8px;">
+              <p style="font-size:.85rem; font-weight:600; color:var(--red); margin-bottom:4px;">確認が必要なポイント</p>
+              <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
+                <li>リクエスト構造をどう拡張するか（複数テキストフィールド対応）</li>
+                <li>3デザイン分を<strong>並列に3回POST</strong>する想定 → Brother側で<strong>同時3リクエストを受けられるか？</strong>（レート制限の有無）</li>
+                <li>完了通知が<strong>3回バラバラに届く</strong> → Bubble側で「3つ全部揃ったら表示」の制御が必要。通知方式は？（Webhook / ポーリング）</li>
+                <li>並列不可の場合、一括生成API（<code>POST /generated-images/batch</code> 等）を用意できるか？</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <h3 style="font-size:.9rem; font-weight:600; color:var(--gray-700); margin-bottom:12px;">画面イメージ: 行事選択（生成前）</h3>
+          <img src="images/event_list_empty.png" alt="行事選択画面（生成前）" style="width:100%; border-radius:8px; border:1px solid var(--gray-200);">
+        </div>
+        <div style="margin-top:16px;">
+          <h3 style="font-size:.9rem; font-weight:600; color:var(--gray-700); margin-bottom:12px;">画面イメージ: 生成後</h3>
+          <img src="images/event_list_generated.png" alt="行事選択画面（生成後）" style="width:100%; border-radius:8px; border:1px solid var(--gray-200);">
+        </div>
+      </div>
+    </div>
+
+    <!-- ステップ5 -->
+    <div class="flow-accordion">
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+        <span class="phase-num">5</span>
+        <span style="font-weight:700; color:var(--gray-900);">評価・ダウンロードする</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / 評価はBubble DB / DL時にGET /generated-images/{id}</span>
+        <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+      </div>
+      <div class="flow-accordion-body">
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text">生成された<strong>3種類のデザイン</strong>それぞれに<strong>五段階評価</strong>をつける。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">評価データは<strong>Bubble DBに保存</strong>する。Brother APIは呼ばない。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text">3種類すべて評価すると<strong>「この原稿をダウンロード」ボタンが活性化</strong>される。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text">「この原稿をダウンロード」を押して<strong>画像をダウンロード</strong>する。</div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- 現状と理想の比較 -->
+        <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <!-- 現状 -->
+          <div style="padding:16px; background:var(--red-bg); border-radius:var(--radius); border:1px solid #fca5a5;">
+            <h3 style="font-size:.85rem; font-weight:700; color:var(--red); margin-bottom:12px;">現状（今のAPI仕様）</h3>
+            <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:2;">
+              <li>STEP4のPOSTレスポンスに <strong>imageUrlが含まれない</strong></li>
+              <li>DL時に毎回 <code>GET /generated-images/{id}</code> を呼んで画像URLを取得する必要がある</li>
+              <li>表示のたびにAPIを叩くことになる</li>
+            </ul>
+          </div>
+          <!-- 理想 -->
+          <div style="padding:16px; background:var(--green-bg); border-radius:var(--radius); border:1px solid #6ee7b7;">
+            <h3 style="font-size:.85rem; font-weight:700; color:var(--green); margin-bottom:12px;">理想（こうしたい）</h3>
+            <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:2;">
+              <li>STEP4のPOSTレスポンスに <strong>imageUrlを含めてもらう</strong></li>
+              <li>受け取ったimageUrlを<strong>Bubble DBに保存</strong></li>
+              <li>次回以降はBubble DBから表示 → <strong>APIは呼ばない</strong></li>
+              <li>行事情報変更時のみ再生成APIを呼ぶ</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 理想の場合のフロー -->
+        <div style="margin-top:16px; padding:16px 20px; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius); box-shadow:var(--shadow);">
+          <h3 style="font-size:.9rem; font-weight:600; color:var(--gray-700); margin-bottom:12px;">理想の場合のAPI呼び出し</h3>
+          <table class="field-table">
+            <thead><tr><th>タイミング</th><th>やること</th><th>API</th></tr></thead>
+            <tbody>
+              <tr><td><strong>初回生成時（STEP4）</strong></td><td>POSTのレスポンスで imageUrl を受け取り、Bubble DBに保存</td><td>POST /generated-images</td></tr>
+              <tr><td><strong>次回以降の表示・DL</strong></td><td>Bubble DBから imageUrl を取得して表示・DL</td><td style="color:var(--green); font-weight:600;">APIは呼ばない</td></tr>
+              <tr><td><strong>行事情報を変更した時</strong></td><td>再生成して新しい imageUrl でBubble DBを更新</td><td>POST /{id}/regenerate</td></tr>
+              <tr><td><strong>imageUrl期限切れ時</strong></td><td>URLを再取得</td><td style="color:var(--gray-500);">GET /generated-images/{id}<br><span style="font-size:.75rem;">※有効期限がある場合のみ</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 確認ポイント -->
+        <div style="margin-top:16px; padding:12px 16px; background:var(--amber-bg); border-radius:8px;">
+          <p style="font-size:.85rem; font-weight:600; color:#b45309; margin-bottom:4px;">確認が必要なポイント</p>
+          <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
+            <li><code>POST /generated-images</code> のレスポンスに <strong>imageUrl を含めてもらえるか？</strong></li>
+            <li><strong>imageUrl に有効期限はあるか？</strong> → あるなら <code>GET /generated-images/{id}</code> でURL再取得が必要になるケースがある</li>
+          </ul>
+        </div>
+
+        <!-- 使用API -->
+        <div class="card" style="margin-top:16px; border-left:4px solid var(--gray-300);">
+          <div class="card-header"><h3>使用API: GET /generated-images/{generatedImageId}</h3></div>
+          <div class="card-body">
+            <div class="db-role">
+              <p>生成画像の詳細（画像URL含む）を取得する</p>
+              <span class="badge" style="background:var(--gray-100);color:var(--gray-500);">既存API / 理想の場合はimageUrl期限切れ時のみ使用</span>
+            </div>
+            <div class="detail-section" style="margin-top:12px;">
+              <div class="detail-label">パスパラメータ</div>
+              <div class="detail-fields">
+                <span class="field-chip highlight">generatedImageId</span>
+              </div>
+            </div>
+            <div class="detail-section" style="margin-top:12px;">
+              <div class="detail-label">レスポンス</div>
+              <div class="detail-fields">
+                <span class="field-chip highlight">generatedImageId</span>
+                <span class="field-chip">sourceImageId</span>
+                <span class="field-chip">status</span>
+                <span class="field-chip highlight">imageUrl</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API一覧まとめ -->
+    <h2 class="section-title" style="margin-top:48px;">API一覧まとめ</h2>
+    <p class="section-desc">フローを踏まえたAPI利用状況の整理</p>
+
+    <!-- 使用するAPI -->
+    <div class="card" style="border-left:4px solid var(--green); margin-bottom:16px;">
+      <div class="card-header"><h3>使用するAPI</h3></div>
+      <div class="card-body" style="padding:0;">
+        <table class="field-table">
+          <thead><tr><th>API</th><th>使用箇所</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method-badge method-get" style="font-size:.7rem;">GET</span> <span class="field-name">/source-images</span></td><td>STEP1: デザインテンプレート登録時に画像選択</td><td><span class="badge" style="background:var(--amber-bg);color:#b45309;">sizeパラメータの追加が必要</span></td></tr>
+            <tr><td><span class="method-badge method-post" style="font-size:.7rem;">POST</span> <span class="field-name">/generated-images</span></td><td>STEP4: 原稿生成</td><td><span class="badge" style="background:var(--red-bg);color:var(--red);">リクエスト構造の拡張が必要</span></td></tr>
+            <tr><td><span class="method-badge method-post" style="font-size:.7rem;">POST</span> <span class="field-name">/generated-images/{id}/regenerate</span></td><td>行事情報変更時の再生成</td><td></td></tr>
+            <tr><td><span class="method-badge method-delete" style="font-size:.7rem;">DELETE</span> <span class="field-name">/generated-images/{id}</span></td><td>生成画像の削除</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 使用するか怪しいAPI -->
+    <div class="card" style="border-left:4px solid var(--amber); margin-bottom:16px;">
+      <div class="card-header"><h3>使用するか怪しいAPI</h3></div>
+      <div class="card-body" style="padding:0;">
+        <table class="field-table">
+          <thead><tr><th>API</th><th>使うかもしれないケース</th><th>判断基準</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method-badge method-get" style="font-size:.7rem;">GET</span> <span class="field-name">/generated-images/{id}</span></td><td>STEP5: imageUrlの期限切れ時にURL再取得</td><td>POSTレスポンスにimageUrlが含まれ、かつ有効期限なし → <strong>不要</strong><br>有効期限あり → <strong>必要</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 使用しないAPI -->
+    <div class="card" style="border-left:4px solid var(--gray-300);">
+      <div class="card-header"><h3>使用しないAPI</h3></div>
+      <div class="card-body" style="padding:0;">
+        <table class="field-table">
+          <thead><tr><th>API</th><th>不要な理由</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method-badge method-get" style="font-size:.7rem;">GET</span> <span class="field-name">/source-images/{sourceImageId}</span></td><td>個別詳細取得。一覧API（GET /source-images）でthumbnailUrl等が返るため、個別取得は不要</td></tr>
+            <tr><td><span class="method-badge method-get" style="font-size:.7rem;">GET</span> <span class="field-name">/generated-images</span></td><td>生成画像一覧取得。行事×生成画像の紐付けはBubble DBで管理するため、Brother側の一覧APIは不要</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== 共通印刷物 ==================== -->
+<div class="section" id="common">
+  <div class="container">
+    <h2 class="section-title">共通印刷物フロー</h2>
+    <p class="section-desc">AI生成なし。Brother DBから画像を選択して、そのままユーザーに配布する</p>
+
+    <!-- 前提 -->
+    <div style="padding:12px 16px; background:var(--amber-bg); border-radius:8px; margin-bottom:28px;">
+      <p style="font-size:.85rem; font-weight:600; color:#b45309; margin-bottom:4px;">前提条件</p>
+      <p style="font-size:.8rem; color:var(--gray-700); margin:0; line-height:1.8;">
+        Source Image DBの <code>category</code> が<strong>行事用 / 共通印刷物の区分</strong>であること。<br>
+        <code>GET /source-images?category=common</code> のように共通印刷物の画像だけ取得できる想定。<br>
+        → <strong>category の値についてはブラザーに要確認</strong>
+      </p>
+    </div>
+
+    <!-- 行事との違い -->
+    <div style="background:#fff; border-radius:var(--radius); border:1px solid var(--gray-200); box-shadow:var(--shadow); padding:24px; margin-bottom:28px;">
+      <h3 style="font-size:1rem; font-weight:600; color:var(--gray-700); margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--gray-100);">行事フローとの違い</h3>
+      <table class="field-table">
+        <thead><tr><th></th><th>行事</th><th>共通印刷物</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:600;">テキスト入力</td><td>あり（行事名・期間等）</td><td style="color:var(--red); font-weight:600;">なし</td></tr>
+          <tr><td style="font-weight:600;">AI生成</td><td>あり</td><td style="color:var(--red); font-weight:600;">なし</td></tr>
+          <tr><td style="font-weight:600;">サイズ展開</td><td>4サイズ × 3デザイン</td><td style="font-weight:600;">1画像のみ</td></tr>
+          <tr><td style="font-weight:600;">画像の出処</td><td>Brother DB選択</td><td>Brother DB選択</td></tr>
+          <tr><td style="font-weight:600;">グルーピング</td><td>業界→行事テンプレ→デザインテンプレ</td><td style="font-weight:600;">業界→グループ→デザイン一覧</td></tr>
+          <tr><td style="font-weight:600;">使用API</td><td>GET + POST /generated-images 等</td><td style="color:var(--green); font-weight:600;">GET /source-images のみ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ステップ1: グループ作成 -->
+    <div class="flow-accordion" onclick="this.classList.toggle('open')">
+      <div class="flow-accordion-header">
+        <span class="phase-num">1</span>
+        <span style="font-weight:700; color:var(--gray-900);">グループを作成する</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">管理者 / Bubble DB保存（API呼ばない）</span>
+        <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+      </div>
+      <div class="flow-accordion-body">
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">管理者</div>
+              <div class="step-text">Bubbleの管理画面で<strong>グループ名</strong>を入力し、<strong>業界</strong>（大分類）・<strong>小分類</strong>を選択する。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">グループ情報を<strong>Bubble DBに保存</strong>。Brother APIは呼ばない。</div>
+            </div>
+          </li>
         </ul>
       </div>
+    </div>
 
-      <div class="conf-item" style="border-left: 3px solid var(--red);">
-        <div class="conf-item-title">F-2. テンプレートの階層構造がAPIにない</div>
-        <div class="conf-item-body">
-          実際のデータ構造（Bubble側）:<br><br>
-          <strong>デザインテンプレート</strong>（管理者が作る）<br>
-          &nbsp;&nbsp;└ 1デザイン × 7サイズの背景画像<br><br>
-          <strong>行事テンプレート</strong>（管理者が作る）<br>
-          &nbsp;&nbsp;└ デザインテンプレートを最大3種紐づけ<br>
-          &nbsp;&nbsp;└ 業界・月で分類<br><br>
-          <strong>行事</strong>（ユーザーが作る）<br>
-          &nbsp;&nbsp;└ 行事テンプレートを選択（or なし）<br>
-          &nbsp;&nbsp;└ 文字情報を入力<br>
-          &nbsp;&nbsp;└ 生成ボタンで 3デザイン × サイズごとに生成<br><br>
-          今のAPIの構造:<br>
-          Source Image = フラットな一覧（階層なし、グルーピングなし）<br>
-          Generated Image = 1回のPOSTで1枚だけ生成
-        </div>
-        <ul class="conf-questions">
-          <li>テンプレートの親子関係（デザインテンプレ→行事テンプレ→行事）はBubble側で管理し、APIにはsourceImageId単位で投げる想定か？</li>
-          <li>それともAPI側にもテンプレート階層を持たせるか？</li>
-        </ul>
+    <!-- ステップ2: デザイン追加 -->
+    <div class="flow-accordion" onclick="this.classList.toggle('open')">
+      <div class="flow-accordion-header">
+        <span class="phase-num">2</span>
+        <span style="font-weight:700; color:var(--gray-900);">グループにデザインを追加する</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">管理者 / GET /source-images → Bubble DB保存</span>
+        <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
-
-      <div class="conf-item" style="border-left: 3px solid var(--red);">
-        <div class="conf-item-title">F-3. 一括生成（3デザイン × 複数サイズ）</div>
-        <div class="conf-item-body">
-          ユーザーが「生成」ボタンを1回押すと、最大 <strong>3デザイン × 4サイズ = 12枚</strong> の画像生成が発生する。<br>
-          現在のAPIは1回のPOSTで1枚だけ生成する設計。
-        </div>
-        <ul class="conf-questions">
-          <li>12回個別にPOSTする想定か？一括生成APIを用意するか？</li>
-          <li>個別POSTの場合、12件の非同期完了通知をどう管理するか？</li>
+      <div class="flow-accordion-body">
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">管理者</div>
+              <div class="step-text"><strong>印刷物名</strong>を入力し、<strong>画像を選択</strong>する。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble → Brother API</div>
+              <div class="step-text"><code>GET /source-images?category=common</code> で共通印刷物の画像一覧を取得し、1枚を選択する。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">印刷物名と <code>sourceImageId</code> の紐付けを<strong>Bubble DBに保存</strong>する。</div>
+            </div>
+          </li>
         </ul>
+
+        <div class="card" style="margin-top:16px; border-left:4px solid var(--green);">
+          <div class="card-header"><h3>使用API: GET /source-images</h3></div>
+          <div class="card-body">
+            <div class="db-role">
+              <p>共通印刷物用の画像一覧を取得する</p>
+              <span class="badge badge-readonly">既存API</span>
+            </div>
+            <div class="detail-section" style="margin-top:12px;">
+              <div class="detail-label">リクエストパラメータ（想定）</div>
+              <div class="detail-fields">
+                <span class="field-chip highlight">category=common</span>
+              </div>
+            </div>
+            <div class="detail-section" style="margin-top:12px;">
+              <div class="detail-label">レスポンス</div>
+              <div class="detail-fields">
+                <span class="field-chip highlight">sourceImageId</span>
+                <span class="field-chip">title</span>
+                <span class="field-chip">thumbnailUrl</span>
+                <span class="field-chip">status</span>
+                <span class="field-chip">category</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <div class="conf-item" style="border-left: 3px solid var(--red);">
-        <div class="conf-item-title">F-4. 背景画像の保存先</div>
-        <div class="conf-item-body">
-          管理者がデザインテンプレートで <strong>7サイズの背景画像をアップロード</strong> している。<br>
-          APIには <code>POST /source-images</code> がない。
-        </div>
-        <ul class="conf-questions">
-          <li>背景画像はBubble側に保持して、生成時にURLでAPIに渡す想定か？</li>
-          <li>それともBrother側にアップロードAPIを追加するか？</li>
-        </ul>
+    <!-- ステップ3: ユーザーがDL -->
+    <div class="flow-accordion" onclick="this.classList.toggle('open')">
+      <div class="flow-accordion-header">
+        <span class="phase-num">3</span>
+        <span style="font-weight:700; color:var(--gray-900);">ユーザーがダウンロードする</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / Bubble DBから表示 → DL</span>
+        <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
-
-      <div class="conf-item" style="border-left: 3px solid var(--red);">
-        <div class="conf-item-title">F-5. サイズ指定の方法</div>
-        <div class="conf-item-body">
-          画面では A3 / A4 / 長尺縦 / 長尺横 のタブがある。<br>
-          APIにはサイズを指定するパラメータがない。
-        </div>
-        <ul class="conf-questions">
-          <li>サイズごとに別の <code>sourceImageId</code> として管理する想定か？</li>
-          <li>それともリクエストパラメータでサイズを指定するか？</li>
+      <div class="flow-accordion-body">
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text">サイドバーの「共通印刷物」から、自分の業界に紐づくグループ・デザイン一覧を閲覧する。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">Bubble DBに保存済みの <code>sourceImageId</code> に紐づく画像URLで表示する。<strong>APIは呼ばない</strong>。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text">「編集する」で印刷物名を変更、またはそのまま<strong>ダウンロード</strong>する。</div>
+            </div>
+          </li>
         </ul>
+
+        <div style="margin-top:16px; padding:12px 16px; background:var(--amber-bg); border-radius:8px;">
+          <p style="font-size:.85rem; font-weight:600; color:#b45309; margin-bottom:4px;">確認が必要なポイント</p>
+          <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
+            <li>画像URLに有効期限がある場合、表示時に <code>GET /source-images/{id}</code> でURL再取得が必要になるかも</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 使用API一覧 -->
+    <h2 class="section-title" style="margin-top:48px;">使用API</h2>
+
+    <div class="card" style="border-left:4px solid var(--green);">
+      <div class="card-header"><h3>使用するAPI</h3></div>
+      <div class="card-body" style="padding:0;">
+        <table class="field-table">
+          <thead><tr><th>API</th><th>使用箇所</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method-badge method-get" style="font-size:.7rem;">GET</span> <span class="field-name">/source-images</span></td><td>STEP2: 共通印刷物画像の選択（category=common）</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
