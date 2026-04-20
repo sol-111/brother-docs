@@ -90,6 +90,7 @@
             border-bottom-color: #667eea;
         }
 
+        .tab-btn.tab-task.active { color: #e53e3e; border-bottom-color: #e53e3e; }
         .tab-btn.tab-design.active { color: #667eea; border-bottom-color: #667eea; }
         .tab-btn.tab-pptx.active { color: #38b2ac; border-bottom-color: #38b2ac; }
         .tab-btn.tab-dup.active { color: #9f7aea; border-bottom-color: #9f7aea; }
@@ -177,6 +178,76 @@
 
         .condition-note { background: #fefcbf; border: 1px solid #ecc94b; border-radius: 8px; padding: 16px 20px; margin: 24px 0 0; font-size: 13px; color: #744210; display: flex; align-items: flex-start; gap: 10px; }
         .condition-note .note-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+        /* ========== P0: Task List ========== */
+        .p0 .tl-group { margin-bottom: 24px; }
+        .p0 .tl-group-title {
+            font-size: 13px; font-weight: 700; color: #fff;
+            padding: 5px 14px; border-radius: 6px 6px 0 0;
+            display: inline-block;
+        }
+        .p0 .tl-gt-ibis { background: #2e7d32; }
+        .p0 .tl-gt-bil  { background: #1565c0; }
+        .p0 .tl-gt-all  { background: #546e7a; }
+
+        .p0 .tl-table {
+            width: 100%; border-collapse: collapse; background: #fff;
+            border-radius: 0 8px 8px 8px; overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .p0 .tl-table th {
+            background: #fafafa; font-size: 11px; font-weight: 700; color: #999;
+            text-align: left; padding: 8px 12px; border-bottom: 2px solid #eee; white-space: nowrap;
+        }
+        .p0 .tl-table td {
+            padding: 10px 12px; border-bottom: 1px solid #f0f0f0;
+            font-size: 13px; vertical-align: top;
+        }
+        .p0 .tl-table tr:last-child td { border-bottom: none; }
+        .p0 tr.tl-row-done td { opacity: 0.5; }
+        .p0 tr.tl-row-done .tl-task-name { text-decoration: line-through; }
+        .p0 tr.tl-row-blocked { background: #fff8f8; }
+        .p0 tr.tl-row-deferred td { opacity: 0.45; }
+
+        .p0 .tl-task-name { font-weight: 700; font-size: 13px; }
+        .p0 .tl-meta { font-size: 11px; color: #aaa; }
+        .p0 .tl-detail { font-size: 12px; color: #666; margin-top: 4px; line-height: 1.5; }
+
+        .p0 .tl-tag {
+            display: inline-block; font-size: 10px; font-weight: 700;
+            padding: 1px 6px; border-radius: 3px; color: #fff; white-space: nowrap;
+        }
+        .p0 .tl-tag-high    { background: #e53935; }
+        .p0 .tl-tag-mid     { background: #e65100; }
+        .p0 .tl-tag-low     { background: #90a4ae; }
+        .p0 .tl-tag-overdue { background: #b71c1c; }
+
+        .p0 .tl-status-select {
+            font-size: 11px; font-weight: 600; padding: 3px 6px; border-radius: 4px;
+            border: 1.5px solid #ccc; background: #fafafa; cursor: pointer; width: 100%;
+        }
+        .p0 .tl-status-select:focus { outline: none; }
+        .p0 .tl-sel-todo    { border-color: #bdbdbd; }
+        .p0 .tl-sel-wip     { border-color: #ff9800; background: #fff8e1; color: #e65100; }
+        .p0 .tl-sel-done    { border-color: #4caf50; background: #e8f5e9; color: #2e7d32; }
+        .p0 .tl-sel-blocked { border-color: #e53935; background: #ffebee; color: #c62828; }
+        .p0 .tl-sel-deferred{ border-color: #9e9e9e; background: #f5f5f5; color: #757575; }
+
+        .p0 .tl-task-comment {
+            width: 100%; border: 1px solid #e8e8e8; border-radius: 4px;
+            padding: 4px 8px; font-size: 12px; font-family: inherit;
+            line-height: 1.5; resize: vertical; min-height: 28px;
+            color: #333; background: #fafafa;
+        }
+        .p0 .tl-task-comment:focus { outline: none; border-color: #90caf9; background: #fff; }
+        .p0 .tl-task-comment::placeholder { color: #ccc; }
+
+        .p0 .tl-col-status { width: 90px; }
+        .p0 .tl-col-pri    { width: 50px; text-align: center; }
+        .p0 .tl-col-task   { min-width: 280px; }
+        .p0 .tl-col-who    { width: 100px; }
+        .p0 .tl-col-due    { width: 80px; }
+        .p0 .tl-col-memo   { width: 200px; }
 
         /* ========== P1: Design Template ========== */
         .p1 .question-header.q1 { background: linear-gradient(135deg, #667eea, #764ba2); }
@@ -327,17 +398,233 @@
 <!-- ===== TABS BAR ===== -->
 <div class="tabs-bar">
     <div class="tabs-inner">
-        <button class="tab-btn tab-design active" data-tab="tab-design">1. デザインテンプレート</button>
+        <button class="tab-btn tab-task active" data-tab="tab-task">0. タスクリスト</button>
+        <button class="tab-btn tab-design" data-tab="tab-design">1. デザインテンプレート</button>
         <button class="tab-btn tab-pptx" data-tab="tab-pptx">2. パワポDL方式</button>
         <button class="tab-btn tab-dup" data-tab="tab-dup">3. サイズ重複</button>
         <button class="tab-btn tab-env" data-tab="tab-env">4. 運用環境</button>
         <button class="tab-btn tab-seo" data-tab="tab-seo">5. 検索エンジン表示</button>
         <a href="common_prints.html" target="_blank" class="tab-external">6. 共通印刷物 &#8599;</a>
+        <a href="api_spec.html" target="_blank" class="tab-external">7. API仕様書 &#8599;</a>
     </div>
 </div>
 
+<!-- ===== TAB 0: タスクリスト ===== -->
+<div id="tab-task" class="tab-panel active p0">
+<div class="container">
+    <div class="header">
+        <h1>ブラザー定例 タスクリスト</h1>
+        <p class="subtitle">2026/04/16 &#8212; 議事録 2/18〜4/9 から抽出</p>
+    </div>
+
+  <div class="tl-group">
+    <div class="tl-group-title tl-gt-ibis">アイビス（ゼロイチスタート）</div>
+    <table class="tl-table">
+      <thead><tr>
+        <th class="tl-col-status">ステータス</th>
+        <th class="tl-col-pri">優先度</th>
+        <th class="tl-col-task">タスク</th>
+        <th class="tl-col-who">担当</th>
+        <th class="tl-col-due">期限</th>
+        <th class="tl-col-memo">メモ</th>
+      </tr></thead>
+      <tbody>
+        <tr data-id="ibis-4">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-high">高</span></td>
+          <td>
+            <span class="tl-task-name">API仕様書の確認</span><br>
+            <span class="tl-meta">初出: 4/18（仕様書受領）</span>
+            <div class="tl-detail">4/18（金）にBIL側からAPI仕様書が共有された。内容を確認し、Bubble側の呼び出し方法・データ構造との整合性を検証する。4月末のAPI実装完了に向けて早急に対応が必要。</div>
+          </td>
+          <td>小野・清野</td>
+          <td>今週</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tl-group">
+    <div class="tl-group-title tl-gt-bil">BIL</div>
+    <table class="tl-table">
+      <thead><tr>
+        <th class="tl-col-status">ステータス</th>
+        <th class="tl-col-pri">優先度</th>
+        <th class="tl-col-task">タスク</th>
+        <th class="tl-col-who">担当</th>
+        <th class="tl-col-due">期限</th>
+        <th class="tl-col-memo">メモ</th>
+      </tr></thead>
+      <tbody>
+        <tr data-id="bil-5">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-low">低</span></td>
+          <td>
+            <span class="tl-task-name">利用規約・プライバシーポリシーの法務確認</span><br>
+            <span class="tl-meta">初出: 3/11</span>
+            <div class="tl-detail">利用規約・プライバシーポリシーのページをアプリ側に入れるか法務部門に確認する宿題。3/4でもアカウント削除時のデータ・個人情報の扱いについて法務・知財部門との相談が宿題になっていた。以降の議事録で完了報告なし。</div>
+          </td>
+          <td>須藤(DG)</td>
+          <td>未定</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+        <tr data-id="bil-6">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-low">低</span></td>
+          <td>
+            <span class="tl-task-name">セキュリティチェック用ブロック図・データ構造例</span><br>
+            <span class="tl-meta">初出: 3/4</span>
+            <div class="tl-detail">3/4でセキュリティチェック用のブロック図・データ構造例を社内確認する宿題。3/25でコメント追記の話はあったが、最終的な完了報告が議事録に記載なし。</div>
+          </td>
+          <td>須藤(DG)</td>
+          <td>未定</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+        <tr data-id="bil-7">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-low">低</span></td>
+          <td>
+            <span class="tl-task-name">パスワードポリシー・セキュリティ基準の社内方針決定</span><br>
+            <span class="tl-meta">初出: 3/4</span>
+            <div class="tl-detail">3/4でメールアドレス認証導入、パスワードは「英数8文字以上、記号不要」で進行中と合意。ただし正式な社内方針としての決定・承認完了が議事録に記載なし。</div>
+          </td>
+          <td>奥野・須藤</td>
+          <td>未定</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+        <tr data-id="bil-8a">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-high">高</span></td>
+          <td>
+            <span class="tl-task-name">行事バリデーション要件の共有</span><br>
+            <span class="tl-meta">初出: 4/16</span>
+            <div class="tl-detail">行事バリデーションについて何が欲しいかをメールで共有してもらう。開発側の実装に直結するため要件の早期確定が必要。</div>
+          </td>
+          <td>BIL</td>
+          <td>次回まで</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+        <tr data-id="bil-8b">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-high">高</span></td>
+          <td>
+            <span class="tl-task-name">企業バリデーション要件の共有</span><br>
+            <span class="tl-meta">初出: 4/16</span>
+            <div class="tl-detail">企業バリデーションについて何が欲しいかをメールで共有してもらう。開発側の実装に直結するため要件の早期確定が必要。</div>
+          </td>
+          <td>BIL</td>
+          <td>次回まで</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+        <tr data-id="bil-8c">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-high">高</span></td>
+          <td>
+            <span class="tl-task-name">第1,2業界一覧の共有</span><br>
+            <span class="tl-meta">初出: 4/16</span>
+            <div class="tl-detail">第1,2業界一覧について何が欲しいかをメールで共有してもらう。開発側の実装に直結するため要件の早期確定が必要。</div>
+          </td>
+          <td>BIL</td>
+          <td>次回まで</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+        <tr data-id="bil-9">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-mid">中</span></td>
+          <td>
+            <span class="tl-task-name">デザインテンプレート7種の内訳確認</span><br>
+            <span class="tl-meta">初出: 4/16</span>
+            <div class="tl-detail">合計7デザインが具体的に何なのか（行事名・テーマなど）を確認する。全サイズ必須・同サイズ複数パターンなしは回答済み。</div>
+          </td>
+          <td>BIL</td>
+          <td>次回まで</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+        <tr data-id="bil-10">
+          <td><select class="tl-status-select tl-sel-wip" onchange="tlCs(this)">
+            <option value="todo">未着手</option><option value="wip" selected>進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-low">低</span></td>
+          <td>
+            <span class="tl-task-name">ノベルティ選択時のリンク先仕様</span><br>
+            <span class="tl-meta">初出: 4/16</span>
+            <div class="tl-detail">ノベルティ選択時に遷移させるリンク先のURL。ブラザー側からURL共有待ち。</div>
+          </td>
+          <td>BIL</td>
+          <td>未定</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tl-group">
+    <div class="tl-group-title tl-gt-all">全体</div>
+    <table class="tl-table">
+      <thead><tr>
+        <th class="tl-col-status">ステータス</th>
+        <th class="tl-col-pri">優先度</th>
+        <th class="tl-col-task">タスク</th>
+        <th class="tl-col-who">担当</th>
+        <th class="tl-col-due">期限</th>
+        <th class="tl-col-memo">メモ</th>
+      </tr></thead>
+      <tbody>
+        <tr data-id="all-1">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-mid">中</span></td>
+          <td>
+            <span class="tl-task-name">ドメイン・メールアドレスの最終方針</span><br>
+            <span class="tl-meta">初出: 4/9</span>
+            <div class="tl-detail">PoCではランダムURLまたは既存ドメインで対応可。正式サービス時は独自ドメイン取得を検討（4/9決定）。メールアドレスは取得ドメインでの作成を推奨。5月末リリースが近いため、方針を固めるタイミングの確認が必要。</div>
+          </td>
+          <td>全体</td>
+          <td>未定</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+        <tr data-id="all-2">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-mid">中</span></td>
+          <td>
+            <span class="tl-task-name">運用環境の決定（本番 or テスト）</span><br>
+            <span class="tl-meta">初出: 4/16</span>
+            <div class="tl-detail">POC期間中の運用環境を本番（Live）とテスト（version-test）のどちらにするか決定する。アイビス側でメリデメ資料を用意した上で、クライアントに判断を仰ぐ。</div>
+          </td>
+          <td>全体</td>
+          <td>未定</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+    <div class="footer-note">議事録 2/18〜4/16 から抽出</div>
+</div>
+</div>
+
 <!-- ===== TAB 1: デザインテンプレート ===== -->
-<div id="tab-design" class="tab-panel active p1">
+<div id="tab-design" class="tab-panel p1">
 <div class="container">
     <div class="header">
         <h1>デザインテンプレートに関するご確認事項</h1>
@@ -1047,6 +1334,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+    });
+});
+
+/* --- Task List (tab-0) --- */
+var TL_K = 'meeting_20260416_v2';
+var tlT;
+
+function tlCs(sel) {
+    var tr = sel.closest('tr');
+    tr.className = '';
+    var v = sel.value;
+    if (v === 'done') tr.classList.add('tl-row-done');
+    if (v === 'blocked') tr.classList.add('tl-row-blocked');
+    if (v === 'deferred') tr.classList.add('tl-row-deferred');
+    sel.className = 'tl-status-select tl-sel-' + v;
+    tlAs();
+}
+
+function tlAs() {
+    clearTimeout(tlT);
+    tlT = setTimeout(function() {
+        var d = {};
+        document.querySelectorAll('tr[data-id]').forEach(function(tr) {
+            d[tr.dataset.id] = {
+                s: tr.querySelector('.tl-status-select').value,
+                c: tr.querySelector('.tl-task-comment').value
+            };
+        });
+        localStorage.setItem(TL_K, JSON.stringify(d));
+    }, 600);
+}
+
+(function() {
+    try {
+        var d = JSON.parse(localStorage.getItem(TL_K));
+        if (!d) return;
+        document.querySelectorAll('tr[data-id]').forEach(function(tr) {
+            var v = d[tr.dataset.id];
+            if (!v) return;
+            var sel = tr.querySelector('.tl-status-select');
+            if (!sel) return;
+            sel.value = v.s;
+            tlCs(sel);
+            tr.querySelector('.tl-task-comment').value = v.c || '';
+        });
+    } catch(e) {}
+})();
+
+document.querySelectorAll('.tl-task-comment').forEach(function(ta) {
+    ta.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
     });
 });
 </script>

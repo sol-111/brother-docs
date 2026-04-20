@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API仕様書 - 2026/04/17</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-bg: #eef2ff;
+    --green: #10b981;
+    --green-bg: #ecfdf5;
+    --amber: #f59e0b;
+    --amber-bg: #fffbeb;
+    --red: #ef4444;
+    --red-bg: #fef2f2;
+    --blue: #3b82f6;
+    --blue-bg: #eff6ff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    line-height: 1.7;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #fff;
+    padding: 48px 0 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: rgba(255,255,255,.05);
+    border-radius: 50%;
+  }
+  .header .container {
+    position: relative;
+    z-index: 1;
+  }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
+  }
+  .header .subtitle {
+    margin-top: 8px;
+    opacity: .85;
+    font-size: .95rem;
+  }
+  .header .date-badge {
+    display: inline-block;
+    margin-top: 16px;
+    background: rgba(255,255,255,.15);
+    backdrop-filter: blur(4px);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: .85rem;
+    font-weight: 500;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* Navigation tabs */
+  .nav-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid var(--gray-200);
+    box-shadow: var(--shadow);
+  }
+  .nav-tabs .container {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .nav-tab {
+    padding: 14px 20px;
+    cursor: pointer;
+    font-size: .875rem;
+    font-weight: 500;
+    color: var(--gray-500);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all .2s;
+    user-select: none;
+  }
+  .nav-tab:hover { color: var(--primary); }
+  .nav-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+
+  /* Sections */
+  .section {
+    display: none;
+    padding: 40px 0 60px;
+    animation: fadeIn .3s ease;
+  }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--gray-900);
+  }
+  .section-desc {
+    color: var(--gray-500);
+    margin-bottom: 32px;
+    font-size: .95rem;
+  }
+
+  /* Cards */
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+  }
+  .card + .card { margin-top: 24px; }
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .card-body { padding: 24px; }
+
+  /* DB Schema */
+  .db-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 24px; align-items: stretch; }
+  .db-grid > .card { display: flex; flex-direction: column; }
+  .db-grid > .card > .card-body { flex: 1; }
+  .db-card { border-left: 4px solid var(--primary); }
+  .db-card.secondary { border-left-color: var(--green); }
+
+  .db-role {
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+  }
+  .db-role p {
+    font-size: .875rem;
+    color: var(--gray-700);
+    margin-top: 4px;
+  }
+  .db-role .badge {
+    display: inline-block;
+    font-size: .75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+  }
+  .badge-readonly { background: var(--blue-bg); color: var(--blue); }
+  .badge-crud { background: var(--green-bg); color: var(--green); }
+
+  .field-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .875rem;
+  }
+  .field-table th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--gray-50);
+    color: var(--gray-500);
+    font-weight: 600;
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .field-table td {
+    padding: 10px 12px;
+    border-top: 1px solid var(--gray-100);
+    vertical-align: top;
+  }
+  .field-name {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: .85rem;
+    color: var(--primary);
+    font-weight: 500;
+  }
+  .field-pk {
+    font-size: .65rem;
+    font-weight: 700;
+    background: var(--amber-bg);
+    color: var(--amber);
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .field-optional {
+    font-size: .65rem;
+    font-weight: 600;
+    background: var(--gray-100);
+    color: var(--gray-500);
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* API Endpoints */
+  .endpoint-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .endpoint {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow .2s;
+  }
+  .endpoint:hover { box-shadow: var(--shadow-md); }
+
+  .endpoint-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .endpoint-header:hover { background: var(--gray-50); }
+
+  .method-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    flex-shrink: 0;
+  }
+  .method-get { background: var(--green-bg); color: var(--green); }
+  .method-post { background: var(--blue-bg); color: var(--blue); }
+  .method-delete { background: var(--red-bg); color: var(--red); }
+
+  .endpoint-path {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--gray-900);
+  }
+  .endpoint-path .param {
+    color: var(--amber);
+  }
+  .endpoint-summary {
+    margin-left: auto;
+    font-size: .85rem;
+    color: var(--gray-500);
+    white-space: nowrap;
+  }
+  .endpoint-toggle {
+    margin-left: 8px;
+    color: var(--gray-300);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .endpoint.open .endpoint-toggle { transform: rotate(180deg); }
+
+  .endpoint-detail {
+    display: none;
+    border-top: 1px solid var(--gray-100);
+    padding: 20px;
+    background: var(--gray-50);
+  }
+  .endpoint.open .endpoint-detail { display: block; }
+
+  .detail-section { margin-bottom: 16px; }
+  .detail-section:last-child { margin-bottom: 0; }
+  .detail-label {
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 8px;
+  }
+  .detail-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .field-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: .8rem;
+    color: var(--gray-700);
+  }
+  .field-chip.highlight {
+    border-color: var(--primary-light);
+    background: var(--primary-bg);
+    color: var(--primary);
+  }
+  .async-badge {
+    font-size: .7rem;
+    font-weight: 700;
+    background: #fef3c7;
+    color: #d97706;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+  }
+  .note-text {
+    font-size: .8rem;
+    color: var(--gray-500);
+    font-style: italic;
+  }
+
+  /* Category separator */
+  .api-category {
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    padding: 8px 0;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .api-category::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gray-200);
+  }
+
+  /* Sequence diagram */
+  .mermaid-wrapper {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow);
+    padding: 32px 24px;
+    overflow-x: auto;
+  }
+  .mermaid-wrapper + .mermaid-wrapper { margin-top: 24px; }
+  .mermaid-wrapper h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-700);
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  /* Use case */
+  .usecase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .usecase-item {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--gray-700);
+    transition: all .2s;
+  }
+  .usecase-item:hover {
+    border-color: var(--primary-light);
+    background: var(--primary-bg);
+    color: var(--primary);
+  }
+  .usecase-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  /* Architecture diagram */
+  .arch-diagram {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    padding: 36px 28px 28px;
+    position: relative;
+    overflow-x: auto;
+  }
+  .arch-svg { width: 100%; max-width: 860px; margin: 0 auto; display: block; }
+
+  /* Step-by-step explanation */
+  .flow-explanation {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow);
+    padding: 28px 24px;
+    margin-bottom: 28px;
+  }
+  .flow-explanation > h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .flow-phase {
+    margin-bottom: 28px;
+  }
+  .flow-phase:last-child { margin-bottom: 0; }
+  .flow-phase-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 14px;
+  }
+  .flow-phase-title .phase-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .step-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+  }
+  .step-list::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--gray-200);
+  }
+  .step-item {
+    display: flex;
+    gap: 14px;
+    padding: 8px 0;
+    position: relative;
+  }
+  .step-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--gray-200);
+    flex-shrink: 0;
+    margin-top: 6px;
+    margin-left: 11px;
+    z-index: 1;
+  }
+  .step-dot.user { background: var(--gray-500); box-shadow: 0 0 0 2px var(--gray-300); }
+  .step-dot.frontend { background: var(--blue); box-shadow: 0 0 0 2px #93c5fd; }
+  .step-dot.api { background: var(--primary); box-shadow: 0 0 0 2px var(--primary-light); }
+  .step-dot.ai { background: #9333ea; box-shadow: 0 0 0 2px #c084fc; }
+  .step-dot.storage { background: #b45309; box-shadow: 0 0 0 2px #fcd34d; }
+
+  .step-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .step-who {
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--gray-400);
+    margin-bottom: 2px;
+  }
+  .step-text {
+    font-size: .88rem;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+  .step-text strong {
+    color: var(--gray-900);
+    font-weight: 600;
+  }
+  .step-note {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: .78rem;
+    color: var(--gray-500);
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 4px 10px;
+    line-height: 1.5;
+  }
+
+  .flow-divider {
+    border: none;
+    border-top: 1px dashed var(--gray-200);
+    margin: 8px 0;
+  }
+
+  /* Confirmation items */
+  .conf-status-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .85rem;
+    margin-bottom: 28px;
+  }
+  .conf-status-table th {
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--gray-50);
+    color: var(--gray-500);
+    font-weight: 600;
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    border-bottom: 2px solid var(--gray-200);
+  }
+  .conf-status-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: top;
+  }
+  .conf-status-table tr:hover { background: var(--gray-50); }
+  .status-badge {
+    display: inline-block;
+    font-size: .7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .status-resolved { background: var(--green-bg); color: var(--green); }
+  .status-partial { background: var(--amber-bg); color: #b45309; }
+  .status-open { background: var(--red-bg); color: var(--red); }
+  .status-new { background: var(--primary-bg); color: var(--primary); }
+
+  .conf-group {
+    margin-bottom: 32px;
+  }
+  .conf-group-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .conf-group-id {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: .85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .conf-group-id.high { background: var(--red-bg); color: var(--red); }
+  .conf-group-id.mid { background: var(--amber-bg); color: #b45309; }
+  .conf-group-id.low { background: var(--blue-bg); color: var(--blue); }
+  .conf-group-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--gray-900);
+  }
+  .conf-group-priority {
+    margin-left: auto;
+    font-size: .7rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+  .priority-high { background: var(--red-bg); color: var(--red); }
+  .priority-mid { background: var(--amber-bg); color: #b45309; }
+  .priority-low { background: var(--blue-bg); color: var(--blue); }
+
+  .conf-item {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .conf-item-title {
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+  }
+  .conf-item-body {
+    font-size: .85rem;
+    color: var(--gray-700);
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+  .conf-item-body code {
+    background: var(--gray-100);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: .8rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--primary);
+  }
+  .conf-questions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .conf-questions li {
+    position: relative;
+    padding: 6px 0 6px 20px;
+    font-size: .85rem;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+  .conf-questions li::before {
+    content: '?';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--amber-bg);
+    color: var(--amber);
+    font-size: .65rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .conf-context {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: var(--primary-bg);
+    border-radius: 8px;
+    font-size: .8rem;
+    color: var(--primary);
+    line-height: 1.6;
+  }
+
+  .priority-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .priority-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+    background: #fff;
+    box-shadow: var(--shadow);
+  }
+  .priority-card .priority-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .priority-card .priority-icon.urgent { background: var(--red-bg); color: var(--red); }
+  .priority-card .priority-icon.high { background: var(--amber-bg); color: #b45309; }
+  .priority-card .priority-icon.mid { background: var(--blue-bg); color: var(--blue); }
+  .priority-card-text {
+    font-size: .85rem;
+    color: var(--gray-700);
+    line-height: 1.5;
+  }
+  .priority-card-text strong {
+    display: block;
+    color: var(--gray-900);
+    font-size: .88rem;
+    margin-bottom: 2px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .db-grid { grid-template-columns: 1fr; }
+    .endpoint-summary { display: none; }
+    .arch-diagram { gap: 12px; }
+    .arch-node { width: 100px; font-size: .75rem; padding: 12px 8px; }
+    .header h1 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="container">
+    <h1>Brother API 仕様書</h1>
+    <p class="subtitle">元原稿画像管理 & AI画像生成 API</p>
+    <span class="date-badge">2026/04/17 版</span>
+  </div>
+</div>
+
+<nav class="nav-tabs">
+  <div class="container">
+    <div class="nav-tab active" data-tab="overview">概要</div>
+    <div class="nav-tab" data-tab="db">DB設計</div>
+    <div class="nav-tab" data-tab="api">APIエンドポイント</div>
+    <div class="nav-tab" data-tab="seq1">シーケンス: 原稿一覧・詳細</div>
+    <div class="nav-tab" data-tab="seq2">シーケンス: AI画像生成</div>
+    <div class="nav-tab" data-tab="confirm">確認事項</div>
+  </div>
+</nav>
+
+<!-- ==================== 概要 ==================== -->
+<div class="section active" id="overview">
+  <div class="container">
+    <h2 class="section-title">システム概要</h2>
+    <p class="section-desc">元原稿画像をベースに、生成AIでテキスト差し替え画像を作成するシステム</p>
+
+    <div class="arch-diagram">
+      <svg class="arch-svg" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,'Hiragino Sans','Noto Sans JP',sans-serif">
+        <defs>
+          <marker id="ah" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#9ca3af"/></marker>
+          <marker id="ah-l" markerWidth="7" markerHeight="5" refX="0" refY="2.5" orient="auto"><path d="M7,0 L0,2.5 L7,5" fill="#9ca3af"/></marker>
+          <filter id="ds" x="-2%" y="-2%" width="104%" height="108%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity=".07"/></filter>
+        </defs>
+
+        <!-- ブラザー側囲み -->
+        <rect x="318" y="10" width="572" height="600" rx="14" fill="#f8f9ff" stroke="#c7d2fe" stroke-width="1.5" stroke-dasharray="6,4"/>
+        <text x="604" y="34" text-anchor="middle" font-size="11" font-weight="600" fill="#818cf8">ブラザー側で管理</text>
+
+        <!-- ===== ユーザ ===== -->
+        <rect x="16" y="254" width="120" height="52" rx="10" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="76" y="277" text-anchor="middle" font-size="13" font-weight="600" fill="#374151">ユーザ</text>
+        <text x="76" y="294" text-anchor="middle" font-size="9.5" fill="#9ca3af">ブラウザで操作</text>
+
+        <!-- ユーザ → Frontend -->
+        <line x1="136" y1="280" x2="170" y2="280" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- ===== Frontend ===== -->
+        <rect x="178" y="254" width="120" height="52" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="238" y="277" text-anchor="middle" font-size="13" font-weight="600" fill="#3b82f6">Frontend</text>
+        <text x="238" y="294" text-anchor="middle" font-size="9.5" fill="#9ca3af">Bubble（画面）</text>
+
+        <!-- 注釈 -->
+        <rect x="164" y="324" width="148" height="30" rx="6" fill="#fefce8" stroke="#fde68a" stroke-width="1"/>
+        <text x="238" y="338" text-anchor="middle" font-size="8.5" fill="#a16207">Bubbleには画像を保存しない</text>
+        <text x="238" y="348" text-anchor="middle" font-size="8.5" font-weight="600" fill="#a16207">APIで取得・表示するだけ</text>
+
+        <!-- Frontend ⇄ Backend -->
+        <line x1="298" y1="272" x2="346" y2="272" stroke="#6366f1" stroke-width="1.5" marker-end="url(#ah)"/>
+        <text x="322" y="266" text-anchor="middle" font-size="8" fill="#6366f1">リクエスト</text>
+        <line x1="346" y1="290" x2="298" y2="290" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ah-l)"/>
+        <text x="322" y="304" text-anchor="middle" font-size="8" fill="#9ca3af">画像URL等</text>
+
+        <!-- ===== Backend API ===== -->
+        <rect x="354" y="236" width="136" height="88" rx="10" fill="#eef2ff" stroke="#818cf8" stroke-width="2" filter="url(#ds)"/>
+        <text x="422" y="270" text-anchor="middle" font-size="14" font-weight="700" fill="#6366f1">Backend API</text>
+        <text x="422" y="288" text-anchor="middle" font-size="9.5" fill="#6b7280">ブラザー側サーバー</text>
+        <text x="422" y="302" text-anchor="middle" font-size="9.5" fill="#6b7280">全体の処理を制御</text>
+
+        <!-- ================================================================ -->
+        <!-- 1. Source Image DB                                               -->
+        <!-- ================================================================ -->
+        <rect x="610" y="52" width="260" height="52" rx="9" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="740" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#10b981">Source Image DB</text>
+        <text x="740" y="90" text-anchor="middle" font-size="9" fill="#6b7280">元原稿の情報 &#160;<tspan fill="#3b82f6" font-weight="600">Read Only</tspan></text>
+
+        <!-- 行き -->
+        <path d="M490,252 L530,252 L530,70 L602,70" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#ah)" stroke-linejoin="round"/>
+        <rect x="536" y="56" width="58" height="16" rx="4" fill="#ecfdf5"/>
+        <text x="565" y="68" text-anchor="middle" font-size="8" fill="#10b981" font-weight="600">検索</text>
+        <!-- 戻り -->
+        <path d="M610,86 L546,86 L546,262 L490,262" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#ah-l)" stroke-dasharray="4,3" stroke-linejoin="round"/>
+        <rect x="536" y="78" width="58" height="16" rx="4" fill="#ecfdf5"/>
+        <text x="565" y="90" text-anchor="middle" font-size="8" fill="#10b981">メタ情報</text>
+
+        <!-- ================================================================ -->
+        <!-- 2. Generated Image DB                                            -->
+        <!-- ================================================================ -->
+        <rect x="610" y="164" width="260" height="52" rx="9" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="740" y="185" text-anchor="middle" font-size="11.5" font-weight="600" fill="#10b981">Generated Image DB</text>
+        <text x="740" y="202" text-anchor="middle" font-size="9" fill="#6b7280">生成画像の情報 &#160;<tspan fill="#10b981" font-weight="600">CRUD</tspan></text>
+
+        <!-- 行き -->
+        <path d="M490,272 L560,272 L560,182 L602,182" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#ah)" stroke-linejoin="round"/>
+        <rect x="566" y="168" width="30" height="16" rx="4" fill="#ecfdf5"/>
+        <text x="581" y="180" text-anchor="middle" font-size="8" fill="#10b981" font-weight="600">保存</text>
+        <!-- 戻り -->
+        <path d="M610,198 L574,198 L574,282 L490,282" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#ah-l)" stroke-dasharray="4,3" stroke-linejoin="round"/>
+        <rect x="536" y="190" width="58" height="16" rx="4" fill="#ecfdf5"/>
+        <text x="565" y="202" text-anchor="middle" font-size="8" fill="#10b981">ID / status</text>
+
+        <!-- ================================================================ -->
+        <!-- 3. Generative AI                                                 -->
+        <!-- ================================================================ -->
+        <rect x="610" y="296" width="260" height="52" rx="9" fill="#faf5ff" stroke="#c084fc" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="740" y="317" text-anchor="middle" font-size="12" font-weight="600" fill="#9333ea">Generative AI</text>
+        <text x="740" y="334" text-anchor="middle" font-size="9" fill="#6b7280">テキスト差替え画像を生成</text>
+
+        <!-- 行き -->
+        <path d="M490,296 L540,296 L540,314 L602,314" stroke="#9333ea" stroke-width="1.5" fill="none" marker-end="url(#ah)" stroke-linejoin="round"/>
+        <rect x="536" y="300" width="58" height="16" rx="4" fill="#faf5ff"/>
+        <text x="565" y="312" text-anchor="middle" font-size="8" fill="#9333ea" font-weight="600">元画像+テキスト</text>
+        <!-- 戻り -->
+        <path d="M610,330 L554,330 L554,306 L490,306" stroke="#9333ea" stroke-width="1.5" fill="none" marker-end="url(#ah-l)" stroke-dasharray="4,3" stroke-linejoin="round"/>
+        <rect x="536" y="322" width="58" height="16" rx="4" fill="#faf5ff"/>
+        <text x="565" y="334" text-anchor="middle" font-size="8" fill="#9333ea">生成画像</text>
+
+        <!-- ================================================================ -->
+        <!-- 4. File Storage                                                  -->
+        <!-- ================================================================ -->
+        <rect x="610" y="418" width="260" height="52" rx="9" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5" filter="url(#ds)"/>
+        <text x="740" y="439" text-anchor="middle" font-size="12" font-weight="600" fill="#b45309">File Storage</text>
+        <text x="740" y="456" text-anchor="middle" font-size="9" fill="#6b7280">画像ファイルの保管場所</text>
+
+        <!-- 行き -->
+        <path d="M490,316 L520,316 L520,436 L602,436" stroke="#b45309" stroke-width="1.5" fill="none" marker-end="url(#ah)" stroke-linejoin="round"/>
+        <rect x="558" y="428" width="36" height="16" rx="4" fill="#fffbeb"/>
+        <text x="576" y="440" text-anchor="middle" font-size="8" fill="#b45309" font-weight="600">保存</text>
+        <!-- 戻り -->
+        <path d="M610,452 L534,452 L534,324 L490,324" stroke="#b45309" stroke-width="1.5" fill="none" marker-end="url(#ah-l)" stroke-dasharray="4,3" stroke-linejoin="round"/>
+        <rect x="548" y="444" width="54" height="16" rx="4" fill="#fffbeb"/>
+        <text x="575" y="456" text-anchor="middle" font-size="8" fill="#b45309">画像URL</text>
+
+        <!-- 凡例 -->
+        <rect x="610" y="510" width="260" height="56" rx="8" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+        <line x1="630" y1="528" x2="656" y2="528" stroke="#6366f1" stroke-width="1.5"/>
+        <text x="664" y="532" font-size="9" fill="#6b7280">実線 = リクエスト（送る）</text>
+        <line x1="630" y1="548" x2="656" y2="548" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="664" y="552" font-size="9" fill="#6b7280">点線 = レスポンス（返る）</text>
+      </svg>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== DB設計 ==================== -->
+<div class="section" id="db">
+  <div class="container">
+    <h2 class="section-title">データベース設計</h2>
+    <p class="section-desc">2つのDBでソース画像と生成画像を管理</p>
+
+    <div class="db-grid">
+      <!-- DB1 -->
+      <div class="card db-card">
+        <div class="card-header">
+          <h3>DB1: Source Image DB</h3>
+        </div>
+        <div class="card-body">
+          <div class="db-role">
+            <p>事前に用意された元原稿画像の情報を管理</p>
+            <p>一覧表示、詳細表示、選択対象として利用</p>
+            <span class="badge badge-readonly">Read Only</span>
+          </div>
+          <table class="field-table">
+            <thead>
+              <tr><th>フィールド</th><th>説明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="field-name">sourceImageId</span><span class="field-pk">PK</span></td><td>元原稿画像ID</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">category</span></td><td>分類</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td></tr>
+              <tr><td><span class="field-name">thumbnailKey</span></td><td>サムネイル識別子</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>状態</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+              <tr><td><span class="field-name">description</span><span class="field-optional">任意</span></td><td>説明</td></tr>
+              <tr><td><span class="field-name">tags</span><span class="field-optional">任意</span></td><td>タグ</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DB2 -->
+      <div class="card db-card secondary">
+        <div class="card-header">
+          <h3>DB2: Generated Image DB</h3>
+        </div>
+        <div class="card-body">
+          <div class="db-role">
+            <p>元原稿画像 + 入れ替えテキストをもとに生成された画像情報を管理</p>
+            <p>生成履歴、状態管理、再生成の管理も担当</p>
+            <span class="badge badge-crud">CRUD</span>
+          </div>
+          <table class="field-table">
+            <thead>
+              <tr><th>フィールド</th><th>説明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="field-name">generatedImageId</span><span class="field-pk">PK</span></td><td>生成画像ID</td></tr>
+              <tr><td><span class="field-name">sourceImageId</span></td><td>元原稿画像ID</td></tr>
+              <tr><td><span class="field-name">userId</span></td><td>ユーザID</td></tr>
+              <tr><td><span class="field-name">replaceText</span></td><td>差し替えテキスト</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>生成状態</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>生成画像ファイル識別子</td></tr>
+              <tr><td><span class="field-name">parentGeneratedImageId</span></td><td>再生成元ID</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+              <tr><td><span class="field-name">deletedAt</span><span class="field-optional">任意</span></td><td>削除日時</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== APIエンドポイント ==================== -->
+<div class="section" id="api">
+  <div class="container">
+    <h2 class="section-title">APIエンドポイント</h2>
+    <p class="section-desc">全7エンドポイント（元原稿画像系 2 + 生成画像系 5）</p>
+
+    <div class="endpoint-list">
+
+      <div class="api-category">元原稿画像系 (Source Images)</div>
+
+      <!-- GET /source-images -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/source-images</span>
+          <span class="endpoint-summary">原稿一覧取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">title</span>
+              <span class="field-chip">thumbnailUrl</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">category</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /source-images/{id} -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/source-images/<span class="param">{sourceImageId}</span></span>
+          <span class="endpoint-summary">特定原稿詳細取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">title</span>
+              <span class="field-chip">imageUrl</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-category">生成画像系 (Generated Images)</div>
+
+      <!-- POST /generated-images -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-post">POST</span>
+          <span class="endpoint-path">/generated-images</span>
+          <span class="async-badge">非同期</span>
+          <span class="endpoint-summary">新規生成</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">リクエストボディ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">originalText</span>
+              <span class="field-chip">replaceText</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* 非同期処理 - 即座にgeneratedImageIdとstatus=RUNNINGを返却し、バックグラウンドで画像生成を実行</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /generated-images/{id} -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span></span>
+          <span class="endpoint-summary">生成画像詳細取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">imageUrl</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* imageUrl は status=COMPLETED のときのみ返却</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /generated-images -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/generated-images</span>
+          <span class="endpoint-summary">生成画像一覧取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">クエリパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">userId</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">createdAt</span>
+              <span class="field-chip">thumbnailUrl</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POST /generated-images/{id}/regenerate -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-post">POST</span>
+          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span>/regenerate</span>
+          <span class="endpoint-summary">再生成</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ + リクエストボディ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">originalText</span>
+              <span class="field-chip">replaceText</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">parentGeneratedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* 新しいgeneratedImageIdが発行され、元のIDはparentGeneratedImageIdとして記録</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DELETE /generated-images/{id} -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-delete">DELETE</span>
+          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span></span>
+          <span class="endpoint-summary">生成画像削除</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== シーケンス1 ==================== -->
+<div class="section" id="seq1">
+  <div class="container">
+    <h2 class="section-title">シーケンス図: 原稿一覧・詳細取得</h2>
+    <p class="section-desc">原稿一覧画面の表示から、特定原稿の詳細取得までのフロー</p>
+
+    <!-- ステップ解説 -->
+    <div class="flow-explanation">
+      <h3>やっていることの流れ（かんたん解説）</h3>
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">1</span>原稿一覧を表示する</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザ</div>
+              <div class="step-text">ブラウザで<strong>原稿一覧画面</strong>を開きます。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">裏側のサーバーに「<strong>原稿の一覧をちょうだい</strong>」とリクエストを送ります。</div>
+              <div class="step-note">API呼び出し: GET /source-images</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">データベースから<strong>原稿の情報</strong>（タイトル・サムネイルのキーなど）をまとめて取得します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot storage"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー &rarr; ファイルストレージ</div>
+              <div class="step-text">サムネイル画像のキーをもとに、ブラウザで表示できる<strong>画像URLを生成</strong>します。</div>
+              <div class="step-note">画像ファイル自体はクラウドストレージに保管されており、一時的な表示用URLを発行する仕組みです</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">受け取った情報をもとに、<strong>サムネイル画像の一覧</strong>をユーザに表示します。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <hr class="flow-divider">
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">2</span>原稿の詳細を見る</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザ</div>
+              <div class="step-text">一覧の中から見たい<strong>原稿をクリック</strong>して選択します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">サーバーに「<strong>この原稿の詳しい情報をちょうだい</strong>」とリクエストを送ります。</div>
+              <div class="step-note">API呼び出し: GET /source-images/{sourceImageId}</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">データベースからその原稿の<strong>詳細情報</strong>（タイトル・説明・画像キーなど）を取得し、ファイルストレージから<strong>フルサイズの画像URL</strong>を生成します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">原稿の<strong>詳細情報と大きな原稿画像</strong>をユーザに表示します。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mermaid-wrapper">
+      <h3>原稿一覧取得 &rarr; 特定原稿の詳細取得（シーケンス図）</h3>
+      <pre class="mermaid">
+sequenceDiagram
+    autonumber
+
+    actor User as ユーザ
+    participant FE as Frontend
+    participant API as Backend API
+    participant SIDB as Source Image DB
+    participant FS as File Storage
+
+    User ->> FE: 原稿一覧画面を開く
+    FE ->> API: GET /source-images
+
+    API ->> SIDB: 原稿一覧メタ情報を取得
+    SIDB -->> API: sourceImageId, title, thumbnailFileKey, status
+
+    API ->> FS: thumbnailFileKey から表示用URLを生成
+    FS -->> API: thumbnailUrl
+
+    API -->> FE: 原稿一覧（thumbnailUrl 含む）
+    FE -->> User: サムネイル画像一覧を表示
+
+    User ->> FE: 特定原稿を選択
+    FE ->> API: GET /source-images/{sourceImageId}
+
+    API ->> SIDB: 特定原稿の詳細取得
+    SIDB -->> API: title, imageFileKey, description, status
+
+    API ->> FS: imageFileKey から表示用URLを生成
+    FS -->> API: imageUrl
+
+    API -->> FE: 原稿詳細（imageUrl 含む）
+    FE -->> User: 原稿詳細・原稿画像を表示
+      </pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== シーケンス2 ==================== -->
+<div class="section" id="seq2">
+  <div class="container">
+    <h2 class="section-title">シーケンス図: AI画像生成</h2>
+    <p class="section-desc">特定原稿からテキスト差し替え画像を生成し、結果を取得するまでのフロー</p>
+
+    <!-- ステップ解説 -->
+    <div class="flow-explanation">
+      <h3>やっていることの流れ（かんたん解説）</h3>
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">1</span>元になる原稿を開く</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザ</div>
+              <div class="step-text">テキストを差し替えたい<strong>元原稿の詳細画面</strong>を開きます。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">「原稿一覧・詳細取得」と同じ流れで、DBから原稿情報を取得し、ストレージから<strong>画像URLを発行</strong>して画面に返します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">原稿の詳細と画像を表示します。ここからユーザは<strong>テキスト差し替えの操作</strong>に進めます。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <hr class="flow-divider">
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">2</span>AIに画像生成を依頼する</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザ</div>
+              <div class="step-text"><strong>元のテキスト</strong>（originalText）と<strong>差し替え後のテキスト</strong>（replaceText）を入力して「生成」ボタンを押します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">サーバーに「<strong>この原稿のテキストを差し替えた画像を作って</strong>」とリクエストを送ります。</div>
+              <div class="step-note">API呼び出し: POST /generated-images { sourceImageId, originalText, replaceText }</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">すぐに「<strong>受け付けました（生成中）</strong>」と返事を返します。画面にはローディング表示が出ます。</div>
+              <div class="step-note">画像生成には時間がかかるため、結果を待たずに先に「受付OK」を返す仕組み（非同期処理）です</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <hr class="flow-divider">
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">3</span>裏側でAIが画像を生成する（バックグラウンド）</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">元原稿が本当に存在するか<strong>DBで確認</strong>し、生成画像DBに<strong>「処理中」のレコードを作成</strong>します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot ai"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー &rarr; 生成AI</div>
+              <div class="step-text">元原稿画像と差し替えテキストを生成AIに渡して、<strong>テキストが差し替わった新しい画像</strong>を作ってもらいます。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot storage"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー &rarr; ファイルストレージ</div>
+              <div class="step-text">AIから返ってきた<strong>生成画像をストレージに保存</strong>します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">生成画像DBのレコードを<strong>「完了」に更新</strong>し、画面に「生成が終わりました」と通知します。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <hr class="flow-divider">
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">4</span>生成結果を確認する</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザ</div>
+              <div class="step-text">生成完了の通知を受けて、<strong>生成結果を表示</strong>する操作をします。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">サーバーに「<strong>この生成画像の情報をちょうだい</strong>」とリクエストを送ります。</div>
+              <div class="step-note">API呼び出し: GET /generated-images/{generatedImageId}</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">生成画像DBから結果を取得し、ストレージから<strong>表示用の画像URLを発行</strong>して画面に返します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">AIが生成した<strong>テキスト差し替え済みの画像</strong>をユーザに表示します。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mermaid-wrapper">
+      <h3>特定原稿から新規生成 &rarr; 結果取得・表示（シーケンス図）</h3>
+      <pre class="mermaid">
+sequenceDiagram
+    autonumber
+
+    actor User as ユーザ
+    participant FE as Frontend
+    participant API as Backend API
+    participant SIDB as Source Image DB
+    participant GIDB as Generated Image DB
+    participant AI as Generative AI
+    participant FS as File Storage
+
+    User ->> FE: 特定原稿詳細を開く
+    FE ->> API: GET /source-images/{sourceImageId}
+    API ->> SIDB: 原稿詳細を取得
+    SIDB -->> API: 原稿メタ情報を返却
+    API ->> FS: 原稿画像URLを取得
+    FS -->> API: sourceImageUrl
+    API -->> FE: 原稿詳細 + sourceImageUrl
+    FE -->> User: 原稿詳細を表示
+
+    User ->> FE: ターゲットテキストと差し替えテキストを入力し「生成」を実行
+    FE ->> API: POST /generated-images { sourceImageId, originalText, replaceText }
+    API -->> FE: generatedImageId, status = RUNNING
+    FE -->> User: 生成受付/生成中を表示
+
+    API ->> SIDB: sourceImageId の存在確認
+    SIDB -->> API: 原稿情報を返却
+
+    API ->> GIDB: 生成レコード作成 status = PENDING
+    GIDB -->> API: generatedImageId を返却
+
+    API ->> AI: 元原稿 + replaceText で画像生成依頼
+    AI -->> API: 生成画像データを返却
+
+    API ->> FS: 生成画像を保存
+    FS -->> API: generatedFileKey を返却
+
+    API ->> GIDB: status = COMPLETED, fileKey = generatedFileKey を更新
+    GIDB -->> API: 更新完了
+
+    API -->> FE: generatedImageId, status = COMPLETED
+    FE -->> User: 生成完了を表示
+
+    User ->> FE: 生成結果を表示
+    FE ->> API: GET /generated-images/{generatedImageId}
+
+    API ->> GIDB: generatedImageId で生成結果取得
+    GIDB -->> API: status, fileKey を返却
+
+    API ->> FS: fileKey から表示用URLを取得
+    FS -->> API: generatedImageUrl
+
+    API -->> FE: generatedImageId, status = COMPLETED, generatedImageUrl
+    FE -->> User: 生成画像を表示
+      </pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 確認事項 ==================== -->
+<div class="section" id="confirm">
+  <div class="container">
+    <h2 class="section-title">確認事項</h2>
+    <p class="section-desc">04/17 共有のAPI仕様を確認した上で、ブラザー様に確認したい事項（04/20 作成）</p>
+
+    <!-- A. データの保存先・アップロード -->
+    <div class="conf-group">
+      <div class="conf-group-header">
+        <span class="conf-group-id high">A</span>
+        <span class="conf-group-title">データの保存先・アップロード</span>
+        <span class="conf-group-priority priority-high">最優先</span>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">A-1. 元原稿データのアップロード手段が未定義</div>
+        <div class="conf-item-body">
+          API仕様上、Source Image DB（DB1）はFrontendから <strong>Read Only</strong> で、取得系APIしか存在しません。<br>
+          <code>GET /source-images</code>（一覧）と <code>GET /source-images/{sourceImageId}</code>（詳細）のみ。<br><br>
+          一方、Bubble側には「デザインテンプレート・共通印刷物の原稿デザインデータをアップロードする画面」が存在します。（宮田さん 04/17 メールで言及）
+        </div>
+        <ul class="conf-questions">
+          <li>元原稿データの登録は<strong>ブラザー側が管理者として直接DBに投入する想定</strong>か？</li>
+          <li>それとも <strong>Bubble側からアップロードするAPI</strong>が今後追加される予定か？（例: <code>POST /source-images</code>）</li>
+          <li>デフォルトの原稿データは<strong>ブラザー側サーバーに保存し、BubbleからはAPIで取得するだけ</strong>、という認識で合っているか？</li>
+        </ul>
+        <div class="conf-context">Bubble側のアップロード画面を残すべきか、削除してAPI経由の表示だけにすべきかの判断に直結します。</div>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">A-2. Bubble側にデータを保存する必要があるケースの有無</div>
+        <div class="conf-item-body">
+          API仕様では画像・生成データはすべてBrother側に保存される設計です。
+        </div>
+        <ul class="conf-questions">
+          <li>Bubble側のDBには<strong>何も保存しなくてよいか？</strong>（キャッシュ・一時保存も不要？）</li>
+          <li>ユーザーのお気に入り・閲覧履歴など、<strong>Bubble側で独自に管理すべきデータ</strong>はあるか？</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- B. 非同期処理の完了通知方式 -->
+    <div class="conf-group">
+      <div class="conf-group-header">
+        <span class="conf-group-id high">B</span>
+        <span class="conf-group-title">非同期処理の完了通知方式</span>
+        <span class="conf-group-priority priority-high">最優先</span>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">B-1. 生成完了をFrontendにどう伝えるか</div>
+        <div class="conf-item-body">
+          シーケンス図では以下の流れが描かれています:<br><br>
+          <code>POST /generated-images</code> &rarr; <code>status=RUNNING</code> を即時返却<br>
+          &nbsp;&nbsp;&darr;（バックグラウンド処理）<br>
+          API &rarr; FE: <code>generatedImageId, status=COMPLETED</code><br><br>
+          この <strong>「API &rarr; FE: status=COMPLETED」の通知方法が不明</strong>です。
+        </div>
+        <ul class="conf-questions">
+          <li><strong>Webhook方式</strong>: 生成完了時にBubble側のURLに通知を送ってもらう形か？</li>
+          <li><strong>ポーリング方式</strong>: Bubble側が定期的に <code>GET /generated-images/{id}</code> でステータスを確認する形か？</li>
+          <li>その他の方式（WebSocket、Server-Sent Events 等）を想定しているか？</li>
+        </ul>
+        <div class="conf-context">Bubble側としてはWebhook方式が望ましいです。ポーリングの場合は推奨間隔も知りたいです。Bubble側の実装パターンが根本的に変わるため、最優先で確定したい事項です。</div>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">B-2. 生成にかかる想定時間</div>
+        <ul class="conf-questions">
+          <li>1回の画像生成の<strong>想定所要時間</strong>は？（数秒 / 数十秒 / 数分）</li>
+          <li>タイムアウトを設定する場合の推奨値は？</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- C. API仕様の詳細 -->
+    <div class="conf-group">
+      <div class="conf-group-header">
+        <span class="conf-group-id mid">C</span>
+        <span class="conf-group-title">API仕様の詳細</span>
+        <span class="conf-group-priority priority-mid">高</span>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">C-1. ステータス値の一覧</div>
+        <div class="conf-item-body">
+          シーケンス図から読み取れるステータス: <code>PENDING</code> / <code>RUNNING</code> / <code>COMPLETED</code>
+        </div>
+        <ul class="conf-questions">
+          <li>上記以外のステータスはあるか？（例: <code>FAILED</code>, <code>CANCELLED</code>, <code>EXPIRED</code> 等）</li>
+          <li><code>PENDING</code> と <code>RUNNING</code> の違い・使い分けは？</li>
+          <li>削除時のステータスは？（論理削除 <code>DELETED</code> ？ 物理削除？）</li>
+        </ul>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">C-2. originalText フィールドの意味</div>
+        <div class="conf-item-body">
+          <code>POST /generated-images</code> のリクエストに <code>originalText</code> と <code>replaceText</code> があります。
+        </div>
+        <ul class="conf-questions">
+          <li><code>originalText</code> = 元原稿画像内の差し替え対象テキスト、という理解で合っているか？</li>
+          <li>ユーザーが手動で入力するのか？元原稿のメタデータとしてAPI側が保持しているのか？</li>
+          <li>複数箇所のテキスト差し替えには対応するか？（配列で渡す等）</li>
+        </ul>
+        <div class="conf-context">入力画面のUI設計に直結します。ユーザーに「元テキスト」を手入力させるのか、選択させるのかで画面が変わります。</div>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">C-3. 一覧APIのページネーション・フィルタ</div>
+        <div class="conf-item-body">
+          <code>GET /source-images</code> と <code>GET /generated-images</code> について。
+        </div>
+        <ul class="conf-questions">
+          <li>ページネーションは対応しているか？（offset/limit、cursor方式 等）</li>
+          <li>ソート順の指定は可能か？（作成日時順、名前順 等）</li>
+          <li>フィルタリングパラメータは？（categoryでの絞り込み等）</li>
+          <li>1リクエストあたりの最大件数は？</li>
+        </ul>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">C-4. 再生成と元データの関係</div>
+        <div class="conf-item-body">
+          <code>POST /generated-images/{generatedImageId}/regenerate</code> について。
+        </div>
+        <ul class="conf-questions">
+          <li>再生成時、元の <code>generatedImageId</code> のレコードはどうなるか？（残る？上書き？）</li>
+          <li><code>parentGeneratedImageId</code> を辿って再生成の履歴を追えるか？</li>
+          <li>再生成の回数制限はあるか？</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- D. 継続確認事項 -->
+    <div class="conf-group">
+      <div class="conf-group-header">
+        <span class="conf-group-id mid">D</span>
+        <span class="conf-group-title">継続確認事項（04/16から未解決）</span>
+        <span class="conf-group-priority priority-mid">高</span>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">D-1. エラーハンドリング</div>
+        <ul class="conf-questions">
+          <li>エラー時のレスポンス形式は？（HTTPステータスコード + JSONボディ？）</li>
+          <li>生成失敗時、Bubble側で自動リトライしてよいか？（冪等性は保証されるか？）</li>
+          <li>バリデーションエラー時、どのフィールドが不正かわかる形式か？</li>
+        </ul>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">D-2. API認証・セキュリティ</div>
+        <ul class="conf-questions">
+          <li>認証方式は？（APIキー / Bearer Token / その他）</li>
+          <li>レート制限はあるか？（同時リクエスト数の上限）</li>
+          <li>APIのベースURLは？（環境ごと: 開発 / ステージング / 本番）</li>
+        </ul>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">D-3. 画像の保持期間</div>
+        <ul class="conf-questions">
+          <li>File Storage上の画像URLの<strong>有効期限</strong>は？</li>
+          <li>生成画像の保持期間は？（何日後に自動削除されるか）</li>
+          <li>DELETE API実行後、ファイルストレージからも即時削除されるか？</li>
+        </ul>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">D-4. 画像フォーマット・品質</div>
+        <ul class="conf-questions">
+          <li>生成画像のフォーマットは？（PNG / JPEG / PDF / その他）</li>
+          <li>解像度・DPIは？（印刷用途なら300dpi以上が必要）</li>
+          <li>最終的なPPTX変換はどちら側（ブラザー / アイビス）で行うか？</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- E. 開発・環境面 -->
+    <div class="conf-group">
+      <div class="conf-group-header">
+        <span class="conf-group-id low">E</span>
+        <span class="conf-group-title">開発・環境面</span>
+        <span class="conf-group-priority priority-low">中</span>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">E-1. 開発環境・モックAPI</div>
+        <div class="conf-item-body">
+          04/17メールで「Backendサーバの環境構築をしている段階」とのこと。
+        </div>
+        <ul class="conf-questions">
+          <li>開発環境のAPIが利用可能になる想定時期は？</li>
+          <li>モックAPIやSwagger/OpenAPI定義は先行して提供可能か？</li>
+          <li>テスト用のサンプル元原稿データは用意してもらえるか？</li>
+        </ul>
+      </div>
+
+      <div class="conf-item">
+        <div class="conf-item-title">E-2. 結合テストの進め方</div>
+        <ul class="conf-questions">
+          <li>結合テスト（5月予定）のスコープ・テストケースの共有時期は？</li>
+          <li>Bubble側から接続テストできる環境の提供時期は？</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 優先度まとめ -->
+    <h2 class="section-title" style="margin-top:48px;">優先度まとめ</h2>
+    <p class="section-desc">回答をいただきたい順に並べています</p>
+
+    <div class="priority-summary">
+      <div class="priority-card">
+        <div class="priority-icon urgent">1</div>
+        <div class="priority-card-text">
+          <strong>A-1. 元原稿データのアップロード手段</strong>
+          画面設計・実装方針に直結。アップロード画面の要否が変わる
+        </div>
+      </div>
+      <div class="priority-card">
+        <div class="priority-icon urgent">2</div>
+        <div class="priority-card-text">
+          <strong>B-1. 非同期の完了通知方式</strong>
+          Bubble側の実装パターンが根本的に変わる
+        </div>
+      </div>
+      <div class="priority-card">
+        <div class="priority-icon high">3</div>
+        <div class="priority-card-text">
+          <strong>C-1. ステータス値の一覧</strong>
+          画面の状態表示・エラーハンドリングに必要
+        </div>
+      </div>
+      <div class="priority-card">
+        <div class="priority-icon high">4</div>
+        <div class="priority-card-text">
+          <strong>C-2. originalText の仕様</strong>
+          入力画面のUI設計に直結
+        </div>
+      </div>
+      <div class="priority-card">
+        <div class="priority-icon high">5</div>
+        <div class="priority-card-text">
+          <strong>D-1 ~ D-4. 継続未解決事項</strong>
+          エラー処理・認証・画像保持期間・フォーマット
+        </div>
+      </div>
+      <div class="priority-card">
+        <div class="priority-icon mid">6</div>
+        <div class="priority-card-text">
+          <strong>E-1 ~ E-2. 開発環境面</strong>
+          開発着手後でも調整可能だが、早めに知りたい
+        </div>
+      </div>
+    </div>
+
+    <!-- F. 実際の画面フローとのギャップ -->
+    <div class="conf-group" style="margin-top:48px; padding-top:32px; border-top: 2px solid var(--red);">
+      <div class="conf-group-header">
+        <span class="conf-group-id high">F</span>
+        <span class="conf-group-title">実際の画面フローとAPIのギャップ（04/20 追記）</span>
+        <span class="conf-group-priority priority-high">最優先</span>
+      </div>
+
+      <div class="conf-item" style="border-left: 3px solid var(--red);">
+        <div class="conf-item-title">F-1. リクエストの情報量が全然違う</div>
+        <div class="conf-item-body">
+          現在のAPIの生成リクエスト:<br>
+          <code>POST /generated-images { sourceImageId, originalText, replaceText }</code><br><br>
+          実際に送りたい情報（画面から読み取れるもの）:<br>
+          <strong>行事名</strong>、<strong>開催期間</strong>、<strong>行事詳細</strong>、<strong>プログラム</strong>（複数行）、<strong>注釈</strong>、<strong>連絡先</strong> 等<br><br>
+          <code>originalText</code> / <code>replaceText</code> の1組だけでは、<strong>複数のテキスト項目を背景画像に配置できない</strong>。
+        </div>
+        <ul class="conf-questions">
+          <li>リクエスト構造を拡張して、複数のテキストフィールドを渡せるようにするか？</li>
+          <li>それとも originalText/replaceText を配列にして複数組渡す設計か？</li>
+        </ul>
+      </div>
+
+      <div class="conf-item" style="border-left: 3px solid var(--red);">
+        <div class="conf-item-title">F-2. テンプレートの階層構造がAPIにない</div>
+        <div class="conf-item-body">
+          実際のデータ構造（Bubble側）:<br><br>
+          <strong>デザインテンプレート</strong>（管理者が作る）<br>
+          &nbsp;&nbsp;└ 1デザイン × 7サイズの背景画像<br><br>
+          <strong>行事テンプレート</strong>（管理者が作る）<br>
+          &nbsp;&nbsp;└ デザインテンプレートを最大3種紐づけ<br>
+          &nbsp;&nbsp;└ 業界・月で分類<br><br>
+          <strong>行事</strong>（ユーザーが作る）<br>
+          &nbsp;&nbsp;└ 行事テンプレートを選択（or なし）<br>
+          &nbsp;&nbsp;└ 文字情報を入力<br>
+          &nbsp;&nbsp;└ 生成ボタンで 3デザイン × サイズごとに生成<br><br>
+          今のAPIの構造:<br>
+          Source Image = フラットな一覧（階層なし、グルーピングなし）<br>
+          Generated Image = 1回のPOSTで1枚だけ生成
+        </div>
+        <ul class="conf-questions">
+          <li>テンプレートの親子関係（デザインテンプレ→行事テンプレ→行事）はBubble側で管理し、APIにはsourceImageId単位で投げる想定か？</li>
+          <li>それともAPI側にもテンプレート階層を持たせるか？</li>
+        </ul>
+      </div>
+
+      <div class="conf-item" style="border-left: 3px solid var(--red);">
+        <div class="conf-item-title">F-3. 一括生成（3デザイン × 複数サイズ）</div>
+        <div class="conf-item-body">
+          ユーザーが「生成」ボタンを1回押すと、最大 <strong>3デザイン × 4サイズ = 12枚</strong> の画像生成が発生する。<br>
+          現在のAPIは1回のPOSTで1枚だけ生成する設計。
+        </div>
+        <ul class="conf-questions">
+          <li>12回個別にPOSTする想定か？一括生成APIを用意するか？</li>
+          <li>個別POSTの場合、12件の非同期完了通知をどう管理するか？</li>
+        </ul>
+      </div>
+
+      <div class="conf-item" style="border-left: 3px solid var(--red);">
+        <div class="conf-item-title">F-4. 背景画像の保存先</div>
+        <div class="conf-item-body">
+          管理者がデザインテンプレートで <strong>7サイズの背景画像をアップロード</strong> している。<br>
+          APIには <code>POST /source-images</code> がない。
+        </div>
+        <ul class="conf-questions">
+          <li>背景画像はBubble側に保持して、生成時にURLでAPIに渡す想定か？</li>
+          <li>それともBrother側にアップロードAPIを追加するか？</li>
+        </ul>
+      </div>
+
+      <div class="conf-item" style="border-left: 3px solid var(--red);">
+        <div class="conf-item-title">F-5. サイズ指定の方法</div>
+        <div class="conf-item-body">
+          画面では A3 / A4 / 長尺縦 / 長尺横 のタブがある。<br>
+          APIにはサイズを指定するパラメータがない。
+        </div>
+        <ul class="conf-questions">
+          <li>サイズごとに別の <code>sourceImageId</code> として管理する想定か？</li>
+          <li>それともリクエストパラメータでサイズを指定するか？</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Tab navigation
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Mermaid init
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    sequence: {
+      actorMargin: 50,
+      mirrorActors: true,
+      messageMargin: 40,
+      boxMargin: 10,
+      noteMargin: 10,
+      useMaxWidth: true,
+    },
+    themeVariables: {
+      primaryColor: '#eef2ff',
+      primaryBorderColor: '#6366f1',
+      primaryTextColor: '#374151',
+      lineColor: '#9ca3af',
+      secondaryColor: '#f3f4f6',
+      tertiaryColor: '#fff',
+      actorBkg: '#6366f1',
+      actorTextColor: '#fff',
+      actorBorder: '#4f46e5',
+      signalColor: '#374151',
+      noteBkgColor: '#fef3c7',
+      noteTextColor: '#92400e',
+      noteBorderColor: '#fcd34d',
+    }
+  });
+</script>
+
+</body>
+</html>
