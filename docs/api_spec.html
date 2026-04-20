@@ -558,189 +558,6 @@
     margin: 8px 0;
   }
 
-  /* Confirmation items */
-  .conf-status-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: .85rem;
-    margin-bottom: 28px;
-  }
-  .conf-status-table th {
-    text-align: left;
-    padding: 10px 12px;
-    background: var(--gray-50);
-    color: var(--gray-500);
-    font-weight: 600;
-    font-size: .75rem;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    border-bottom: 2px solid var(--gray-200);
-  }
-  .conf-status-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--gray-100);
-    vertical-align: top;
-  }
-  .conf-status-table tr:hover { background: var(--gray-50); }
-  .status-badge {
-    display: inline-block;
-    font-size: .7rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-  .status-resolved { background: var(--green-bg); color: var(--green); }
-  .status-partial { background: var(--amber-bg); color: #b45309; }
-  .status-open { background: var(--red-bg); color: var(--red); }
-  .status-new { background: var(--primary-bg); color: var(--primary); }
-
-  .conf-group {
-    margin-bottom: 32px;
-  }
-  .conf-group-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .conf-group-id {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    font-size: .85rem;
-    font-weight: 800;
-    flex-shrink: 0;
-  }
-  .conf-group-id.high { background: var(--red-bg); color: var(--red); }
-  .conf-group-id.mid { background: var(--amber-bg); color: #b45309; }
-  .conf-group-id.low { background: var(--blue-bg); color: var(--blue); }
-  .conf-group-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--gray-900);
-  }
-  .conf-group-priority {
-    margin-left: auto;
-    font-size: .7rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 4px;
-  }
-  .priority-high { background: var(--red-bg); color: var(--red); }
-  .priority-mid { background: var(--amber-bg); color: #b45309; }
-  .priority-low { background: var(--blue-bg); color: var(--blue); }
-
-  .conf-item {
-    background: #fff;
-    border: 1px solid var(--gray-200);
-    border-radius: 10px;
-    padding: 18px 20px;
-    margin-bottom: 12px;
-    box-shadow: var(--shadow);
-  }
-  .conf-item-title {
-    font-size: .9rem;
-    font-weight: 700;
-    color: var(--gray-900);
-    margin-bottom: 8px;
-  }
-  .conf-item-body {
-    font-size: .85rem;
-    color: var(--gray-700);
-    line-height: 1.8;
-    margin-bottom: 12px;
-  }
-  .conf-item-body code {
-    background: var(--gray-100);
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-size: .8rem;
-    font-family: 'SF Mono', 'Fira Code', monospace;
-    color: var(--primary);
-  }
-  .conf-questions {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .conf-questions li {
-    position: relative;
-    padding: 6px 0 6px 20px;
-    font-size: .85rem;
-    color: var(--gray-700);
-    line-height: 1.6;
-  }
-  .conf-questions li::before {
-    content: '?';
-    position: absolute;
-    left: 0;
-    top: 6px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--amber-bg);
-    color: var(--amber);
-    font-size: .65rem;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .conf-context {
-    margin-top: 10px;
-    padding: 10px 14px;
-    background: var(--primary-bg);
-    border-radius: 8px;
-    font-size: .8rem;
-    color: var(--primary);
-    line-height: 1.6;
-  }
-
-  .priority-summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 12px;
-    margin-top: 32px;
-  }
-  .priority-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 14px 16px;
-    border-radius: 10px;
-    border: 1px solid var(--gray-200);
-    background: #fff;
-    box-shadow: var(--shadow);
-  }
-  .priority-card .priority-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: .85rem;
-    font-weight: 800;
-    flex-shrink: 0;
-  }
-  .priority-card .priority-icon.urgent { background: var(--red-bg); color: var(--red); }
-  .priority-card .priority-icon.high { background: var(--amber-bg); color: #b45309; }
-  .priority-card .priority-icon.mid { background: var(--blue-bg); color: var(--blue); }
-  .priority-card-text {
-    font-size: .85rem;
-    color: var(--gray-700);
-    line-height: 1.5;
-  }
-  .priority-card-text strong {
-    display: block;
-    color: var(--gray-900);
-    font-size: .88rem;
-    margin-bottom: 2px;
-  }
 
   /* Flow accordion */
   .flow-accordion { margin-bottom: 16px; }
@@ -911,21 +728,21 @@
           </div>
           <table class="field-table">
             <thead>
-              <tr><th>フィールド</th><th>説明</th></tr>
+              <tr><th>フィールド</th><th>説明</th><th>いつ使う</th></tr>
             </thead>
             <tbody>
-              <tr><td><span class="field-name">sourceImageId</span><span class="field-pk">PK</span></td><td>元原稿画像ID</td></tr>
-              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
-              <tr><td><span class="field-name">category</span></td><td>分類</td></tr>
-              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
-              <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td></tr>
-              <tr><td><span class="field-name">thumbnailKey</span></td><td>サムネイル識別子</td></tr>
-              <tr><td><span class="field-name">status</span></td><td>状態</td></tr>
-              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
-              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
-              <tr><td><span class="field-name">description</span><span class="field-optional">任意</span></td><td>説明</td></tr>
-              <tr><td><span class="field-name">tags</span><span class="field-optional">任意</span></td><td>タグ</td></tr>
-              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
+              <tr><td><span class="field-name">sourceImageId</span><span class="field-pk">PK</span></td><td>元原稿画像ID</td><td>STEP1: Bubble DBに紐付け保存 / STEP4: POST時に送る</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td><td>STEP1: 画像選択時の表示</td></tr>
+              <tr><td><span class="field-name">category</span></td><td>分類</td><td>STEP1: 行事 or 共通印刷物でフィルタ</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td><td>STEP1: サイズでフィルタ（パラメータ追加が必要）</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td><td style="color:var(--gray-400);">Bubble側は使わない（Brother内部用）</td></tr>
+              <tr><td><span class="field-name">thumbnailKey</span></td><td>サムネイル識別子</td><td style="color:var(--gray-400);">Bubble側は使わない（APIがthumbnailUrlに変換）</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>状態</td><td>STEP1: 有効な画像のみ表示するフィルタ</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td style="color:var(--gray-400);">用途不明</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td style="color:var(--gray-400);">用途不明</td></tr>
+              <tr><td><span class="field-name">description</span><span class="field-optional">任意</span></td><td>説明</td><td style="color:var(--gray-400);">用途不明</td></tr>
+              <tr><td><span class="field-name">tags</span><span class="field-optional">任意</span></td><td>タグ</td><td style="color:var(--gray-400);">用途不明</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td><td style="color:var(--gray-400);">用途不明</td></tr>
             </tbody>
           </table>
         </div>
@@ -944,22 +761,22 @@
           </div>
           <table class="field-table">
             <thead>
-              <tr><th>フィールド</th><th>説明</th></tr>
+              <tr><th>フィールド</th><th>説明</th><th>いつ使う</th></tr>
             </thead>
             <tbody>
-              <tr><td><span class="field-name">generatedImageId</span><span class="field-pk">PK</span></td><td>生成画像ID</td></tr>
-              <tr><td><span class="field-name">sourceImageId</span></td><td>元原稿画像ID</td></tr>
-              <tr><td><span class="field-name">userId</span></td><td>ユーザID</td></tr>
-              <tr><td><span class="field-name">replaceText</span></td><td>差し替えテキスト</td></tr>
-              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
-              <tr><td><span class="field-name">status</span></td><td>生成状態</td></tr>
-              <tr><td><span class="field-name">fileKey</span></td><td>生成画像ファイル識別子</td></tr>
-              <tr><td><span class="field-name">parentGeneratedImageId</span></td><td>再生成元ID</td></tr>
-              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
-              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
-              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
-              <tr><td><span class="field-name">deletedAt</span><span class="field-optional">任意</span></td><td>削除日時</td></tr>
-              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
+              <tr><td><span class="field-name">generatedImageId</span><span class="field-pk">PK</span></td><td>生成画像ID</td><td>STEP4: POSTレスポンスで受取 → Bubble DBに保存。再生成/削除時にも使用</td></tr>
+              <tr><td><span class="field-name">sourceImageId</span></td><td>元原稿画像ID</td><td>どの背景画像から生成したか（参照用）</td></tr>
+              <tr><td><span class="field-name">userId</span></td><td>ユーザID</td><td>どのユーザーの生成物か</td></tr>
+              <tr><td><span class="field-name">replaceText</span></td><td>差し替えテキスト</td><td>STEP4: リクエストで送る（ただし要拡張）</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td><td style="color:var(--gray-400);">用途不明</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>生成状態</td><td>STEP4: 生成中/完了/失敗の判定</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>生成画像ファイル識別子</td><td style="color:var(--gray-400);">Bubble側は使わない（APIがimageUrlに変換）</td></tr>
+              <tr><td><span class="field-name">parentGeneratedImageId</span></td><td>再生成元ID</td><td>再生成時の履歴追跡用</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td><td>どのサイズで生成したか</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td>履歴管理</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td>履歴管理</td></tr>
+              <tr><td><span class="field-name">deletedAt</span><span class="field-optional">任意</span></td><td>削除日時</td><td>論理削除用</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td><td style="color:var(--gray-400);">用途不明</td></tr>
             </tbody>
           </table>
         </div>
@@ -1524,7 +1341,7 @@ sequenceDiagram
 
     <!-- ステップ0 -->
     <div class="flow-accordion">
-      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">0</span>
         <span style="font-weight:700; color:var(--gray-900);">ブラザー側がSource Image DBに画像を登録する</span>
         <span style="font-size:.75rem; color:var(--gray-500);">Brother</span>
@@ -1569,7 +1386,7 @@ sequenceDiagram
 
     <!-- ステップ1 -->
     <div class="flow-accordion">
-      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">1</span>
         <span style="font-weight:700; color:var(--gray-900);">デザインテンプレートを登録する</span>
         <span style="font-size:.75rem; color:var(--gray-500);">管理者 / GET /source-images → Bubble DB保存</span>
@@ -1638,7 +1455,7 @@ sequenceDiagram
 
     <!-- ステップ2 -->
     <div class="flow-accordion">
-      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">2</span>
         <span style="font-weight:700; color:var(--gray-900);">行事テンプレートを作成する</span>
         <span style="font-size:.75rem; color:var(--gray-500);">管理者 / Bubble DB保存（API呼ばない）</span>
@@ -1686,7 +1503,7 @@ sequenceDiagram
 
     <!-- ステップ3: 行事新規作成 -->
     <div class="flow-accordion">
-      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">3</span>
         <span style="font-weight:700; color:var(--gray-900);">行事を新規作成する</span>
         <span style="font-size:.7rem; font-weight:600; padding:2px 8px; border-radius:4px; background:var(--blue-bg); color:var(--blue);">任意 - スキップ可</span>
@@ -1737,7 +1554,7 @@ sequenceDiagram
 
     <!-- ステップ4: 原稿生成 -->
     <div class="flow-accordion">
-      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">4</span>
         <span style="font-weight:700; color:var(--gray-900);">原稿を生成する</span>
         <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / POST /generated-images</span>
@@ -1837,6 +1654,44 @@ sequenceDiagram
           </div>
         </div>
 
+        <!-- 生成パターン -->
+        <div style="margin-top:20px; padding:20px; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius); box-shadow:var(--shadow);">
+          <h3 style="font-size:1rem; font-weight:600; color:var(--gray-700); margin-bottom:4px;">生成パターン（要検討）</h3>
+          <p style="font-size:.8rem; color:var(--gray-500); margin-bottom:16px;">前提: 非同期APIを並列で走らせられる / サイズは7サイズ / デザインテンプレートは最大3つ（1つ必須、2つ任意）</p>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <!-- パターン1 -->
+            <div style="padding:16px; background:var(--blue-bg); border-radius:var(--radius); border:1px solid #93c5fd;">
+              <h4 style="font-size:.9rem; font-weight:700; color:var(--blue); margin-bottom:10px;">パターン1: サイズタブごとに生成</h4>
+              <table class="field-table" style="margin:0;">
+                <tbody>
+                  <tr><td style="font-weight:600; width:40%;">トリガー</td><td>ユーザーがサイズタブ（A3等）で「生成」押下</td></tr>
+                  <tr><td style="font-weight:600;">API呼び出し</td><td><strong>3回</strong>（デザイン1,2,3）を並列</td></tr>
+                  <tr><td style="font-weight:600; color:var(--green);">メリット</td><td>API負荷が軽い（1回あたり最大3リクエスト）</td></tr>
+                  <tr><td style="font-weight:600; color:var(--red);">デメリット</td><td>ユーザーがサイズごとに生成ボタンを押す必要あり</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- パターン2 -->
+            <div style="padding:16px; background:var(--primary-bg); border-radius:var(--radius); border:1px solid var(--primary-light);">
+              <h4 style="font-size:.9rem; font-weight:700; color:var(--primary); margin-bottom:10px;">パターン2: 全サイズ一括生成</h4>
+              <table class="field-table" style="margin:0;">
+                <tbody>
+                  <tr><td style="font-weight:600; width:40%;">トリガー</td><td>ユーザーが「生成」1回押下</td></tr>
+                  <tr><td style="font-weight:600;">API呼び出し</td><td><strong>最低7回</strong>（1デザイン×7サイズ）〜<strong>最大21回</strong>（3デザイン×7サイズ）を並列</td></tr>
+                  <tr><td style="font-weight:600; color:var(--green);">メリット</td><td>ユーザー体験が良い（1回押すだけ）</td></tr>
+                  <tr><td style="font-weight:600; color:var(--red);">デメリット</td><td>最大21回の並列リクエスト。Brother側のレート制限次第</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; padding:10px 14px; background:var(--amber-bg); border-radius:6px;">
+            <p style="font-size:.8rem; color:#b45309; font-weight:600; margin:0;">→ どちらのパターンにするか、Brother側のレート制限を踏まえて要検討</p>
+          </div>
+        </div>
+
         <div style="margin-top:16px;">
           <h3 style="font-size:.9rem; font-weight:600; color:var(--gray-700); margin-bottom:12px;">画面イメージ: 行事選択（生成前）</h3>
           <img src="images/event_list_empty.png" alt="行事選択画面（生成前）" style="width:100%; border-radius:8px; border:1px solid var(--gray-200);">
@@ -1850,7 +1705,7 @@ sequenceDiagram
 
     <!-- ステップ5 -->
     <div class="flow-accordion">
-      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')"
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">5</span>
         <span style="font-weight:700; color:var(--gray-900);">評価・ダウンロードする</span>
         <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / 評価はBubble DB / DL時にGET /generated-images/{id}</span>
@@ -1862,7 +1717,8 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text">生成された<strong>3種類のデザイン</strong>それぞれに<strong>五段階評価</strong>をつける。</div>
+              <div class="step-text"><strong>DLしたいサイズの3種類のデザイン</strong>それぞれに<strong>五段階評価</strong>をつける。</div>
+              <div class="step-note">例: A3のデザイン2をDLしたい場合、A3のデザイン1,2,3すべてを評価する必要がある</div>
             </div>
           </li>
           <li class="step-item">
@@ -2073,8 +1929,8 @@ sequenceDiagram
     </div>
 
     <!-- ステップ2: デザイン追加 -->
-    <div class="flow-accordion" onclick="this.classList.toggle('open')">
-      <div class="flow-accordion-header">
+    <div class="flow-accordion">
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">2</span>
         <span style="font-weight:700; color:var(--gray-900);">グループにデザインを追加する</span>
         <span style="font-size:.75rem; color:var(--gray-500);">管理者 / GET /source-images → Bubble DB保存</span>
@@ -2130,12 +1986,17 @@ sequenceDiagram
             </div>
           </div>
         </div>
+
+        <div style="margin-top:16px;">
+          <h3 style="font-size:.9rem; font-weight:600; color:var(--gray-700); margin-bottom:12px;">画面イメージ: 共通印刷物 管理画面</h3>
+          <img src="images/common_prints_step2.png" alt="共通印刷物 管理画面" style="width:100%; border-radius:8px; border:1px solid var(--gray-200);">
+        </div>
       </div>
     </div>
 
     <!-- ステップ3: ユーザーがDL -->
-    <div class="flow-accordion" onclick="this.classList.toggle('open')">
-      <div class="flow-accordion-header">
+    <div class="flow-accordion">
+      <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">3</span>
         <span style="font-weight:700; color:var(--gray-900);">ユーザーがダウンロードする</span>
         <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / Bubble DBから表示 → DL</span>
@@ -2161,7 +2022,8 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text">「編集する」で印刷物名を変更、またはそのまま<strong>ダウンロード</strong>する。</div>
+              <div class="step-text">そのまま<strong>ダウンロード</strong>する。</div>
+              <div class="step-note">印刷物名の編集は管理者のみ可能</div>
             </div>
           </li>
         </ul>
@@ -2171,6 +2033,11 @@ sequenceDiagram
           <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
             <li>画像URLに有効期限がある場合、表示時に <code>GET /source-images/{id}</code> でURL再取得が必要になるかも</li>
           </ul>
+        </div>
+
+        <div style="margin-top:16px;">
+          <h3 style="font-size:.9rem; font-weight:600; color:var(--gray-700); margin-bottom:12px;">画面イメージ: 共通印刷物 ユーザー画面</h3>
+          <img src="images/common_prints_step3.png" alt="共通印刷物 ユーザー画面" style="width:100%; border-radius:8px; border:1px solid var(--gray-200);">
         </div>
       </div>
     </div>
