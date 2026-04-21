@@ -11,16 +11,17 @@ documents/
 │   └── summary.md
 │
 ├── 1_meeting_minutes/                  # 定例議事録
-│   ├── 議事録_ゼロイチスタート_定例会_YYYYMMDD.pdf  (9件)
-│   └── meeting_prep_20260416.html      # 会議準備資料
+│   └── 議事録_ゼロイチスタート_定例会_YYYYMMDD.pdf  (9件)
 │
 ├── 2_requirements/                     # 要件定義
 │   ├── 00_overview/                    #   プロジェクト概要
-│   │   ├── project_summary.md          #     プロジェクト概要
-│   │   └── glossary.md                 #     用語集
+│   │   ├── project_summary.md
+│   │   └── glossary.md
 │   │
 │   ├── 01_functional/                  #   機能要件
-│   │   └── *.csv                       #     画面別 機能一覧・詳細 (15件)
+│   │   ├── *.csv                       #     画面別 機能一覧・詳細 (15件)
+│   │   ├── 行事情報バリデーション.md      #     行事情報の必須/任意
+│   │   └── 企業情報バリデーション.md      #     企業情報の必須/任意
 │   │
 │   ├── 02_flow/                        #   フロー図（予約）
 │   │
@@ -28,9 +29,17 @@ documents/
 │   │
 │   ├── 04_integration/                 #   外部連携
 │   │   └── brother_api/
-│   │       └── api_specification_summary.md  # API仕様まとめ
+│   │       ├── api_specification_summary.md
+│   │       ├── api_questions_20260416.md
+│   │       └── API仕様_シーケンス_20260417-selected/
+│   │           ├── API_20260417.pdf     #     ブラザー提供API仕様
+│   │           ├── sequenceDiagram.md   #     シーケンス図
+│   │           ├── genAISequenceDiagram.md
+│   │           └── 論点一覧.yaml         #     API設計の論点
 │   │
-│   └── 05_db/                          #   DB設計（予約）
+│   └── 05_db/                          #   DB設計・マスタデータ
+│       ├── 業界一覧.md                   #     業界マスタ（大分類・小分類）
+│       └── デザインサイズ一覧.md           #     デザインサイズ一覧（7サイズ）
 │
 ├── 3_test/                             # テスト
 │   ├── テスト一覧.csv                   #   テストケース一覧
@@ -38,12 +47,13 @@ documents/
 │
 └── 99_receives/                        # クライアント向け確認資料
     └── page/                           #   確認用HTML
-        ├── index.html                  #     タブナビゲーション（TOP）
+        ├── index.html
         ├── design_template_questions.html
         └── search_engine_elements.html
 
 docs/                                   # GitHub Pages 公開用
-└── index.html
+├── index.html                          #   タブナビゲーション（TOP）
+└── api_spec.html                       #   API仕様書（サイドバーナビ）
 ```
 
 ## 技術スタック
