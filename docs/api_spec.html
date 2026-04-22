@@ -1621,7 +1621,7 @@ sequenceDiagram
             <span class="step-dot frontend"></span>
             <div class="step-content">
               <div class="step-who">Bubble</div>
-              <div class="step-text">生成完了後、サイズタブごとに<strong>3種類のデザイン結果</strong>が表示される。</div>
+              <div class="step-text">生成完了後、<strong>7サイズ分の生成結果</strong>が一覧表示される。</div>
             </div>
           </li>
         </ul>
@@ -1668,7 +1668,7 @@ sequenceDiagram
               <p style="font-size:.85rem; font-weight:600; color:var(--blue); margin-bottom:4px;">呼び出し方針</p>
               <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
                 <li>ユーザーが<strong>サイズを選択してから生成</strong>する（1サイズずつ）</li>
-                <li>選択したサイズに対して<strong>3デザイン分を並列に最大3回POST</strong>する</li>
+                <li><strong>7サイズ分を並列に最大7回POST</strong>する</li>
                 <li>各POSTのレスポンスで受け取った generatedImageId を使ってポーリングを開始する</li>
                 <li>レート制限の有無はブラザーに要確認</li>
               </ul>
@@ -1709,7 +1709,7 @@ sequenceDiagram
             <div style="margin-top:16px; padding:12px 16px; background:var(--blue-bg); border-radius:8px;">
               <p style="font-size:.85rem; font-weight:600; color:var(--blue); margin-bottom:4px;">ポーリング方針</p>
               <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
-                <li>3つの生成リクエストそれぞれに対してポーリングを行う</li>
+                <li>7つの生成リクエストそれぞれに対してポーリングを行う</li>
                 <li>ポーリング間隔・最大リトライ回数はブラザーに要確認</li>
                 <li><code>status=COMPLETED</code> → fileKey + thumbnailUrl をBubble DBに保存しポーリング終了</li>
                 <li><code>status=FAILED</code> → エラー表示しポーリング終了</li>
@@ -1719,7 +1719,7 @@ sequenceDiagram
             <div style="margin-top:16px; padding:12px 16px; background:#fef2f2; border:1px solid #fca5a5; border-radius:8px;">
               <p style="font-size:.85rem; font-weight:600; color:var(--red); margin-bottom:4px;">生成失敗時のリカバリーフロー</p>
               <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
-                <li>3デザイン中の一部が失敗した場合、<strong>成功した他のデザインはそのまま保持</strong>する</li>
+                <li>7サイズ中の一部が失敗した場合、<strong>成功した他のサイズはそのまま保持</strong>する</li>
                 <li>失敗したデザインには「再試行」ボタンを表示し、同じパラメータで<strong>新規POST</strong>し直す</li>
                 <li>失敗した <code>generatedImageId</code> に対して <code>/regenerate</code> は呼ばない（FAILEDの画像は再生成の起点にしない）</li>
                 <li>新規POSTで新しい <code>generatedImageId</code> が発行されるため、Bubble DBには新しいレコードとして保存し、失敗レコードは削除する</li>
@@ -1751,7 +1751,7 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text"><strong>DLしたいサイズの3種類のデザイン</strong>それぞれに<strong>五段階評価</strong>をつける。</div>
+              <div class="step-text"><strong>3種類のデザインテンプレート</strong>それぞれに<strong>五段階評価</strong>をつける。</div>
               <div class="step-note">例: A3のデザイン2をDLしたい場合、A3のデザイン1,2,3すべてを評価する必要がある</div>
             </div>
           </li>
@@ -1921,7 +1921,7 @@ sequenceDiagram
             <div style="margin-top:16px; padding:12px 16px; background:var(--blue-bg); border-radius:8px;">
               <p style="font-size:.85rem; font-weight:600; color:var(--blue); margin-bottom:4px;">呼び出し方針</p>
               <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
-                <li>STEP4と同じく、<strong>3デザイン分を並列に3回POST</strong>する</li>
+                <li>STEP4と同じく、<strong>7サイズ分を並列に7回POST</strong>する</li>
                 <li>各POSTのレスポンスで新しい generatedImageId を受け取り、ポーリングを開始する</li>
                 <li>完了後、Bubble DBの既存レコードを新しい generatedImageId・fileKey・thumbnailUrl で上書きする</li>
               </ul>
@@ -1993,7 +1993,7 @@ sequenceDiagram
       <p style="font-size:.8rem; color:var(--gray-700); margin:0; line-height:1.8;">
         共通印刷物は<strong>行事用とは別のCommon Print Group DB + Common Print DB</strong>で管理する。<br>
         行事のデザインテンプレートと<strong>同じパターン</strong>: Brother側がグルーピング、Bubble側が業界紐付けを管理。<br>
-        サイズ指定はないため、<strong>1グループ = N枚の印刷物</strong>（行事の「7サイズ × 3デザイン」とは構造が異なる）。
+        サイズ指定はないため、<strong>1グループ = N枚の印刷物</strong>（行事の「7サイズ」とは構造が異なる）。
       </p>
     </div>
 
@@ -2005,7 +2005,7 @@ sequenceDiagram
         <tbody>
           <tr><td style="font-weight:600;">テキスト入力</td><td>あり（行事名・期間等）</td><td style="color:var(--red); font-weight:600;">なし</td></tr>
           <tr><td style="font-weight:600;">AI生成</td><td>あり</td><td style="color:var(--red); font-weight:600;">なし</td></tr>
-          <tr><td style="font-weight:600;">サイズ展開</td><td>7サイズ × 3デザイン</td><td style="font-weight:600;">なし（1画像 = 1印刷物）</td></tr>
+          <tr><td style="font-weight:600;">サイズ展開</td><td>7サイズ</td><td style="font-weight:600;">なし（1画像 = 1印刷物）</td></tr>
           <tr><td style="font-weight:600;">Brother側グルーピング</td><td>Design Template DB → Source Image DB</td><td style="font-weight:600;">Common Print Group DB → Common Print DB</td></tr>
           <tr><td style="font-weight:600;">Bubble側管理</td><td>行事テンプレート（業界紐付け）</td><td style="font-weight:600;">共通印刷物グループ（業界紐付け）</td></tr>
           <tr><td style="font-weight:600;">画像の出処</td><td>Brother DB → AI生成</td><td>Brother DBからそのまま配布</td></tr>
@@ -2575,7 +2575,7 @@ sequenceDiagram
             <tr>
               <td>5</td>
               <td><strong>バッチ生成エンドポイントは対応可能か</strong></td>
-              <td>現状は3デザイン分を個別に <code>POST /generated-images</code> × 3回並列送信している。行事情報（eventName等）が毎回重複するため、<code>POST /generated-images/batch</code> で複数 <code>sourceImageId</code> をまとめて送信し1回で済ませたい。Bubble側の並列制御が不要になり、部分失敗時のハンドリングもBrother側で完結する</td>
+              <td>現状は7サイズ分を個別に <code>POST /generated-images</code> × 7回並列送信している。行事情報（eventName等）が毎回重複するため、<code>POST /generated-images/batch</code> で複数 <code>sourceImageId</code> をまとめて送信し1回で済ませたい。Bubble側の並列制御が不要になり、部分失敗時のハンドリングもBrother側で完結する</td>
               <td>STEP4, STEP6</td>
             </tr>
           </tbody>
@@ -2609,13 +2609,13 @@ sequenceDiagram
             <tr>
               <td>9</td>
               <td><strong>生成完了の通知方式</strong></td>
-              <td>Webhook / ポーリングのどちらか。3デザイン並列POST時に完了をどう検知するか。ポーリングの場合、推奨間隔・最大リトライ回数も確認</td>
+              <td>Webhook / ポーリングのどちらか。7サイズ並列POST時に完了をどう検知するか。ポーリングの場合、推奨間隔・最大リトライ回数も確認</td>
               <td>STEP4, STEP6</td>
             </tr>
             <tr>
               <td>10</td>
               <td><strong>レート制限の有無</strong></td>
-              <td>最大3リクエストを並列POSTする。レート制限はあるか。バッチAPI（#5）が実現すればこの問題は解消される</td>
+              <td>最大7リクエストを並列POSTする。レート制限はあるか。バッチAPI（#5）が実現すればこの問題は解消される</td>
               <td>STEP4</td>
             </tr>
             <tr>
@@ -2633,7 +2633,7 @@ sequenceDiagram
             <tr>
               <td>13</td>
               <td><strong>ポーリングのバッチ取得は可能か</strong></td>
-              <td>現状は <code>GET /generated-images/{id}</code> を3件分個別にポーリングしている。<code>GET /generated-images?ids=gi_001,gi_002,gi_003</code> のようにクエリパラメータで複数件を一括取得できるとポーリングループが1本で済む</td>
+              <td>現状は <code>GET /generated-images/{id}</code> を7件分個別にポーリングしている。<code>GET /generated-images?ids=gi_001,gi_002,...,gi_007</code> のようにクエリパラメータで複数件を一括取得できるとポーリングループが1本で済む</td>
               <td>STEP4, STEP6</td>
             </tr>
             <tr>
@@ -3063,7 +3063,7 @@ sequenceDiagram
             <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">fileKey（DL用・永続識別子）+ thumbnailUrl（一覧表示用・公開URL）を返却。Bubble DBに保存。DL時のみ <code>GET /files/{fileKey}/url</code> で一時URL取得</p>
           </div>
           <div class="detail-section">
-            <p class="note-text">* 非同期処理。ユーザーがサイズを選択後、3デザイン分を並列に最大3回POSTする</p>
+            <p class="note-text">* 非同期処理。ユーザーがサイズを選択後、7サイズ分を並列に最大7回POSTする</p>
           </div>
           <div class="detail-section">
             <div class="json-block"><span class="json-label">Request</span>
