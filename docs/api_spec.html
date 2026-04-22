@@ -704,12 +704,13 @@
   <div class="nav-item" data-tab="seq2">シーケンス: AI画像生成</div>
 
   <div class="sidebar-category">新フロー</div>
-  <div class="nav-item" data-tab="summary">サマリ</div>
+  <div class="nav-item" data-tab="summary">設計概要</div>
   <div class="nav-item" data-tab="ideal-db">理想DB設計</div>
   <div class="nav-item" data-tab="ideal-api">理想API</div>
   <div class="nav-item" data-tab="flow">原稿登録〜ダウンロード</div>
   <div class="nav-item" data-tab="common">共通印刷物</div>
-  <a href="flow_mock.html" target="_blank" class="nav-item" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:4px;">フローモック &#8599;</a>
+  <a href="flow_mock.html" target="_blank" class="nav-item" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:4px;">原稿登録〜ダウンロードモック &#8599;</a>
+  <a href="flow_mock_common.html" target="_blank" class="nav-item" style="color:var(--green); text-decoration:none; display:flex; align-items:center; gap:4px;">共通印刷物モック &#8599;</a>
 </nav>
 
 <div class="main-content">
@@ -1491,7 +1492,7 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">管理者</div>
-              <div class="step-text">Bubbleの管理画面で<strong>業界</strong>（宗教法人等）を選択し、必要に応じて<strong>サブ業種</strong>（神社/寺院等）を選択して、行事テンプレートを作成する。</div>
+              <div class="step-text">Bubbleの管理画面で<strong>業界</strong>（宗教法人等）を選択し、必要に応じて<strong>小分類</strong>（神社/寺院等）を選択して、行事テンプレートを作成する。</div>
             </div>
           </li>
           <li class="step-item">
@@ -1574,7 +1575,7 @@ sequenceDiagram
       <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">4</span>
         <span style="font-weight:700; color:var(--gray-900);">原稿を生成する</span>
-        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / POST /generated-images → GET /generated-images/{id} でポーリング</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / POST /generated-images → GET /generated-images/{generatedImageId} でポーリング</span>
         <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#eff6ff; color:#3b82f6; font-weight:600;">Generated Image DB</span>
         <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#fef3c7; color:#b45309; font-weight:600;">Bubble: 生成画像</span>
         <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
@@ -1634,24 +1635,21 @@ sequenceDiagram
               <span class="badge method-post" style="margin-right:8px;">既存API</span>
               <span class="badge" style="background:var(--amber-bg);color:#b45309;">リクエスト・レスポンスの拡張が必要</span>
             </div>
-            <div style="display:flex; gap:12px; align-items:center; margin-top:12px; padding:8px 12px; background:var(--gray-50); border-radius:6px; font-size:.75rem;">
-              <span style="color:var(--gray-500); font-weight:600;">凡例</span>
-              <span style="display:flex; align-items:center; gap:4px;"><span class="field-chip highlight" style="padding:1px 6px; font-size:.7rem;">青</span> 対象特定キー / DB保存</span>
-              <span style="display:flex; align-items:center; gap:4px;"><span class="field-chip" style="padding:1px 6px; font-size:.7rem;">白</span> コンテンツ / 参照用</span>
+            <div style="display:inline-flex; align-items:center; gap:6px; margin-top:12px; padding:6px 10px; background:var(--gray-50); border-radius:6px; font-size:.7rem; color:var(--gray-500);">
+              <span class="field-chip highlight" style="padding:1px 6px; font-size:.68rem;">色付き</span><span>= キー項目（DB保存）</span>
             </div>
 
             <div class="detail-section" style="margin-top:16px;">
               <div class="detail-label">理想のリクエスト</div>
               <div class="detail-fields">
-                <span class="field-chip highlight">designTemplateId</span>
-                <span class="field-chip highlight">size</span>
+                <span class="field-chip highlight">sourceImageId</span>
                 <span class="field-chip">eventName</span>
                 <span class="field-chip">period</span>
                 <span class="field-chip">details</span>
                 <span class="field-chip">program</span>
                 <span class="field-chip">notes</span>
               </div>
-              <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">designTemplateId + size でBrother側がsourceImageを解決。sourceImageIdの直接指定は不要</p>
+              <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">sourceImageIdを直接指定。STEP1で取得済みのBubble DB.デザインテンプレート画像から取得</p>
             </div>
 
             <div class="detail-section" style="margin-top:16px;">
@@ -1669,7 +1667,8 @@ sequenceDiagram
             <div style="margin-top:16px; padding:12px 16px; background:var(--blue-bg); border-radius:8px;">
               <p style="font-size:.85rem; font-weight:600; color:var(--blue); margin-bottom:4px;">呼び出し方針</p>
               <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
-                <li>Bubble側で<strong>3デザイン分を並列に3回POST</strong>する</li>
+                <li>ユーザーが<strong>サイズを選択してから生成</strong>する（1サイズずつ）</li>
+                <li>選択したサイズに対して<strong>3デザイン分を並列に最大3回POST</strong>する</li>
                 <li>各POSTのレスポンスで受け取った generatedImageId を使ってポーリングを開始する</li>
                 <li>レート制限の有無はブラザーに要確認</li>
               </ul>
@@ -1714,6 +1713,16 @@ sequenceDiagram
                 <li>ポーリング間隔・最大リトライ回数はブラザーに要確認</li>
                 <li><code>status=COMPLETED</code> → fileKey + thumbnailUrl をBubble DBに保存しポーリング終了</li>
                 <li><code>status=FAILED</code> → エラー表示しポーリング終了</li>
+              </ul>
+            </div>
+
+            <div style="margin-top:16px; padding:12px 16px; background:#fef2f2; border:1px solid #fca5a5; border-radius:8px;">
+              <p style="font-size:.85rem; font-weight:600; color:var(--red); margin-bottom:4px;">生成失敗時のリカバリーフロー</p>
+              <ul style="font-size:.8rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:1.8;">
+                <li>3デザイン中の一部が失敗した場合、<strong>成功した他のデザインはそのまま保持</strong>する</li>
+                <li>失敗したデザインには「再試行」ボタンを表示し、同じパラメータで<strong>新規POST</strong>し直す</li>
+                <li>失敗した <code>generatedImageId</code> に対して <code>/regenerate</code> は呼ばない（FAILEDの画像は再生成の起点にしない）</li>
+                <li>新規POSTで新しい <code>generatedImageId</code> が発行されるため、Bubble DBには新しいレコードとして保存し、失敗レコードは削除する</li>
               </ul>
             </div>
 
@@ -1778,7 +1787,7 @@ sequenceDiagram
               <tr><td><strong>初回生成時（STEP4）</strong></td><td>POSTで生成開始 → GETポーリングで完了後に fileKey + thumbnailUrl を取得し、Bubble DBに保存</td><td>POST /generated-images → GET /generated-images/{id}</td></tr>
               <tr><td><strong>一覧表示時（毎回）</strong></td><td>Bubble DBの thumbnailUrl で直接表示（APIコール不要）</td><td style="color:var(--green); font-weight:600;">APIは呼ばない</td></tr>
               <tr><td><strong>ダウンロード時</strong></td><td>Bubble DBの fileKey で一時DL用URLを取得</td><td style="color:var(--green); font-weight:600;">GET /files/{fileKey}/url</td></tr>
-              <tr><td><strong>行事情報を変更した時</strong></td><td>再生成が必要 → STEP6へ</td><td>POST /{id}/regenerate（STEP6で詳述）</td></tr>
+              <tr><td><strong>行事情報を変更した時</strong></td><td>再生成が必要 → STEP6へ</td><td>POST /generated-images/{generatedImageId}/regenerate（STEP6で詳述）</td></tr>
             </tbody>
           </table>
         </div>
@@ -1788,7 +1797,7 @@ sequenceDiagram
           <div class="card-header"><h3>使用API: GET /files/{fileKey}/url</h3></div>
           <div class="card-body">
             <div class="db-role">
-              <p>fileKeyから一時的な署名付きURLを取得する（表示・ダウンロード共通）</p>
+              <p>fileKeyから一時的な署名付きURLを取得する（ダウンロード用）</p>
               <span class="badge" style="background:var(--green-bg);color:var(--green);">新規API</span>
             </div>
             <div class="detail-section" style="margin-top:12px;">
@@ -1815,7 +1824,7 @@ sequenceDiagram
       <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">6</span>
         <span style="font-weight:700; color:var(--gray-900);">行事情報を変更して再生成する</span>
-        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / POST /{id}/regenerate → GET /generated-images/{id} でポーリング</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / POST /generated-images/{generatedImageId}/regenerate → GET /generated-images/{generatedImageId} でポーリング</span>
         <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#eff6ff; color:#3b82f6; font-weight:600;">Generated Image DB</span>
         <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#fef3c7; color:#b45309; font-weight:600;">Bubble: 生成画像</span>
         <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
@@ -2022,7 +2031,7 @@ sequenceDiagram
             <span class="step-dot api"></span>
             <div class="step-content">
               <div class="step-who">Brother</div>
-              <div class="step-text"><strong>Common Print Group DBにグループを登録</strong>する。グループ名・代表サムネイルURL（thumbnailUrl）を設定。</div>
+              <div class="step-text"><strong>Common Print Group DBにグループを登録</strong>する。グループ名（name）を設定。</div>
               <div class="step-note">commonPrintGroupId が発行される</div>
             </div>
           </li>
@@ -2077,7 +2086,7 @@ sequenceDiagram
             <div class="step-content">
               <div class="step-who">Bubble</div>
               <div class="step-text">以下を<strong>Bubble DBに保存</strong>する。<br>
-                ・<strong>共通印刷物グループ</strong>（親）: グループ名・業界・小分類・<code>commonPrintGroupId</code>・<code>thumbnailUrl</code><br>
+                ・<strong>共通印刷物グループ</strong>（親）: グループ名・業界・小分類・<code>commonPrintGroupId</code><br>
                 ・<strong>共通印刷物</strong>（子）: 各印刷物の <code>commonPrintId</code>・<code>fileName</code>・<code>thumbnailUrl</code>・<code>fileKey</code> をリスト型で保持</div>
             </div>
           </li>
@@ -2094,7 +2103,7 @@ sequenceDiagram
               <div class="detail-label">レスポンス</div>
               <div class="detail-fields">
                 <span class="field-chip highlight">commonPrintGroupId</span>
-                <span class="field-chip highlight">thumbnailUrl</span>
+                <span class="field-chip">name</span>
               </div>
             </div>
           </div>
@@ -2176,7 +2185,7 @@ sequenceDiagram
           <table class="field-table">
             <thead><tr><th>タイミング</th><th>やること</th><th>API</th></tr></thead>
             <tbody>
-              <tr><td><strong>グループ登録時（STEP1）</strong></td><td>グループ選択 → 全印刷物のcommonPrintId・fileKey・thumbnailUrl をBubble DBに自動保存</td><td>GET /common-print-groups<br>GET /.../{id}/prints</td></tr>
+              <tr><td><strong>グループ登録時（STEP1）</strong></td><td>グループ選択 → 全印刷物のcommonPrintId・fileKey・thumbnailUrl をBubble DBに保存</td><td>GET /common-print-groups<br>GET /common-print-groups/{id}/prints</td></tr>
               <tr><td><strong>一覧表示時（毎回）</strong></td><td>Bubble DBの thumbnailUrl で直接表示</td><td style="color:var(--green); font-weight:600;">APIは呼ばない</td></tr>
               <tr><td><strong>ダウンロード時</strong></td><td>Bubble DBの fileKey で一時DL用URLを取得</td><td style="color:var(--green); font-weight:600;">GET /files/{fileKey}/url</td></tr>
             </tbody>
@@ -2206,10 +2215,10 @@ sequenceDiagram
   </div>
 </div>
 
-<!-- ==================== サマリ ==================== -->
+<!-- ==================== 設計概要 ==================== -->
 <div class="section" id="summary">
   <div class="container">
-    <h2 class="section-title">理想設計サマリ</h2>
+    <h2 class="section-title">設計概要</h2>
     <p class="section-desc">ブラザー提供のAPI仕様をベースに、実運用に合わせた理想設計の概要</p>
 
     <!-- 設計の概要 -->
@@ -2222,18 +2231,24 @@ sequenceDiagram
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
           <div style="padding:16px; background:var(--primary-bg); border-radius:8px; border:1px solid #c7d2fe;">
-            <p style="font-size:.8rem; font-weight:700; color:var(--primary); margin-bottom:8px;">行事原稿</p>
-            <p style="font-size:.8rem; color:var(--gray-700); margin:0; line-height:1.7;">
-              管理者がデザインテンプレートを選択 → ユーザーが行事情報を入力 → <strong>AI生成</strong> → 評価 → DL<br>
-              <span style="color:var(--gray-500);">7サイズ × 3デザイン = 最大21枚を並列生成</span>
-            </p>
+            <p style="font-size:.85rem; font-weight:700; color:var(--primary); margin-bottom:12px;">行事原稿</p>
+            <div style="display:flex; flex-direction:column; gap:6px; font-size:.8rem; color:var(--gray-700);">
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP0</span> Brotherがデザインテンプレート・元原稿画像を登録</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP1</span> 管理者がテンプレートを選択・業界を紐付け</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP2</span> 管理者が行事テンプレートを作成しデザインテンプレートを紐付け</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP3</span> ユーザーが行事を新規作成（テンプレートから or 手入力）</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP4</span> <strong>AI生成</strong>（API送信 → ポーリング → 結果保存）</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP5</span> ユーザーが生成結果を確認・ダウンロード</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP6</span> 必要に応じて再生成</div>
+            </div>
           </div>
           <div style="padding:16px; background:var(--green-bg); border-radius:8px; border:1px solid #a7f3d0;">
-            <p style="font-size:.8rem; font-weight:700; color:var(--green); margin-bottom:8px;">共通印刷物</p>
-            <p style="font-size:.8rem; color:var(--gray-700); margin:0; line-height:1.7;">
-              管理者がグループを選択 → ユーザーが閲覧 → <strong>そのままDL</strong><br>
-              <span style="color:var(--gray-500);">AI生成なし・サイズ指定なし。1グループ = N枚</span>
-            </p>
+            <p style="font-size:.85rem; font-weight:700; color:var(--green); margin-bottom:12px;">共通印刷物</p>
+            <div style="display:flex; flex-direction:column; gap:6px; font-size:.8rem; color:var(--gray-700);">
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--green); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP0</span> Brotherがグループ・印刷物画像を登録</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--green); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP1</span> 管理者がグループを選択・業界を紐付け</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--green); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP2</span> ユーザーが閲覧・<strong>そのままDL</strong></div>
+            </div>
           </div>
         </div>
 
@@ -2265,93 +2280,257 @@ sequenceDiagram
       </div>
     </div>
 
-    <!-- なぜこの設計にしたか -->
+    <!-- 設計思想 -->
     <div class="card" style="margin-bottom:24px;">
       <div class="card-header" style="background:linear-gradient(135deg, #4f46e5, #7c3aed);">
-        <h3 style="color:#fff;">なぜこの設計にしたか</h3>
+        <h3 style="color:#fff;">設計思想</h3>
       </div>
-      <div class="card-body">
-        <table class="field-table">
-          <thead><tr><th style="width:200px;">設計判断</th><th>理由</th></tr></thead>
-          <tbody>
-            <tr>
-              <td style="font-weight:600;">Design Template DB / Common Print Group DB の新設</td>
-              <td>Bubble側が <code>sourceImageId</code> を直接保持していると、Brother側が画像を差し替えた際にIDが変わり整合性が壊れる。グループID（<code>designTemplateId</code> / <code>commonPrintGroupId</code>）で管理すれば、Brother側が裏で画像を差し替えてもBubble側に影響なし</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">fileKey + thumbnailUrl の使い分け</td>
-              <td><strong>サムネイル</strong>: 一覧画面で大量に表示されるため、毎回APIコールは非現実的 → <code>thumbnailUrl</code>（公開URL・期限なし）を直接使用<br><strong>フルサイズ画像（DL用）</strong>: セキュリティ重視。期限付き署名URLを直接保存すると期限切れリスク → <code>fileKey</code>（永続識別子）を保存し、DL時に <code>GET /files/{fileKey}/url</code> で一時URLを都度取得</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">行事情報はBubble側で管理</td>
-              <td>行事名・期間・プログラム等のテキストデータはBubble DB上でユーザーが編集するもの。Brother側 Generated Image DB には持たせず、生成・再生成時にリクエストパラメータとして都度送信する設計にした</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">行事と共通印刷物で同じパターン</td>
-              <td>Brother側がグルーピング（テンプレート/グループ）を管理し、Bubble側が業界紐付けを管理するパターンを統一。管理者は「グループを選ぶだけ」で全画像が自動紐付け。APIの構造も同形にすることで実装・学習コストを削減</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">GET /files/{fileKey}/url の共通化</td>
-              <td>行事の生成画像DL・共通印刷物DLで同じエンドポイントを使用。ファイルの種類を問わず <code>fileKey</code> さえあればURLを取得できる汎用設計</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="card-body" style="display:flex; flex-direction:column; gap:20px;">
+
+        <!-- 1. Design Template DB -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb;">
+            <span style="font-weight:700; font-size:15px;">Design Template DB / Common Print Group DB の新設</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+            <div style="padding:14px 18px; border-right:1px solid #e5e7eb;">
+              <div style="font-size:11px; font-weight:700; color:#ef4444; margin-bottom:8px; letter-spacing:0.5px;">&#x2717; ブラザー設計の課題</div>
+              <div style="color:#64748b; font-size:14px; line-height:1.7;">Bubble側が <code>sourceImageId</code> を直接保持する設計。Brother側が画像を差し替えると<strong>IDが変わり、Bubble側の参照が壊れる</strong>。画像の追加・削除のたびにBubble側の同期が必要になる</div>
+            </div>
+            <div style="padding:14px 18px;">
+              <div style="font-size:11px; font-weight:700; color:#16a34a; margin-bottom:8px; letter-spacing:0.5px;">&#x2713; 理想設計の解決策</div>
+              <div style="color:#1e293b; font-size:14px; line-height:1.7;">グループID（<code>designTemplateId</code> / <code>commonPrintGroupId</code>）で管理。Brother側が裏で画像を差し替えても<strong>グループIDは不変なのでBubble側に影響なし</strong>。画像の実体管理はBrother側に閉じる</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. サムネイル表示 -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb;">
+            <span style="font-weight:700; font-size:15px;">サムネイル表示の最適化</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+            <div style="padding:14px 18px; border-right:1px solid #e5e7eb;">
+              <div style="font-size:11px; font-weight:700; color:#ef4444; margin-bottom:8px; letter-spacing:0.5px;">&#x2717; ブラザー設計の課題</div>
+              <div style="color:#64748b; font-size:14px; line-height:1.7;">生成画像のレスポンスに <code>thumbnailUrl</code> がなく、<code>imageUrl</code>（署名付き一時URL）のみ。<strong>一覧表示のたびにAPIコールが必要</strong>になるか、期限切れURLで画像が表示されなくなるリスクがある</div>
+            </div>
+            <div style="padding:14px 18px;">
+              <div style="font-size:11px; font-weight:700; color:#16a34a; margin-bottom:8px; letter-spacing:0.5px;">&#x2713; 理想設計の解決策</div>
+              <div style="color:#1e293b; font-size:14px; line-height:1.7;">生成画像にも <code>thumbnailUrl</code>（公開URL・期限なし）を追加。Bubble DBに保存して<strong>直接 <code>&lt;img src&gt;</code> で表示するだけ</strong>。APIコール不要で、期限切れの心配もない</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. DL用URLの期限管理 -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb;">
+            <span style="font-weight:700; font-size:15px;">DL用URLの期限管理と共通化</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+            <div style="padding:14px 18px; border-right:1px solid #e5e7eb;">
+              <div style="font-size:11px; font-weight:700; color:#ef4444; margin-bottom:8px; letter-spacing:0.5px;">&#x2717; ブラザー設計の課題</div>
+              <div style="color:#64748b; font-size:14px; line-height:1.7;"><code>imageUrl</code>（署名付き一時URL）を直接保存する設計。<strong>期限が切れるとDLできなくなり</strong>、<code>GET /generated-images/{id}</code> でリソース全体を再取得してURLを取り出す必要がある。また共通印刷物にはDL用APIすら存在しない</div>
+            </div>
+            <div style="padding:14px 18px;">
+              <div style="font-size:11px; font-weight:700; color:#16a34a; margin-bottom:8px; letter-spacing:0.5px;">&#x2713; 理想設計の解決策</div>
+              <div style="color:#1e293b; font-size:14px; line-height:1.7;"><code>fileKey</code>（永続識別子）をBubble DBに保存し、DL時に <code>GET /files/{fileKey}/url</code> で一時URLを都度発行。<strong>期限切れても再発行するだけ</strong>。行事の生成画像も共通印刷物もこのAPI 1本でDL可能で、ファイル種別を意識する必要がない</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 行事情報はBubble側で管理 -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb;">
+            <span style="font-weight:700; font-size:15px;">行事情報はBubble側で管理</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+            <div style="padding:14px 18px; border-right:1px solid #e5e7eb;">
+              <div style="font-size:11px; font-weight:700; color:#ef4444; margin-bottom:8px; letter-spacing:0.5px;">&#x2717; ブラザー設計の課題</div>
+              <div style="color:#64748b; font-size:14px; line-height:1.7;"><code>originalText</code> / <code>replaceText</code> という汎用フィールドのみ。<strong>行事名・期間・プログラムなどの構造化データを表現できない</strong>。Brother側Generated Image DBにテキストを保持する設計のため、データの二重管理になる</div>
+            </div>
+            <div style="padding:14px 18px;">
+              <div style="font-size:11px; font-weight:700; color:#16a34a; margin-bottom:8px; letter-spacing:0.5px;">&#x2713; 理想設計の解決策</div>
+              <div style="color:#1e293b; font-size:14px; line-height:1.7;">行事情報はBubble DBで一元管理し、<strong>生成・再生成時にリクエストパラメータとして都度送信</strong>。Brother側は画像生成に使うだけで保持しない。ユーザーが行事情報を編集→再生成すれば常に最新データが反映される</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. 行事と共通印刷物で同じパターン -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb;">
+            <span style="font-weight:700; font-size:15px;">行事と共通印刷物で同じパターン</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+            <div style="padding:14px 18px; border-right:1px solid #e5e7eb;">
+              <div style="font-size:11px; font-weight:700; color:#ef4444; margin-bottom:8px; letter-spacing:0.5px;">&#x2717; ブラザー設計の課題</div>
+              <div style="color:#64748b; font-size:14px; line-height:1.7;">共通印刷物の概念自体がなく、<strong>行事原稿のみを前提としたAPI設計</strong>。共通印刷物を追加する場合、別の仕組みを一から設計する必要がある</div>
+            </div>
+            <div style="padding:14px 18px;">
+              <div style="font-size:11px; font-weight:700; color:#16a34a; margin-bottom:8px; letter-spacing:0.5px;">&#x2713; 理想設計の解決策</div>
+              <div style="color:#1e293b; font-size:14px; line-height:1.7;">Brother側がグルーピング（テンプレート/グループ）を管理し、Bubble側が業界紐付けを管理する<strong>同一パターンを行事・共通印刷物で共通化</strong>。管理者は「グループを選ぶだけ」で全画像が自動紐付け。APIの構造も同形にすることで実装・学習コストを削減</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <!-- ブラザー設計との差分 -->
     <div class="card" style="margin-bottom:24px;">
       <div class="card-header" style="background:linear-gradient(135deg, #f59e0b, #d97706);">
-        <h3 style="color:#fff;">ブラザー提供設計との差分</h3>
+        <h3 style="color:#fff;">ブラザー設計との差分</h3>
       </div>
-      <div class="card-body">
-        <table class="field-table">
-          <thead><tr><th style="width:160px;">項目</th><th>ブラザー提供</th><th>理想設計</th><th>変更理由</th></tr></thead>
-          <tbody>
-            <tr>
-              <td style="font-weight:600;">画像のグルーピング</td>
-              <td>なし（Source Image DBはフラット）</td>
-              <td style="color:var(--green); font-weight:600;">Design Template DB を新設し、designTemplateId でグルーピング</td>
-              <td>画像差し替え時のID変更リスク回避</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">画像選択方式</td>
-              <td><code>sourceImageId</code> を直接指定</td>
-              <td style="color:var(--green); font-weight:600;"><code>designTemplateId</code> + <code>size</code> でBrother側が解決</td>
-              <td>Bubbleが個別の画像IDを知る必要がなくなる</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">生成リクエスト</td>
-              <td><code>sourceImageId</code> + <code>originalText</code> + <code>replaceText</code></td>
-              <td style="color:var(--green); font-weight:600;"><code>designTemplateId</code> + <code>size</code> + 行事情報（eventName, period, details, program, notes）</td>
-              <td>構造化されたテキストデータを渡す設計に</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">生成レスポンス</td>
-              <td><code>imageUrl</code>（署名付き一時URL）</td>
-              <td style="color:var(--green); font-weight:600;"><code>fileKey</code>（永続識別子）+ <code>thumbnailUrl</code>（公開URL）</td>
-              <td>URL期限切れリスク回避 + サムネイル表示最適化</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">DL方式</td>
-              <td><code>imageUrl</code> を直接使用（期限切れ時は GET /generated-images/{id} で再取得）</td>
-              <td style="color:var(--green); font-weight:600;"><code>GET /files/{fileKey}/url</code> で都度一時URL取得</td>
-              <td>期限切れ問題を根本解決。行事・共通印刷物で共通利用</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">共通印刷物</td>
-              <td>対応なし</td>
-              <td style="color:var(--green); font-weight:600;">Common Print Group DB + Common Print DB を新設。行事と同パターン</td>
-              <td>行事と統一した設計パターンで管理</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;">不要になったAPI</td>
-              <td>GET /source-images, GET /source-images/{id}, GET /generated-images, DELETE /generated-images/{id}</td>
-              <td style="color:var(--red); font-weight:600;">廃止</td>
-              <td>テンプレート方式に移行 / Bubble DBで管理 / スコープ外</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="card-body" style="display:flex; flex-direction:column; gap:16px;">
+
+        <!-- 差分アイテム -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">画像のグルーピング</span>
+            <span style="font-size:12px; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:99px;">画像差し替え時のID変更リスク回避</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0;">
+            <div style="padding:14px 18px; background:#fef2f2;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">ブラザー提供</div>
+              <div style="color:#64748b;">なし（Source Image DBはフラット）</div>
+            </div>
+            <div style="padding:0 8px; color:#94a3b8; font-size:20px;">→</div>
+            <div style="padding:14px 18px; background:#f0fdf4;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">理想設計</div>
+              <div style="color:#16a34a; font-weight:600;">Design Template DB を新設し、designTemplateId でグルーピング</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">画像選択方式</span>
+            <span style="font-size:12px; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:99px;">テンプレート経由で体系的に取得</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0;">
+            <div style="padding:14px 18px; background:#fef2f2;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">ブラザー提供</div>
+              <div style="color:#64748b;"><code>sourceImageId</code> を直接指定（全画像から個別選択）</div>
+            </div>
+            <div style="padding:0 8px; color:#94a3b8; font-size:20px;">→</div>
+            <div style="padding:14px 18px; background:#f0fdf4;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">理想設計</div>
+              <div style="color:#16a34a; font-weight:600;"><code>sourceImageId</code> を直接指定（Design Template経由で7サイズ分を一括取得済み）</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">生成リクエスト</span>
+            <span style="font-size:12px; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:99px;">構造化されたテキストデータを渡す設計に</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0;">
+            <div style="padding:14px 18px; background:#fef2f2;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">ブラザー提供</div>
+              <div style="color:#64748b;"><code>sourceImageId</code> + <code>originalText</code> + <code>replaceText</code></div>
+            </div>
+            <div style="padding:0 8px; color:#94a3b8; font-size:20px;">→</div>
+            <div style="padding:14px 18px; background:#f0fdf4;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">理想設計</div>
+              <div style="color:#16a34a; font-weight:600;"><code>sourceImageId</code> + 行事情報（eventName, period, details, program, notes）</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">サムネイル表示</span>
+            <span style="font-size:12px; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:99px;">生成画像にthumbnailUrlを追加し、APIコール不要に</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0;">
+            <div style="padding:14px 18px; background:#fef2f2;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">ブラザー提供</div>
+              <div style="color:#64748b;">元原稿は <code>thumbnailUrl</code> あり。生成画像は <code>imageUrl</code>（一時URL）のみでサムネイル専用URLがない</div>
+            </div>
+            <div style="padding:0 8px; color:#94a3b8; font-size:20px;">→</div>
+            <div style="padding:14px 18px; background:#f0fdf4;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">理想設計</div>
+              <div style="color:#16a34a; font-weight:600;">生成画像にも <code>thumbnailUrl</code>（公開URL・期限なし）を追加。Bubble DBに保存して直接表示</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">DL用URL</span>
+            <span style="font-size:12px; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:99px;">期限切れを根本解決 + 行事・共通印刷物で共通化</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0;">
+            <div style="padding:14px 18px; background:#fef2f2;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">ブラザー提供</div>
+              <div style="color:#64748b;"><code>imageUrl</code>（一時URL）を直接保存。期限切れ時は GET /generated-images/{id} で全体再取得が必要</div>
+            </div>
+            <div style="padding:0 8px; color:#94a3b8; font-size:20px;">→</div>
+            <div style="padding:14px 18px; background:#f0fdf4;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">理想設計</div>
+              <div style="color:#16a34a; font-weight:600;"><code>fileKey</code>（永続）を保存し、<code>GET /files/{fileKey}/url</code> で都度一時URL発行。行事・共通印刷物で共通利用</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">共通印刷物</span>
+            <span style="font-size:12px; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:99px;">行事と統一した設計パターンで管理</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0;">
+            <div style="padding:14px 18px; background:#fef2f2;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">ブラザー提供</div>
+              <div style="color:#64748b;">対応なし</div>
+            </div>
+            <div style="padding:0 8px; color:#94a3b8; font-size:20px;">→</div>
+            <div style="padding:14px 18px; background:#f0fdf4;">
+              <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">理想設計</div>
+              <div style="color:#16a34a; font-weight:600;">Common Print Group DB + Common Print DB を新設。行事と同パターン</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">不要になったAPI</span>
+            <span style="font-size:12px; color:#ef4444; background:#fef2f2; padding:3px 10px; border-radius:99px; font-weight:600;">理想設計では廃止</span>
+          </div>
+          <div style="padding:16px 18px;">
+            <table style="width:100%; border-collapse:collapse; font-size:14px;">
+              <thead>
+                <tr style="border-bottom:2px solid #e5e7eb;">
+                  <th style="text-align:left; padding:8px 12px; color:#64748b; font-size:12px;">API</th>
+                  <th style="text-align:left; padding:8px 12px; color:#64748b; font-size:12px;">機能</th>
+                  <th style="text-align:left; padding:8px 12px; color:#64748b; font-size:12px;">廃止理由</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                  <td style="padding:10px 12px;"><code style="color:#ef4444;">GET /source-images</code></td>
+                  <td style="padding:10px 12px;">元原稿の一覧取得</td>
+                  <td style="padding:10px 12px; color:#64748b;">テンプレート方式に移行。<code>GET /design-templates</code> で代替</td>
+                </tr>
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                  <td style="padding:10px 12px;"><code style="color:#ef4444;">GET /source-images/{id}</code></td>
+                  <td style="padding:10px 12px;">元原稿の詳細取得</td>
+                  <td style="padding:10px 12px; color:#64748b;">テンプレート配下の画像一覧で代替。個別IDでの取得が不要に</td>
+                </tr>
+                <tr style="border-bottom:1px solid #f1f5f9;">
+                  <td style="padding:10px 12px;"><code style="color:#ef4444;">GET /generated-images</code></td>
+                  <td style="padding:10px 12px;">生成画像の一覧取得</td>
+                  <td style="padding:10px 12px; color:#64748b;">生成画像はBubble DBで管理。Brother側に一覧を問い合わせる必要がない</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 12px;"><code style="color:#ef4444;">DELETE /generated-images/{id}</code></td>
+                  <td style="padding:10px 12px;">生成画像の削除</td>
+                  <td style="padding:10px 12px; color:#64748b;">再生成で上書きする運用のため、個別削除はスコープ外</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -2361,13 +2540,18 @@ sequenceDiagram
         <h3 style="color:#fff;">残論点（ブラザー側への確認事項）</h3>
       </div>
       <div class="card-body" style="padding:0;">
-        <table class="field-table">
+
+        <!-- 対応可否 -->
+        <div style="padding:16px 20px 8px; border-bottom:1px solid #e5e7eb;">
+          <span style="font-size:13px; font-weight:700; color:#7c3aed; background:#f5f3ff; padding:4px 12px; border-radius:99px;">対応可否 — 理想設計の提案をブラザーが受けられるか</span>
+        </div>
+        <table class="field-table" style="margin-bottom:0;">
           <thead><tr><th style="width:30px;">#</th><th style="width:240px;">論点</th><th>詳細</th><th style="width:140px;">関連フロー</th></tr></thead>
           <tbody>
             <tr>
               <td>1</td>
               <td><strong>Design Template DB / Common Print Group DB の新設は対応可能か</strong></td>
-              <td>理想設計ではBrother側にグルーピング用DBの新設を提案している。対応可否と、DB構造・カラム設計の手助けが必要か確認</td>
+              <td>理想設計ではBrother側にグルーピング用DBの新設を提案している。対応可否を確認</td>
               <td>STEP0, STEP1 / 共通STEP0, STEP1</td>
             </tr>
             <tr>
@@ -2378,38 +2562,84 @@ sequenceDiagram
             </tr>
             <tr>
               <td>3</td>
-              <td><strong>fileKey + thumbnailUrl 方式は対応可能か</strong></td>
-              <td>現行の <code>imageUrl</code> 返却ではなく、<code>fileKey</code>（永続識別子）+ <code>thumbnailUrl</code>（公開URL）を返却する方式。加えて <code>GET /files/{fileKey}/url</code> で署名付き一時URLを発行する新規APIの新設</td>
-              <td>STEP4, STEP5 / 共通STEP2</td>
+              <td><strong>生成画像への thumbnailUrl 追加は対応可能か</strong></td>
+              <td>現行の生成画像レスポンスは <code>imageUrl</code> のみ。元原稿（<code>GET /source-images</code>）には既に <code>thumbnailUrl</code> があるため、生成画像にも同様に公開URL（期限なし）のサムネイルを追加できるか</td>
+              <td>STEP4, STEP5</td>
             </tr>
             <tr>
               <td>4</td>
+              <td><strong>fileKey + GET /files/{fileKey}/url 方式は対応可能か</strong></td>
+              <td>DL用に <code>fileKey</code>（永続識別子）を返却し、<code>GET /files/{fileKey}/url</code> で署名付き一時URLを都度発行する新規API。行事の生成画像・共通印刷物で共通利用する想定</td>
+              <td>STEP5 / 共通STEP2</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><strong>バッチ生成エンドポイントは対応可能か</strong></td>
+              <td>現状は3デザイン分を個別に <code>POST /generated-images</code> × 3回並列送信している。行事情報（eventName等）が毎回重複するため、<code>POST /generated-images/batch</code> で複数 <code>sourceImageId</code> をまとめて送信し1回で済ませたい。Bubble側の並列制御が不要になり、部分失敗時のハンドリングもBrother側で完結する</td>
+              <td>STEP4, STEP6</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 仕様確認 -->
+        <div style="padding:16px 20px 8px; border-bottom:1px solid #e5e7eb; border-top:2px solid #e5e7eb;">
+          <span style="font-size:13px; font-weight:700; color:#0369a1; background:#f0f9ff; padding:4px 12px; border-radius:99px;">仕様確認 — 現行仕様の不明点</span>
+        </div>
+        <table class="field-table">
+          <thead><tr><th style="width:30px;">#</th><th style="width:240px;">論点</th><th>詳細</th><th style="width:140px;">関連フロー</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>6</td>
+              <td><strong>thumbnailUrl は公開URLか、署名付き一時URLか</strong></td>
+              <td>元原稿（<code>GET /source-images</code>）が返す <code>thumbnailUrl</code> は期限なしの公開URLか、それとも <code>imageUrl</code> と同様に署名付き一時URLか。理想設計ではサムネイルを公開URL前提でBubble DBに保存する設計のため、期限の有無で方針が変わる</td>
+              <td>STEP1, STEP5</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><strong>imageUrl の有効期限と期限切れ時の挙動</strong></td>
+              <td>現行の <code>imageUrl</code>（署名付き一時URL）の有効期限は何分/何時間か。期限切れ時のHTTPレスポンス（403？リダイレクト？）も確認したい</td>
+              <td>STEP4, STEP5</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td><strong>認証方式と userId の受け渡し</strong></td>
+              <td>API認証はAPIキー方式かBearer Token方式か。Generated Image DBに <code>userId</code> があるが、POSTリクエストのパラメータには含まれていない。認証トークンから取得する想定か、リクエストボディに追加が必要か</td>
+              <td>全API共通</td>
+            </tr>
+            <tr>
+              <td>9</td>
               <td><strong>生成完了の通知方式</strong></td>
               <td>Webhook / ポーリングのどちらか。3デザイン並列POST時に完了をどう検知するか。ポーリングの場合、推奨間隔・最大リトライ回数も確認</td>
               <td>STEP4, STEP6</td>
             </tr>
             <tr>
-              <td>5</td>
+              <td>10</td>
               <td><strong>レート制限の有無</strong></td>
-              <td>1最大3リクエストを並列POSTする。レート制限はあるか。</td>
+              <td>最大3リクエストを並列POSTする。レート制限はあるか。バッチAPI（#5）が実現すればこの問題は解消される</td>
               <td>STEP4</td>
             </tr>
             <tr>
-              <td>6</td>
+              <td>11</td>
               <td><strong>sizeの表現方法</strong></td>
               <td>A3 / A4 等のラベル指定か、px / mm 指定か。Bubble側からリクエストに含める値の形式</td>
               <td>STEP4</td>
             </tr>
             <tr>
-              <td>7</td>
+              <td>12</td>
               <td><strong>生成と再生成APIを分ける必要があるか</strong></td>
-              <td>POST /generated-images と POST /{id}/regenerate が別APIである理由。内部処理が異なるのか、統合可能か</td>
+              <td><code>POST /generated-images</code> と <code>POST /generated-images/{id}/regenerate</code> が別APIである理由。内部処理が異なるのか。統合する場合、オプショナルな <code>parentGeneratedImageId</code> で初回/再生成を区別する方式を想定</td>
               <td>STEP4, STEP6</td>
             </tr>
             <tr>
-              <td>8</td>
+              <td>13</td>
+              <td><strong>ポーリングのバッチ取得は可能か</strong></td>
+              <td>現状は <code>GET /generated-images/{id}</code> を3件分個別にポーリングしている。<code>GET /generated-images?ids=gi_001,gi_002,gi_003</code> のようにクエリパラメータで複数件を一括取得できるとポーリングループが1本で済む</td>
+              <td>STEP4, STEP6</td>
+            </tr>
+            <tr>
+              <td>14</td>
               <td><strong>テンプレートなし行事で「生成」を押した場合の挙動</strong></td>
-              <td>ユーザーがテンプレートを選ばずに行事を作成した場合、<code>designTemplateId</code> がないため生成APIを呼べない。UI側で生成ボタンを非活性にする対応で良いか</td>
+              <td>ユーザーがテンプレートを選ばずに行事を作成した場合、<code>sourceImageId</code> がないため生成APIを呼べない。UI側で生成ボタンを非活性にする対応で良いか、そもそもテンプレート必須にするか</td>
               <td>STEP3</td>
             </tr>
           </tbody>
@@ -2482,7 +2712,7 @@ sequenceDiagram
           <tr><td><span class="field-name">generatedImageId</span><span class="field-pk">PK</span></td><td>生成画像ID</td><td></td></tr>
           <tr><td><span class="field-name">sourceImageId</span></td><td>元原稿画像ID</td><td></td></tr>
           <tr><td><span class="field-name">userId</span></td><td>ユーザID</td><td></td></tr>
-          <tr><td><span class="field-name">status</span></td><td>生成状態</td><td>PENDING / RUNNING / COMPLETED / FAILED</td></tr>
+          <tr><td><span class="field-name">status</span></td><td>生成状態</td><td>PROCESSING / COMPLETED / FAILED</td></tr>
           <tr><td><span class="field-name">fileKey</span></td><td>生成画像ファイル識別子</td><td>永続的な識別子。Bubble側に返却し、DL時に <code>GET /files/{fileKey}/url</code> でURL発行</td></tr>
           <tr><td><span class="field-name">thumbnailUrl</span></td><td>サムネイルURL</td><td>公開URL（期限なし）。一覧表示用にBubble DBに保存して直接使用</td></tr>
           <tr><td><span class="field-name">parentGeneratedImageId</span></td><td>再生成元ID</td><td>再生成時の履歴追跡。ブラザー内部の用途（品質分析等）か要確認</td></tr>
@@ -2502,7 +2732,6 @@ sequenceDiagram
         <table class="field-table"><thead><tr><th>フィールド</th><th>説明</th><th>備考</th></tr></thead><tbody>
           <tr><td><span class="field-name">commonPrintGroupId</span><span class="field-pk">PK</span></td><td>共通印刷物グループID</td><td>ブラザーがグループ登録時に付与</td></tr>
           <tr><td><span class="field-name">name</span></td><td>グループ名</td><td>Brother内部の管理用</td></tr>
-          <tr><td><span class="field-name">thumbnailUrl</span></td><td>代表サムネイルURL</td><td>グループ一覧表示用。公開URL（期限なし）</td></tr>
           <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td></td></tr>
           <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td></td></tr>
         </tbody></table>
@@ -2582,8 +2811,15 @@ sequenceDiagram
           <tbody>
             <tr><td>名前</td><td></td></tr>
             <tr><td>業界</td><td></td></tr>
+            <tr><td>小分類</td><td>任意。業界の中の細分類（神社/寺院等）</td></tr>
+            <tr><td>開催月</td><td></td></tr>
+            <tr><td>行事名（デフォルト）</td><td>ユーザーが行事作成時に初期値として使用</td></tr>
+            <tr><td>開催期間（デフォルト）</td><td>同上</td></tr>
+            <tr><td>行事詳細（デフォルト）</td><td>同上</td></tr>
+            <tr><td>プログラム（デフォルト）</td><td>同上</td></tr>
+            <tr><td>注釈（デフォルト）</td><td>同上</td></tr>
             <tr><td>デザインテンプレ×3（1必須+2任意）</td><td></td></tr>
-            <tr><td>初期表示項目</td><td></td></tr>
+            <tr><td>初期表示フラグ</td><td>ONの場合、新規ユーザーの行事一覧に自動表示</td></tr>
           </tbody>
         </table>
       </div>
@@ -2603,7 +2839,8 @@ sequenceDiagram
             <tr><td>行事名</td><td></td></tr>
             <tr><td>期間</td><td></td></tr>
             <tr><td>プログラム</td><td></td></tr>
-            <tr><td>詳細 / 備考</td><td></td></tr>
+            <tr><td>詳細</td><td></tr>
+            <tr><td>注釈</td><td></tr>
           </tbody>
         </table>
       </div>
@@ -2647,7 +2884,6 @@ sequenceDiagram
             <tr><td>グループ名</td><td></td></tr>
             <tr><td>業界</td><td>Bubble側で管理（行事テンプレートと同パターン）</td></tr>
             <tr><td>小分類</td><td></td></tr>
-            <tr><td><code>thumbnailUrl</code></td><td>GET /common-print-groupsのレスポンスから保存</td></tr>
             <tr><td>共通印刷物（リスト型）</td><td>子テーブルへの参照。1グループにN枚</td></tr>
           </tbody>
         </table>
@@ -2657,14 +2893,14 @@ sequenceDiagram
     <div class="card db-accordion" style="border-left:4px solid var(--blue); margin-bottom:16px;">
       <div class="card-header" onclick="this.parentElement.classList.toggle('open')">
         <h3>共通印刷物</h3>
-        <span class="db-summary">共通印刷物グループの子テーブル。GET /common-printsから取得した情報を保存</span>
+        <span class="db-summary">共通印刷物グループの子テーブル。GET /common-print-groups/{id}/printsから取得した情報を保存</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="card-body">
         <table class="field-table">
           <thead><tr><th>カラム</th><th>備考</th></tr></thead>
           <tbody>
-            <tr><td><code>commonPrintId</code></td><td>GET /common-printsのレスポンスから保存</td></tr>
+            <tr><td><code>commonPrintId</code></td><td>GET /common-print-groups/{id}/printsのレスポンスから保存</td></tr>
             <tr><td>印刷物名</td><td>管理者が入力（「立入禁止」「土足厳禁」等）</td></tr>
             <tr><td><code>thumbnailUrl</code></td><td>一覧表示用。公開URLなので直接img srcに使用</td></tr>
             <tr><td><code>fileKey</code></td><td>DL用。GET /files/{fileKey}/urlで一時URL取得</td></tr>
@@ -2677,8 +2913,8 @@ sequenceDiagram
     <div style="padding:16px 20px; background:var(--green-bg); border-radius:var(--radius); border:1px solid #6ee7b7;">
       <h3 style="font-size:.9rem; font-weight:700; color:var(--green); margin-bottom:10px;">現行との主な違い</h3>
       <ul style="font-size:.85rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:2;">
-        <li><strong>Design Template DB 新設</strong> — ブラザー側でデザインのグルーピングを管理。Bubbleはdesign TemplateIdだけ保持し、sourceImageIdを直接持たない</li>
-        <li><strong>sourceImageIdの差し替えリスク解消</strong> — designTemplateId + size でsourceImageを解決するため、ブラザーが画像を差し替えてもBubble側に影響なし</li>
+        <li><strong>Design Template DB 新設</strong> — ブラザー側でデザインのグルーピングを管理。Bubbleはdesign TemplateId + sourceImageIdを保持</li>
+        <li><strong>sourceImageId直接指定</strong> — 生成リクエストでsourceImageIdを直接指定。STEP1で取得済みのため、Brother側の内部解決が不要でシンプル</li>
         <li><strong>行事情報はBubble側で管理</strong> — Brother側Generated Image DBには行事データを持たない。生成・再生成時にBubbleからリクエストパラメータとして都度送信</li>
         <li><strong>fileKey + thumbnailUrl の使い分け</strong> — サムネイルは <code>thumbnailUrl</code>（公開URL・期限なし）で直接表示。DL用フルサイズ画像は <code>fileKey</code>（永続識別子）を保存し、DL時に <code>GET /files/{fileKey}/url</code> で一時URLを取得</li>
         <li><strong>Common Print DB 新設</strong> — 共通印刷物を行事用Source Imageと分離</li>
@@ -2694,10 +2930,8 @@ sequenceDiagram
     <h2 class="section-title">理想APIエンドポイント</h2>
     <p class="section-desc">今日の議論を踏まえた理想的なAPI設計。現行APIエンドポイントタブは既存仕様ベース、こちらは理想状態。画像はfileKey（永続識別子）で管理し、表示・DL時に一時URL取得</p>
 
-    <div style="display:flex; gap:16px; align-items:center; padding:12px 16px; background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius); margin-bottom:24px; box-shadow:var(--shadow);">
-      <span style="font-size:.75rem; font-weight:700; color:var(--gray-500);">凡例</span>
-      <span style="font-size:.8rem; display:flex; align-items:center; gap:6px;"><span class="field-chip highlight" style="padding:2px 8px; font-size:.75rem;">青</span><span style="color:var(--gray-700);">リクエスト: 対象を特定するキー / レスポンス: Bubble DBに保存</span></span>
-      <span style="font-size:.8rem; display:flex; align-items:center; gap:6px;"><span class="field-chip" style="padding:2px 8px; font-size:.75rem;">白</span><span style="color:var(--gray-700);">リクエスト: コンテンツデータ / レスポンス: 確認・参照用</span></span>
+    <div style="display:inline-flex; align-items:center; gap:8px; padding:8px 14px; background:#fff; border:1px solid var(--gray-200); border-radius:8px; margin-bottom:24px; font-size:.75rem; color:var(--gray-500);">
+      <span class="field-chip highlight" style="padding:2px 8px; font-size:.72rem;">色付き</span><span>= キー項目（Bubble DBに保存）</span>
     </div>
 
     <div class="endpoint-list">
@@ -2808,15 +3042,14 @@ sequenceDiagram
           <div class="detail-section">
             <div class="detail-label">リクエストボディ</div>
             <div class="detail-fields">
-              <span class="field-chip highlight">designTemplateId</span>
-              <span class="field-chip highlight">size</span>
+              <span class="field-chip highlight">sourceImageId</span>
               <span class="field-chip">eventName</span>
               <span class="field-chip">period</span>
               <span class="field-chip">details</span>
               <span class="field-chip">program</span>
               <span class="field-chip">notes</span>
             </div>
-            <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">designTemplateId + size でsourceImageをBrother側が解決。sourceImageIdの直接指定は不要</p>
+            <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">sourceImageIdを直接指定。STEP1で取得済みのBubble DB.デザインテンプレート画像から取得</p>
           </div>
           <div class="detail-section">
             <div class="detail-label">レスポンス</div>
@@ -2830,13 +3063,12 @@ sequenceDiagram
             <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">fileKey（DL用・永続識別子）+ thumbnailUrl（一覧表示用・公開URL）を返却。Bubble DBに保存。DL時のみ <code>GET /files/{fileKey}/url</code> で一時URL取得</p>
           </div>
           <div class="detail-section">
-            <p class="note-text">* 非同期処理。Bubble側で3デザイン分を並列に3回POSTする</p>
+            <p class="note-text">* 非同期処理。ユーザーがサイズを選択後、3デザイン分を並列に最大3回POSTする</p>
           </div>
           <div class="detail-section">
             <div class="json-block"><span class="json-label">Request</span>
 {
-  <span class="json-key">"designTemplateId"</span>: <span class="json-string">"dt_001"</span>,  <span class="json-comment">// Bubble DB.デザインテンプレート.designTemplateId</span>
-  <span class="json-key">"size"</span>: <span class="json-string">"A3"</span>,               <span class="json-comment">// Bubble DB.生成画像.size</span>
+  <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,    <span class="json-comment">// Bubble DB.デザインテンプレート画像.sourceImageId</span>
   <span class="json-key">"eventName"</span>: <span class="json-string">"春季例大祭"</span>,    <span class="json-comment">// Bubble DB.行事データ.行事名</span>
   <span class="json-key">"period"</span>: <span class="json-string">"2026年4月20日（日）〜4月22日（火）"</span>,  <span class="json-comment">// Bubble DB.行事データ.期間</span>
   <span class="json-key">"details"</span>: <span class="json-string">"境内にて神事・奉納行事を執り行います"</span>,  <span class="json-comment">// Bubble DB.行事データ.詳細</span>
@@ -2846,8 +3078,8 @@ sequenceDiagram
             <div class="json-block" style="margin-top:8px;"><span class="json-label">Response</span>
 {
   <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_001"</span>,  <span class="json-comment">// Generated Image DB.generatedImageId（新規発行）</span>
-  <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,     <span class="json-comment">// Source Image DB.sourceImageId（designTemplateId + sizeで解決）</span>
-  <span class="json-key">"status"</span>: <span class="json-string">"PENDING"</span>,            <span class="json-comment">// Generated Image DB.status</span>
+  <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,     <span class="json-comment">// Source Image DB.sourceImageId（リクエストで指定した値）</span>
+  <span class="json-key">"status"</span>: <span class="json-string">"PROCESSING"</span>,         <span class="json-comment">// Generated Image DB.status（非同期処理中）</span>
   <span class="json-key">"fileKey"</span>: <span class="json-null">null</span>,                  <span class="json-comment">// 非同期のため、完了後にGETで取得（DL用）</span>
   <span class="json-key">"thumbnailUrl"</span>: <span class="json-null">null</span>              <span class="json-comment">// 非同期のため、完了後にGETで取得（一覧表示用・公開URL）</span>
 }</div>
@@ -2888,7 +3120,7 @@ sequenceDiagram
 {
   <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_001"</span>,  <span class="json-comment">// Generated Image DB.generatedImageId</span>
   <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,     <span class="json-comment">// Generated Image DB.sourceImageId</span>
-  <span class="json-key">"status"</span>: <span class="json-string">"RUNNING"</span>,            <span class="json-comment">// Generated Image DB.status</span>
+  <span class="json-key">"status"</span>: <span class="json-string">"PROCESSING"</span>,         <span class="json-comment">// Generated Image DB.status（処理中）</span>
   <span class="json-key">"fileKey"</span>: <span class="json-null">null</span>,                  <span class="json-comment">// まだ生成中</span>
   <span class="json-key">"thumbnailUrl"</span>: <span class="json-null">null</span>              <span class="json-comment">// まだ生成中</span>
 }</div>
@@ -2897,7 +3129,7 @@ sequenceDiagram
   <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_001"</span>,  <span class="json-comment">// Generated Image DB.generatedImageId</span>
   <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,     <span class="json-comment">// Generated Image DB.sourceImageId</span>
   <span class="json-key">"status"</span>: <span class="json-string">"COMPLETED"</span>,          <span class="json-comment">// Generated Image DB.status</span>
-  <span class="json-key">"fileKey"</span>: <span class="json-string">"generated/gi_001.png"</span>,  <span class="json-comment">// Generated Image DB.fileKey（DL用・永続識別子）</span>
+  <span class="json-key">"fileKey"</span>: <span class="json-string">"gi_001"</span>,  <span class="json-comment">// Generated Image DB.fileKey（DL用・永続識別子）</span>
   <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.example.com/thumbnails/gi_001_thumb.png"</span>  <span class="json-comment">// 一覧表示用（公開URL・期限なし）</span>
 }</div>
           </div>
@@ -2952,7 +3184,7 @@ sequenceDiagram
   <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_002"</span>,        <span class="json-comment">// Generated Image DB.generatedImageId（新規発行）</span>
   <span class="json-key">"parentGeneratedImageId"</span>: <span class="json-string">"gi_001"</span>,  <span class="json-comment">// Generated Image DB.parentGeneratedImageId（再生成元）</span>
   <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,           <span class="json-comment">// Generated Image DB.sourceImageId</span>
-  <span class="json-key">"status"</span>: <span class="json-string">"PENDING"</span>,                  <span class="json-comment">// Generated Image DB.status</span>
+  <span class="json-key">"status"</span>: <span class="json-string">"PROCESSING"</span>,               <span class="json-comment">// Generated Image DB.status（非同期処理中）</span>
   <span class="json-key">"fileKey"</span>: <span class="json-null">null</span>,                        <span class="json-comment">// 非同期のため、完了後にGETで取得（DL用）</span>
   <span class="json-key">"thumbnailUrl"</span>: <span class="json-null">null</span>                    <span class="json-comment">// 非同期のため、完了後にGETで取得（一覧表示用）</span>
 }</div>
@@ -2991,7 +3223,7 @@ sequenceDiagram
           <div class="detail-section">
             <div class="json-block"><span class="json-label">Response</span>
 {
-  <span class="json-key">"url"</span>: <span class="json-string">"https://storage.example.com/generated/gi_001.png?token=xxx&amp;expires=1713600000"</span>,  <span class="json-comment">// 署名付き一時URL</span>
+  <span class="json-key">"url"</span>: <span class="json-string">"https://storage.example.com/files/gi_001.png?token=xxx&amp;expires=1713600000"</span>,  <span class="json-comment">// 署名付き一時URL</span>
   <span class="json-key">"expiresAt"</span>: <span class="json-string">"2026-04-22T12:00:00Z"</span>  <span class="json-comment">// URL有効期限</span>
 }</div>
           </div>
@@ -3014,7 +3246,7 @@ sequenceDiagram
             <div class="detail-label">レスポンス</div>
             <div class="detail-fields">
               <span class="field-chip highlight">commonPrintGroupId</span>
-              <span class="field-chip highlight">thumbnailUrl</span>
+              <span class="field-chip">name</span>
             </div>
           </div>
           <div class="detail-section">
@@ -3026,11 +3258,11 @@ sequenceDiagram
   <span class="json-key">"commonPrintGroups"</span>: [
     {
       <span class="json-key">"commonPrintGroupId"</span>: <span class="json-string">"cpg_001"</span>,  <span class="json-comment">// Common Print Group DB.commonPrintGroupId</span>
-      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.example.com/thumbnails/cpg_001.png"</span>  <span class="json-comment">// 代表サムネイル（公開URL・期限なし）</span>
+      <span class="json-key">"name"</span>: <span class="json-string">"安全標識セット"</span>  <span class="json-comment">// グループ名</span>
     },
     {
       <span class="json-key">"commonPrintGroupId"</span>: <span class="json-string">"cpg_002"</span>,
-      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.example.com/thumbnails/cpg_002.png"</span>
+      <span class="json-key">"name"</span>: <span class="json-string">"店舗案内セット"</span>
     }
   ]
 }</div>
@@ -3075,13 +3307,13 @@ sequenceDiagram
       <span class="json-key">"commonPrintId"</span>: <span class="json-string">"cp_001"</span>,        <span class="json-comment">// Common Print DB.commonPrintId</span>
       <span class="json-key">"fileName"</span>: <span class="json-string">"立入禁止_01.png"</span>,      <span class="json-comment">// Common Print DB.fileName</span>
       <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.example.com/thumbnails/cp_001.png"</span>,  <span class="json-comment">// 一覧表示用（公開URL・期限なし）</span>
-      <span class="json-key">"fileKey"</span>: <span class="json-string">"common-prints/cp_001.png"</span>  <span class="json-comment">// DL用（永続識別子）</span>
+      <span class="json-key">"fileKey"</span>: <span class="json-string">"cp_001"</span>  <span class="json-comment">// DL用（永続識別子）</span>
     },
     {
       <span class="json-key">"commonPrintId"</span>: <span class="json-string">"cp_002"</span>,
       <span class="json-key">"fileName"</span>: <span class="json-string">"土足厳禁_01.png"</span>,
       <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.example.com/thumbnails/cp_002.png"</span>,
-      <span class="json-key">"fileKey"</span>: <span class="json-string">"common-prints/cp_002.png"</span>
+      <span class="json-key">"fileKey"</span>: <span class="json-string">"cp_002"</span>
     }
   ]
 }</div>
@@ -3103,9 +3335,9 @@ sequenceDiagram
             <tr><td><code>POST /generated-images</code></td><td><code>POST /generated-images</code></td><td>リクエスト拡張 + fileKey（DL用）/ thumbnailUrl（表示用）をレスポンスに追加</td></tr>
             <tr><td><code>GET /generated-images/{id}</code></td><td><code>GET /generated-images/{id}</code></td><td>ポーリング用。完了後fileKey + thumbnailUrlを取得</td></tr>
             <tr><td><code>GET /generated-images</code></td><td>不要</td><td>Bubble DBで管理</td></tr>
-            <tr><td><code>POST /{id}/regenerate</code></td><td><code>POST /{id}/regenerate</code></td><td>リクエスト拡張</td></tr>
-            <tr><td><code>DELETE /{id}</code></td><td>不要</td><td>今回スコープ外</td></tr>
-            <tr><td>—</td><td><code>GET /files/{fileKey}/url</code></td><td>署名付き一時URL取得。表示・DL共通で新設</td></tr>
+            <tr><td><code>POST /generated-images/{id}/regenerate</code></td><td><code>POST /generated-images/{id}/regenerate</code></td><td>リクエスト拡張</td></tr>
+            <tr><td><code>DELETE /generated-images/{id}</code></td><td>不要</td><td>今回スコープ外</td></tr>
+            <tr><td>—</td><td><code>GET /files/{fileKey}/url</code></td><td>DL用の署名付き一時URL取得。新設</td></tr>
             <tr><td>—</td><td><code>GET /common-print-groups</code></td><td>共通印刷物グループ一覧。GET /design-templatesと同パターン</td></tr>
             <tr><td>—</td><td><code>GET /common-print-groups/{id}/prints</code></td><td>グループ内印刷物一覧。GET /design-templates/{id}/source-imagesと同パターン</td></tr>
           </tbody>
@@ -3117,21 +3349,33 @@ sequenceDiagram
 </div>
 
 <!-- ==================== 論点 ==================== -->
-<!-- 論点タブは削除済み。サマリタブに統合 -->
+<!-- 論点タブは削除済み。設計概要タブに統合 -->
 
 </div><!-- /.main-content -->
 </div><!-- /.layout -->
 
 <script>
   // Sidebar navigation
+  function switchTab(tabId) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const navItem = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+    if (navItem) navItem.classList.add('active');
+    const section = document.getElementById(tabId);
+    if (section) section.classList.add('active');
+    localStorage.setItem('api_spec_active_tab', tabId);
+    window.scrollTo(0, 0);
+  }
+
   document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      item.classList.add('active');
-      document.getElementById(item.dataset.tab).classList.add('active');
-    });
+    item.addEventListener('click', () => switchTab(item.dataset.tab));
   });
+
+  // Restore tab from previous session
+  const savedTab = localStorage.getItem('api_spec_active_tab');
+  if (savedTab && document.getElementById(savedTab)) {
+    switchTab(savedTab);
+  }
 
   // Mermaid init
   mermaid.initialize({

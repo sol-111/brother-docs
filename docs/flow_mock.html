@@ -300,21 +300,32 @@
   .api-path { font-size: .8rem; font-weight: 600; font-family: 'SF Mono', Monaco, monospace; color: var(--gray-700); }
 
   .json-block {
-    background: var(--gray-800);
-    color: #e2e8f0;
-    border-radius: 6px;
-    padding: 10px 12px;
-    font-family: 'SF Mono', Monaco, monospace;
-    font-size: .7rem;
-    line-height: 1.6;
+    background: var(--gray-900);
+    color: #e5e7eb;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: .8rem;
+    line-height: 1.7;
     overflow-x: auto;
+    white-space: pre;
     margin: 8px 0;
   }
-  .json-key { color: #93c5fd; }
-  .json-string { color: #86efac; }
-  .json-null { color: #fca5a5; }
-  .json-number { color: #fde68a; }
-  .json-comment { color: #6b7280; }
+  .json-block .json-label {
+    display: inline-block;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: .7rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 8px;
+  }
+  .json-block .json-key { color: #93c5fd; }
+  .json-block .json-string { color: #86efac; }
+  .json-block .json-null { color: #a78bfa; }
+  .json-block .json-number { color: #fde68a; }
+  .json-block .json-comment { color: #6b7280; font-style: italic; }
 
   .db-table {
     font-size: .75rem;
@@ -1415,12 +1426,12 @@
                 <span class="field-chip highlight">thumbnailUrl</span>
               </div>
             </div>
-            <div class="json-block"><span class="json-comment">// Response</span>
+            <div class="json-block"><span class="json-label">Response</span>
 {
   <span class="json-key">"designTemplates"</span>: [
     {
-      <span class="json-key">"designTemplateId"</span>: <span class="json-string">"dt_001"</span>,
-      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../dt_001.png"</span>
+      <span class="json-key">"designTemplateId"</span>: <span class="json-string">"dt_001"</span>,      <span class="json-comment">// Design Template DB.designTemplateId</span>
+      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../dt_001.png"</span>   <span class="json-comment">// Design Template DB.thumbnailUrl</span>
     },
     {
       <span class="json-key">"designTemplateId"</span>: <span class="json-string">"dt_002"</span>,
@@ -1452,13 +1463,13 @@
                 <span class="field-chip">status</span>
               </div>
             </div>
-            <div class="json-block"><span class="json-comment">// Response</span>
+            <div class="json-block"><span class="json-label">Response</span>
 {
   <span class="json-key">"sourceImages"</span>: [
     {
-      <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,
-      <span class="json-key">"size"</span>: <span class="json-string">"A3"</span>,
-      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../dt_001_a3.png"</span>,
+      <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,       <span class="json-comment">// Source Image DB.sourceImageId</span>
+      <span class="json-key">"size"</span>: <span class="json-string">"A3"</span>,                    <span class="json-comment">// Source Image DB.size</span>
+      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../dt_001_a3.png"</span>,  <span class="json-comment">// Source Image DB.thumbnailUrl</span>
       <span class="json-key">"status"</span>: <span class="json-string">"active"</span>
     },
     {
@@ -1613,8 +1624,7 @@
             <div class="field-section">
               <div class="field-section-label">リクエストボディ</div>
               <div class="field-chips">
-                <span class="field-chip highlight">designTemplateId</span>
-                <span class="field-chip highlight">size</span>
+                <span class="field-chip highlight">sourceImageId</span>
                 <span class="field-chip">eventName</span>
                 <span class="field-chip">period</span>
                 <span class="field-chip">details</span>
@@ -1632,24 +1642,21 @@
                 <span class="field-chip highlight">thumbnailUrl</span>
               </div>
             </div>
-            <div class="json-block"><span class="json-comment">// Request（× 3回並列送信）</span>
+            <div class="json-block"><span class="json-label">Request（× 3回並列送信）</span>
 {
-  <span class="json-comment">// Bubble DB.デザインテンプレート から</span>
-  <span class="json-key">"designTemplateId"</span>: <span class="json-string">"dt_001"</span>,
-  <span class="json-key">"size"</span>: <span class="json-string">"A3"</span>,
+  <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,       <span class="json-comment">// Bubble DB.デザインテンプレート画像</span>
 
-  <span class="json-comment">// Bubble DB.行事データ から</span>
-  <span class="json-key">"eventName"</span>: <span class="json-string">"春季例大祭"</span>,
+  <span class="json-key">"eventName"</span>: <span class="json-string">"春季例大祭"</span>,         <span class="json-comment">// Bubble DB.行事データ</span>
   <span class="json-key">"period"</span>: <span class="json-string">"2026年4月20日〜22日"</span>,
   <span class="json-key">"details"</span>: <span class="json-string">"境内にて..."</span>,
   <span class="json-key">"program"</span>: <span class="json-string">"10:00 神事..."</span>,
   <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は..."</span>
 }</div>
-            <div class="json-block"><span class="json-comment">// Response（即座に返る / 非同期）</span>
+            <div class="json-block"><span class="json-label">Response（即座に返る / 非同期）</span>
 {
-  <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_001"</span>,
+  <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_001"</span>,   <span class="json-comment">// Generated Image DB.generatedImageId</span>
   <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,
-  <span class="json-key">"status"</span>: <span class="json-string">"PENDING"</span>,
+  <span class="json-key">"status"</span>: <span class="json-string">"PENDING"</span>,              <span class="json-comment">// Generated Image DB.status</span>
   <span class="json-key">"fileKey"</span>: <span class="json-null">null</span>,
   <span class="json-key">"thumbnailUrl"</span>: <span class="json-null">null</span>
 }</div>
@@ -1677,15 +1684,14 @@
                 <span class="field-chip highlight">thumbnailUrl</span>
               </div>
             </div>
-            <div class="json-block"><span class="json-comment">// Response（COMPLETED時）</span>
+            <div class="json-block"><span class="json-label">Response（COMPLETED時）</span>
 {
   <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_001"</span>,
   <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,
   <span class="json-key">"status"</span>: <span class="json-string">"COMPLETED"</span>,
 
-  <span class="json-comment">// → Bubble DBに保存</span>
-  <span class="json-key">"fileKey"</span>: <span class="json-string">"generated/gi_001.png"</span>,
-  <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../gi_001_thumb.png"</span>
+  <span class="json-key">"fileKey"</span>: <span class="json-string">"generated/gi_001.png"</span>,          <span class="json-comment">// → Bubble DBに保存</span>
+  <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../gi_001_thumb.png"</span>  <span class="json-comment">// → Bubble DBに保存</span>
 }</div>
             <div class="note-box note-warn" style="margin-top:8px;">
               Webhook方式の場合はこのポーリングAPIは不要。ブラザーに要確認。
@@ -1696,13 +1702,9 @@
         <div class="panel-section" id="panel-step4-dbread">
           <div class="panel-header panel-header-db-read">DB読み取り（リクエスト構築用）</div>
           <div class="panel-body">
-            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> デザインテンプレート</div>
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> デザインテンプレート画像</div>
             <table class="db-table">
-              <tr class="field-used"><td>designTemplateId</td><td>→ リクエストに含める</td></tr>
-            </table>
-            <div style="font-size:.75rem; font-weight:600; margin:8px 0 4px;"><span class="db-badge db-bubble">Bubble</span> デザインテンプレート画像</div>
-            <table class="db-table">
-              <tr class="field-used"><td>size</td><td>→ リクエストに含める</td></tr>
+              <tr class="field-used"><td>sourceImageId</td><td>→ リクエストに含める</td></tr>
             </table>
             <div style="font-size:.75rem; font-weight:600; margin:8px 0 4px;"><span class="db-badge db-bubble">Bubble</span> 行事データ</div>
             <table class="db-table">
@@ -1721,7 +1723,7 @@
             <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-brother">Brother</span> Generated Image DB</div>
             <table class="db-table">
               <tr class="field-used"><td>generatedImageId</td><td>新規発行</td></tr>
-              <tr class="field-used"><td>sourceImageId</td><td>designTemplateId+sizeから解決</td></tr>
+              <tr class="field-used"><td>sourceImageId</td><td>リクエストで直接指定</td></tr>
               <tr class="field-used"><td>status</td><td>PENDING→RUNNING→COMPLETED</td></tr>
               <tr class="field-used"><td>fileKey</td><td>生成完了後にセット</td></tr>
               <tr class="field-used"><td>thumbnailUrl</td><td>生成完了後にセット</td></tr>
@@ -1800,10 +1802,9 @@
                 <span class="field-chip">expiresAt</span>
               </div>
             </div>
-            <div class="json-block"><span class="json-comment">// Response</span>
+            <div class="json-block"><span class="json-label">Response</span>
 {
-  <span class="json-comment">// 署名付き一時URL（期限付き）</span>
-  <span class="json-key">"url"</span>: <span class="json-string">"https://storage.example.com/...?token=xxx"</span>,
+  <span class="json-key">"url"</span>: <span class="json-string">"https://storage.example.com/...?token=xxx"</span>,  <span class="json-comment">// 署名付き一時URL（期限付き）</span>
   <span class="json-key">"expiresAt"</span>: <span class="json-string">"2026-04-22T12:00:00Z"</span>
 }
 <span class="json-comment">// → この一時URLでブラウザDLを実行</span></div>
@@ -1858,7 +1859,7 @@
                 <span class="field-chip highlight">thumbnailUrl</span>
               </div>
             </div>
-            <div class="json-block"><span class="json-comment">// Request（変更後の行事情報）</span>
+            <div class="json-block"><span class="json-label">Request（変更後の行事情報）</span>
 <span class="json-comment">// テンプレ・サイズは元の生成結果から引き継ぐ</span>
 {
   <span class="json-key">"eventName"</span>: <span class="json-string">"春季例大祭"</span>,
@@ -1867,13 +1868,10 @@
   <span class="json-key">"program"</span>: <span class="json-string">"10:00 神事.../ 15:00 閉会"</span>,
   <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は..."</span>
 }</div>
-            <div class="json-block"><span class="json-comment">// Response</span>
+            <div class="json-block"><span class="json-label">Response</span>
 {
-  <span class="json-comment">// 新規発行</span>
-  <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_004"</span>,
-
-  <span class="json-comment">// 元のID（履歴追跡用）</span>
-  <span class="json-key">"parentGeneratedImageId"</span>: <span class="json-string">"gi_001"</span>,
+  <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_004"</span>,           <span class="json-comment">// 新規発行</span>
+  <span class="json-key">"parentGeneratedImageId"</span>: <span class="json-string">"gi_001"</span>,     <span class="json-comment">// 元のID（履歴追跡用）</span>
 
   <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,
   <span class="json-key">"status"</span>: <span class="json-string">"PENDING"</span>,
@@ -1903,14 +1901,13 @@
                 <span class="field-chip highlight">thumbnailUrl</span>
               </div>
             </div>
-            <div class="json-block"><span class="json-comment">// Response（COMPLETED時）</span>
+            <div class="json-block"><span class="json-label">Response（COMPLETED時）</span>
 {
   <span class="json-key">"generatedImageId"</span>: <span class="json-string">"gi_004"</span>,
   <span class="json-key">"status"</span>: <span class="json-string">"COMPLETED"</span>,
 
-  <span class="json-comment">// → Bubble DBを上書き</span>
-  <span class="json-key">"fileKey"</span>: <span class="json-string">"generated/gi_004.png"</span>,
-  <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../gi_004_thumb.png"</span>
+  <span class="json-key">"fileKey"</span>: <span class="json-string">"generated/gi_004.png"</span>,          <span class="json-comment">// → Bubble DBを上書き</span>
+  <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../gi_004_thumb.png"</span>  <span class="json-comment">// → Bubble DBを上書き</span>
 }</div>
             <div class="note-box note-warn" style="margin-top:8px;">
               Webhook方式の場合はこのポーリングAPIは不要。

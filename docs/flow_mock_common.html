@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>共通印刷物 フローモック</title>
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-bg: #eef2ff;
+    --green: #10b981;
+    --green-bg: #ecfdf5;
+    --amber: #f59e0b;
+    --amber-bg: #fffbeb;
+    --red: #ef4444;
+    --red-bg: #fef2f2;
+    --blue: #3b82f6;
+    --blue-bg: #eff6ff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.1);
+    --shadow-md: 0 4px 6px rgba(0,0,0,.07);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--gray-100);
+    color: var(--gray-900);
+    line-height: 1.6;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: #fff;
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(5,150,105,.3);
+  }
+  .header .container { display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-size: 1.2rem; font-weight: 700; }
+  .header .subtitle { font-size: .8rem; opacity: .8; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+
+  /* Step Navigation */
+  .step-nav {
+    display: flex;
+    gap: 4px;
+    padding: 16px 0;
+    overflow-x: auto;
+  }
+  .step-nav-btn {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    background: #fff;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .step-nav-btn:hover { border-color: #6ee7b7; color: var(--green); }
+  .step-nav-btn.active {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+  .step-nav-btn .step-num {
+    display: inline-flex;
+    width: 22px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0,0,0,.1);
+    font-size: .7rem;
+    font-weight: 700;
+  }
+  .step-nav-btn.active .step-num { background: rgba(255,255,255,.25); }
+  .step-nav-btn .no-api { font-size: .65rem; padding: 1px 6px; background: var(--gray-100); border-radius: 4px; color: var(--gray-400); }
+  .step-nav-btn.active .no-api { background: rgba(255,255,255,.2); color: rgba(255,255,255,.8); }
+
+  /* Main Layout */
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 20px;
+    padding: 20px 0 40px;
+    min-height: calc(100vh - 140px);
+  }
+
+  /* Step content */
+  .step-content { display: none; }
+  .step-content.active { display: block; }
+
+  /* Mock Screen */
+  .mock-screen {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+  .mock-header {
+    background: var(--gray-800);
+    color: #fff;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: .85rem;
+  }
+  .mock-header .role-badge {
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: .7rem;
+    font-weight: 600;
+  }
+  .mock-header .role-admin { background: #f59e0b; color: #000; }
+  .mock-header .role-user { background: #3b82f6; color: #fff; }
+  .mock-body { padding: 20px; }
+
+  /* Mock elements */
+  .mock-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; color: var(--gray-800); }
+  .mock-subtitle { font-size: .85rem; color: var(--gray-500); margin-bottom: 12px; }
+
+  .mock-card {
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+  }
+  .mock-card:hover { border-color: #6ee7b7; box-shadow: var(--shadow); }
+  .mock-card.selected { border-color: var(--green); background: var(--green-bg); }
+
+  .mock-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .mock-btn-primary { background: var(--green); color: #fff; }
+  .mock-btn-primary:hover { background: #059669; }
+  .mock-btn-green { background: var(--green); color: #fff; }
+  .mock-btn-green:hover { background: #059669; }
+  .mock-btn-gray { background: var(--gray-200); color: var(--gray-600); }
+
+  .mock-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    font-size: .85rem;
+    margin-bottom: 8px;
+  }
+  .mock-label { font-size: .8rem; font-weight: 600; color: var(--gray-600); margin-bottom: 4px; display: block; }
+
+  .mock-thumb {
+    width: 80px;
+    height: 56px;
+    background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .65rem;
+    color: var(--gray-600);
+    flex-shrink: 0;
+  }
+
+  /* Right Panel */
+  .right-panel {
+    position: sticky;
+    top: 80px;
+    align-self: start;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+
+  .panel-section {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 12px 16px;
+    font-size: .8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-header-api { background: var(--gray-800); color: #fff; }
+  .panel-header-db-read { background: #0ea5e9; color: #fff; }
+  .panel-header-db-write { background: var(--green); color: #fff; }
+  .panel-header-bubble { background: #f59e0b; color: #fff; }
+  .panel-header-none { background: var(--gray-300); color: var(--gray-600); }
+
+  .panel-body { padding: 12px 16px; }
+
+  .api-method {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: .7rem;
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .api-get { background: var(--blue-bg); color: var(--blue); }
+  .api-post { background: var(--green-bg); color: var(--green); }
+
+  .api-path { font-size: .8rem; font-weight: 600; font-family: 'SF Mono', Monaco, monospace; color: var(--gray-700); }
+
+  .json-block {
+    background: var(--gray-900);
+    color: #e5e7eb;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: .8rem;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 8px 0;
+  }
+  .json-block .json-label {
+    display: inline-block;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: .7rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin-bottom: 8px;
+  }
+  .json-block .json-key { color: #93c5fd; }
+  .json-block .json-string { color: #86efac; }
+  .json-block .json-null { color: #a78bfa; }
+  .json-block .json-number { color: #fde68a; }
+  .json-block .json-comment { color: #6b7280; font-style: italic; }
+
+  .db-table {
+    font-size: .75rem;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .db-table th {
+    text-align: left;
+    padding: 4px 8px;
+    background: var(--gray-50);
+    color: var(--gray-500);
+    font-weight: 600;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .db-table td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .db-table .field-used { background: #fef9c3; font-weight: 600; }
+
+  .db-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: .65rem;
+    font-weight: 600;
+  }
+  .db-brother { background: var(--blue-bg); color: var(--blue); }
+  .db-bubble { background: var(--amber-bg); color: #b45309; }
+
+  .field-section { margin: 10px 0; }
+  .field-section-label { font-size: .75rem; font-weight: 700; color: var(--gray-600); margin-bottom: 6px; }
+  .field-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .field-chip {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: .72rem;
+    font-weight: 600;
+    border: 1.5px solid var(--gray-200);
+    background: #fff;
+    color: var(--gray-600);
+  }
+  .field-chip.highlight {
+    border-color: #6ee7b7;
+    color: var(--green);
+    background: var(--green-bg);
+  }
+
+  .note-box {
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: .75rem;
+    margin: 8px 0;
+    line-height: 1.6;
+  }
+  .note-info { background: var(--blue-bg); color: var(--blue); border-left: 3px solid var(--blue); }
+  .note-warn { background: var(--red-bg); color: var(--red); border-left: 3px solid var(--red); }
+  .note-green { background: var(--green-bg); color: #059669; border-left: 3px solid var(--green); }
+
+  .flow-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--green-bg);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: .75rem;
+    font-weight: 600;
+    color: #059669;
+  }
+  .flow-indicator .flow-step {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .65rem;
+  }
+
+  /* Action buttons in mock */
+  .action-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-200);
+  }
+
+  .form-group { margin-bottom: 12px; }
+
+  /* Template popup */
+  .template-popup {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 0 0 var(--radius) var(--radius);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+  .template-popup.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .template-popup-inner {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+  }
+  .popup-card {
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .popup-card:hover { border-color: #6ee7b7; }
+  .popup-card.popup-selected {
+    border-color: var(--green);
+    background: var(--green-bg);
+    box-shadow: 0 0 0 3px rgba(16,185,129,.2);
+  }
+  .popup-cursor {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: var(--green);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    opacity: 0;
+    pointer-events: none;
+    transition: top .4s ease, left .4s ease, opacity .2s;
+    z-index: 20;
+    box-shadow: 0 2px 6px rgba(16,185,129,.4);
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: .7rem;
+    font-weight: 700;
+  }
+  .status-completed { background: var(--green-bg); color: var(--green); }
+
+  /* Print grid */
+  .print-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .print-item {
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .print-item:hover { border-color: #6ee7b7; box-shadow: var(--shadow); }
+  .print-item.selected { border-color: var(--green); background: var(--green-bg); }
+  .print-item .print-thumb {
+    width: 100%;
+    height: 100px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .7rem;
+    color: var(--gray-500);
+    margin-bottom: 6px;
+  }
+  .print-label { font-size: .75rem; font-weight: 600; color: var(--gray-600); }
+
+  /* Diff highlight badge */
+  .diff-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: .65rem;
+    font-weight: 600;
+  }
+  .diff-new { background: var(--green-bg); color: var(--green); }
+  .diff-same { background: var(--gray-100); color: var(--gray-500); }
+
+  /* Sub-step nav */
+  .sub-step-nav {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .sub-step-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    background: #fff;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .sub-step-btn:hover { border-color: #6ee7b7; }
+  .sub-step-btn.active { background: var(--green-bg); border-color: var(--green); color: #059669; }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .right-panel { position: static; max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="container">
+    <div>
+      <h1>共通印刷物 フローモック</h1>
+      <div class="subtitle">各操作でどのAPIが呼ばれ、どのDBが使われるかを可視化（AI生成なし・サイズ指定なし）</div>
+    </div>
+    <div>
+      <div class="diff-badge diff-new" style="font-size:.75rem; padding:4px 12px;">行事フローとの違い: AI生成なし / サイズ展開なし / 再生成なし</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="step-nav">
+    <button class="step-nav-btn active" onclick="showStep(1)">
+      <span class="step-num">1</span>共通印刷物グループ登録
+    </button>
+    <button class="step-nav-btn" onclick="showStep(2)">
+      <span class="step-num">2</span>閲覧・ダウンロード
+    </button>
+  </div>
+
+  <div class="main-layout">
+    <div id="mock-area">
+
+      <!-- ==================== STEP 1 ==================== -->
+      <div class="step-content active" id="step1">
+        <div class="sub-step-nav">
+          <button class="sub-step-btn active" onclick="showSubStep(1,'a')">1-a. グループ選択</button>
+          <button class="sub-step-btn" onclick="showSubStep(1,'b')">1-b. 印刷物一覧確認</button>
+          <button class="sub-step-btn" onclick="showSubStep(1,'c')">1-c. Bubble DBに保存</button>
+        </div>
+
+        <!-- 1-a -->
+        <div class="mock-screen" id="step1a" style="position:relative;">
+          <div class="mock-header">
+            <span>管理画面 ＞ 共通印刷物グループ登録</span>
+            <span class="role-badge role-admin">管理者</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-title">共通印刷物グループ登録</div>
+
+            <div class="form-group">
+              <label class="mock-label">グループ名（Bubble側で入力）</label>
+              <input class="mock-input" value="安全標識セット" readonly>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div class="form-group">
+                <label class="mock-label">業界</label>
+                <input class="mock-input" value="建設業" readonly>
+              </div>
+              <div class="form-group">
+                <label class="mock-label">小分類</label>
+                <input class="mock-input" value="現場管理" readonly>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="mock-label">共通印刷物グループ選択</label>
+              <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; border:2px dashed var(--gray-300); border-radius:8px; background:var(--gray-50); cursor:pointer;">
+                <div style="width:80px; height:56px; border-radius:6px; background:var(--gray-200); display:flex; align-items:center; justify-content:center; font-size:.65rem; color:var(--gray-400); flex-shrink:0;">未選択</div>
+                <div style="flex:1;">
+                  <div style="font-size:.85rem; font-weight:600; color:var(--gray-400);">グループを選択してください</div>
+                </div>
+                <div style="font-size:.75rem; color:var(--green); font-weight:600;">選択 ▼</div>
+              </div>
+            </div>
+
+            <div class="mock-subtitle" style="margin-top:12px;">含まれる印刷物（グループ選択後に表示）</div>
+            <div style="padding:40px; text-align:center; background:var(--gray-50); border-radius:8px; border:2px dashed var(--gray-300);">
+              <div style="font-size:1rem; color:var(--gray-300);">グループ未選択</div>
+              <div style="font-size:.8rem; color:var(--gray-400); margin-top:4px;">グループを選ぶと印刷物一覧が表示されます</div>
+            </div>
+
+            <!-- Popup overlay -->
+            <div id="group-popup" class="template-popup">
+              <div class="template-popup-inner" style="max-width:420px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <div style="font-size:.95rem; font-weight:700;">共通印刷物グループ一覧</div>
+                  <div style="font-size:.65rem; padding:3px 8px; border-radius:4px; background:var(--green-bg); color:#059669; font-weight:600;">GET /common-print-groups で取得</div>
+                </div>
+
+                <div class="popup-card" id="popup-card-1" style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:50px; height:50px; background:linear-gradient(135deg,#fca5a5,#fecaca); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.55rem; color:var(--gray-600); flex-shrink:0;">cpg_001</div>
+                  <div>
+                    <div style="font-size:.85rem; font-weight:600;">安全標識セット</div>
+                    <div style="font-size:.65rem; color:var(--gray-400);">commonPrintGroupId: cpg_001</div>
+                  </div>
+                </div>
+                <div class="popup-card" id="popup-card-2" style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:50px; height:50px; background:linear-gradient(135deg,#93c5fd,#bfdbfe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.55rem; color:var(--gray-600); flex-shrink:0;">cpg_002</div>
+                  <div>
+                    <div style="font-size:.85rem; font-weight:600;">店舗案内セット</div>
+                    <div style="font-size:.65rem; color:var(--gray-400);">commonPrintGroupId: cpg_002</div>
+                  </div>
+                </div>
+                <div class="popup-card" id="popup-card-3" style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:50px; height:50px; background:linear-gradient(135deg,#a7f3d0,#bbf7d0); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.55rem; color:var(--gray-600); flex-shrink:0;">cpg_003</div>
+                  <div>
+                    <div style="font-size:.85rem; font-weight:600;">衛生管理セット</div>
+                    <div style="font-size:.65rem; color:var(--gray-400);">commonPrintGroupId: cpg_003</div>
+                  </div>
+                </div>
+
+                <!-- Cursor indicator -->
+                <div id="popup-cursor" class="popup-cursor"></div>
+              </div>
+            </div>
+
+            <div class="action-area">
+              <button class="mock-btn mock-btn-primary" onclick="showSubStep(1,'b')">印刷物一覧を確認 →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1-b -->
+        <div class="mock-screen" id="step1b" style="display:none;">
+          <div class="mock-header">
+            <span>管理画面 ＞ 共通印刷物グループ登録 ＞ 印刷物確認</span>
+            <span class="role-badge role-admin">管理者</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-title">共通印刷物グループ登録</div>
+
+            <div class="form-group">
+              <label class="mock-label">グループ選択 <span class="status-badge status-completed" style="font-size:.6rem;">選択済</span></label>
+              <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; border:2px solid var(--green); border-radius:8px; background:var(--green-bg); cursor:pointer;">
+                <div style="width:50px; height:50px; background:linear-gradient(135deg,#fca5a5,#fecaca); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.55rem; color:var(--gray-600); flex-shrink:0;">cpg_001</div>
+                <div style="flex:1;">
+                  <div style="font-size:.85rem; font-weight:600; color:#059669;">安全標識セット</div>
+                  <div style="font-size:.7rem; color:var(--gray-400);">commonPrintGroupId: cpg_001</div>
+                </div>
+                <div style="font-size:.75rem; color:var(--green); font-weight:600;">変更 ▼</div>
+              </div>
+            </div>
+
+            <div class="mock-subtitle" style="margin-top:12px;">含まれる印刷物（4件） <span style="font-size:.65rem; padding:2px 8px; border-radius:4px; background:var(--green-bg); color:#059669; font-weight:600;">GET /common-print-groups/cpg_001/prints で取得</span></div>
+            <div class="print-grid">
+              <div class="print-item">
+                <div class="print-thumb" style="background:linear-gradient(135deg,#fca5a5,#fecaca);">立入禁止<br><span style="font-size:.55rem;">cp_001</span></div>
+                <div class="print-label">立入禁止_01.png</div>
+              </div>
+              <div class="print-item">
+                <div class="print-thumb" style="background:linear-gradient(135deg,#fde68a,#fed7aa);">土足厳禁<br><span style="font-size:.55rem;">cp_002</span></div>
+                <div class="print-label">土足厳禁_01.png</div>
+              </div>
+              <div class="print-item">
+                <div class="print-thumb" style="background:linear-gradient(135deg,#93c5fd,#bfdbfe);">安全第一<br><span style="font-size:.55rem;">cp_003</span></div>
+                <div class="print-label">安全第一_01.png</div>
+              </div>
+              <div class="print-item">
+                <div class="print-thumb" style="background:linear-gradient(135deg,#a7f3d0,#bbf7d0);">ヘルメット着用<br><span style="font-size:.55rem;">cp_004</span></div>
+                <div class="print-label">ヘルメット着用_01.png</div>
+              </div>
+            </div>
+
+            <div class="note-box note-green" style="margin-top:12px;">
+              <strong>行事フローとの違い:</strong> サイズ展開なし。1グループ = N枚の印刷物をそのまま登録
+            </div>
+
+            <div class="action-area">
+              <button class="mock-btn mock-btn-gray" onclick="showSubStep(1,'a')">← 戻る</button>
+              <button class="mock-btn mock-btn-green" onclick="showSubStep(1,'c')">Bubble DBに保存 →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1-c -->
+        <div class="mock-screen" id="step1c" style="display:none;">
+          <div class="mock-header">
+            <span>管理画面 ＞ 共通印刷物グループ登録 ＞ 保存完了</span>
+            <span class="role-badge role-admin">管理者</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-title" style="color:var(--green);">保存完了</div>
+            <div class="mock-subtitle">以下の情報がBubble DBに保存されました</div>
+
+            <div class="note-box note-info">
+              <strong>Bubble DB: 共通印刷物グループ（親）</strong><br>
+              commonPrintGroupId = cpg_001 / 名前 = 安全標識セット / 業界 = 建設業 / 小分類 = 現場管理
+            </div>
+            <div class="note-box note-info">
+              <strong>Bubble DB: 共通印刷物（子 × 4件）</strong><br>
+              [1] commonPrintId=cp_001, fileName=立入禁止_01.png, fileKey=cp_001, thumbnailUrl=https://cdn.../cp_001.png<br>
+              [2] commonPrintId=cp_002, fileName=土足厳禁_01.png, fileKey=cp_002, thumbnailUrl=https://cdn.../cp_002.png<br>
+              [3] commonPrintId=cp_003, fileName=安全第一_01.png, fileKey=cp_003, thumbnailUrl=https://cdn.../cp_003.png<br>
+              [4] commonPrintId=cp_004, fileName=ヘルメット着用_01.png, fileKey=cp_004, thumbnailUrl=https://cdn.../cp_004.png
+            </div>
+
+            <div class="action-area">
+              <button class="mock-btn mock-btn-primary" onclick="showStep(2)">STEP2: 閲覧・DLへ →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== STEP 2 ==================== -->
+      <div class="step-content" id="step2">
+        <div class="sub-step-nav">
+          <button class="sub-step-btn active" onclick="showSubStep(2,'a')">2-a. 印刷物一覧を閲覧</button>
+          <button class="sub-step-btn" onclick="showSubStep(2,'b')">2-b. ダウンロード</button>
+        </div>
+
+        <!-- 2-a -->
+        <div class="mock-screen" id="step2a">
+          <div class="mock-header">
+            <span>ユーザー画面 ＞ 共通印刷物</span>
+            <span class="role-badge role-user">ユーザー</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-title">共通印刷物</div>
+
+            <div class="note-box note-info" style="margin-bottom:16px;">
+              <strong>Brother APIは呼ばない</strong> — Bubble DBの thumbnailUrl で画像を直接表示
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <label class="mock-label">グループ選択</label>
+              <div style="display:flex; gap:8px;">
+                <div style="padding:6px 14px; border-radius:6px; font-size:.75rem; font-weight:600; background:var(--green); color:#fff; cursor:pointer;">安全標識セット</div>
+                <div style="padding:6px 14px; border-radius:6px; font-size:.75rem; font-weight:600; background:var(--gray-100); color:var(--gray-500); cursor:pointer;">店舗案内セット</div>
+                <div style="padding:6px 14px; border-radius:6px; font-size:.75rem; font-weight:600; background:var(--gray-100); color:var(--gray-500); cursor:pointer;">衛生管理セット</div>
+              </div>
+            </div>
+
+            <div class="print-grid" style="grid-template-columns:repeat(4, 1fr);">
+              <div class="print-item" id="print-select-1">
+                <div class="print-thumb" style="background:linear-gradient(135deg,#fca5a5,#fecaca);">立入禁止</div>
+                <div class="print-label">立入禁止_01.png</div>
+                <div style="font-size:.6rem; color:var(--gray-400); margin-top:2px;">表示: thumbnailUrl</div>
+              </div>
+              <div class="print-item selected" id="print-select-2">
+                <div class="print-thumb" style="background:linear-gradient(135deg,#fde68a,#fed7aa);">土足厳禁</div>
+                <div class="print-label" style="color:#059669;">土足厳禁_01.png ← DL対象</div>
+                <div style="font-size:.6rem; color:var(--gray-400); margin-top:2px;">表示: thumbnailUrl</div>
+              </div>
+              <div class="print-item" id="print-select-3">
+                <div class="print-thumb" style="background:linear-gradient(135deg,#93c5fd,#bfdbfe);">安全第一</div>
+                <div class="print-label">安全第一_01.png</div>
+                <div style="font-size:.6rem; color:var(--gray-400); margin-top:2px;">表示: thumbnailUrl</div>
+              </div>
+              <div class="print-item" id="print-select-4">
+                <div class="print-thumb" style="background:linear-gradient(135deg,#a7f3d0,#bbf7d0);">ヘルメット着用</div>
+                <div class="print-label">ヘルメット着用_01.png</div>
+                <div style="font-size:.6rem; color:var(--gray-400); margin-top:2px;">表示: thumbnailUrl</div>
+              </div>
+            </div>
+
+            <div class="action-area">
+              <button class="mock-btn mock-btn-green" onclick="showSubStep(2,'b')">この印刷物をダウンロード</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-b -->
+        <div class="mock-screen" id="step2b" style="display:none;">
+          <div class="mock-header">
+            <span>ユーザー画面 ＞ 共通印刷物 ＞ ダウンロード</span>
+            <span class="role-badge role-user">ユーザー</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-title" style="color:var(--green);">ダウンロード中...</div>
+
+            <div style="padding:16px; background:var(--green-bg); border-radius:8px; margin-bottom:16px;">
+              <div style="font-size:.85rem; font-weight:600; color:var(--green);">土足厳禁_01.png をダウンロード</div>
+              <div style="font-size:.75rem; color:var(--gray-500); margin-top:4px;">
+                Bubble DBの fileKey を使って一時DL用URLを取得
+              </div>
+            </div>
+
+            <div style="display:flex; gap:12px; align-items:stretch;">
+              <div style="flex:1; padding:12px; background:var(--amber-bg); border-radius:8px;">
+                <div style="font-size:.75rem; font-weight:700; color:#b45309;">Bubble DB から取得</div>
+                <div style="font-size:.7rem; margin-top:4px; font-family:monospace;">fileKey = "cp_002"</div>
+              </div>
+              <div style="display:flex; align-items:center; font-size:1.2rem; color:var(--gray-400);">→</div>
+              <div style="flex:1; padding:12px; background:var(--blue-bg); border-radius:8px;">
+                <div style="font-size:.75rem; font-weight:700; color:var(--blue);">API で一時URL取得</div>
+                <div style="font-size:.7rem; margin-top:4px; font-family:monospace;">GET /files/{fileKey}/url</div>
+              </div>
+              <div style="display:flex; align-items:center; font-size:1.2rem; color:var(--gray-400);">→</div>
+              <div style="flex:1; padding:12px; background:var(--green-bg); border-radius:8px;">
+                <div style="font-size:.75rem; font-weight:700; color:var(--green);">ダウンロード開始</div>
+                <div style="font-size:.7rem; margin-top:4px; font-family:monospace;">署名付きURL（期限付き）</div>
+              </div>
+            </div>
+
+            <div class="note-box note-green" style="margin-top:12px;">
+              <strong>行事フローと同じDL方式:</strong> fileKey → GET /files/{fileKey}/url → 署名付き一時URL → ブラウザDL
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== RIGHT PANEL ==================== -->
+    <div class="right-panel" id="panel-area">
+
+      <!-- STEP 1 panels -->
+      <div class="step-panel" id="panel-step1">
+        <div class="panel-section" id="panel-step1a">
+          <div class="panel-header panel-header-api">API呼び出し</div>
+          <div class="panel-body">
+            <div class="flow-indicator"><span class="flow-step">1</span>グループ一覧取得</div>
+            <div><span class="api-method api-get">GET</span><span class="api-path">/common-print-groups</span></div>
+            <div class="field-section">
+              <div class="field-section-label">レスポンス</div>
+              <div class="field-chips">
+                <span class="field-chip highlight">commonPrintGroupId</span>
+                <span class="field-chip">name</span>
+              </div>
+            </div>
+            <div class="json-block"><span class="json-label">Response</span>
+{
+  <span class="json-key">"commonPrintGroups"</span>: [
+    {
+      <span class="json-key">"commonPrintGroupId"</span>: <span class="json-string">"cpg_001"</span>,  <span class="json-comment">// Common Print Group DB.commonPrintGroupId</span>
+      <span class="json-key">"name"</span>: <span class="json-string">"安全標識セット"</span>             <span class="json-comment">// グループ名</span>
+    },
+    {
+      <span class="json-key">"commonPrintGroupId"</span>: <span class="json-string">"cpg_002"</span>,
+      <span class="json-key">"name"</span>: <span class="json-string">"店舗案内セット"</span>
+    }
+  ]
+}</div>
+          </div>
+        </div>
+
+        <div class="panel-section" id="panel-step1-dbread-a">
+          <div class="panel-header panel-header-db-read">DB読み取り（Brother側）</div>
+          <div class="panel-body">
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-brother">Brother</span> Common Print Group DB</div>
+            <table class="db-table">
+              <tr><th>フィールド</th><th>用途</th></tr>
+              <tr class="field-used"><td>commonPrintGroupId</td><td>グループ識別キー</td></tr>
+              <tr class="field-used"><td>name</td><td>グループ名表示</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel-section" id="panel-step1b" style="display:none;">
+          <div class="panel-header panel-header-api">API呼び出し</div>
+          <div class="panel-body">
+            <div class="flow-indicator"><span class="flow-step">2</span>グループ内印刷物一覧取得</div>
+            <div><span class="api-method api-get">GET</span><span class="api-path">/common-print-groups/{commonPrintGroupId}/prints</span></div>
+            <div class="field-section">
+              <div class="field-section-label">パスパラメータ</div>
+              <div class="field-chips">
+                <span class="field-chip highlight">commonPrintGroupId</span>
+              </div>
+            </div>
+            <div class="field-section">
+              <div class="field-section-label">レスポンス</div>
+              <div class="field-chips">
+                <span class="field-chip highlight">commonPrintId</span>
+                <span class="field-chip">fileName</span>
+                <span class="field-chip highlight">thumbnailUrl</span>
+                <span class="field-chip highlight">fileKey</span>
+              </div>
+            </div>
+            <div class="json-block"><span class="json-label">Response</span>
+{
+  <span class="json-key">"prints"</span>: [
+    {
+      <span class="json-key">"commonPrintId"</span>: <span class="json-string">"cp_001"</span>,        <span class="json-comment">// Common Print DB.commonPrintId</span>
+      <span class="json-key">"fileName"</span>: <span class="json-string">"立入禁止_01.png"</span>,      <span class="json-comment">// Common Print DB.fileName</span>
+      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../cp_001.png"</span>,  <span class="json-comment">// 一覧表示用（公開URL・期限なし）</span>
+      <span class="json-key">"fileKey"</span>: <span class="json-string">"cp_001"</span>                 <span class="json-comment">// DL用（永続識別子）</span>
+    },
+    {
+      <span class="json-key">"commonPrintId"</span>: <span class="json-string">"cp_002"</span>,
+      <span class="json-key">"fileName"</span>: <span class="json-string">"土足厳禁_01.png"</span>,
+      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../cp_002.png"</span>,
+      <span class="json-key">"fileKey"</span>: <span class="json-string">"cp_002"</span>
+    },
+    <span class="json-comment">// ... 全印刷物分</span>
+  ]
+}</div>
+          </div>
+        </div>
+
+        <div class="panel-section" id="panel-step1-dbread-b" style="display:none;">
+          <div class="panel-header panel-header-db-read">DB読み取り（Brother側）</div>
+          <div class="panel-body">
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-brother">Brother</span> Common Print DB</div>
+            <table class="db-table">
+              <tr><th>フィールド</th><th>用途</th></tr>
+              <tr class="field-used"><td>commonPrintId</td><td>印刷物識別キー</td></tr>
+              <tr class="field-used"><td>fileName</td><td>ファイル名表示</td></tr>
+              <tr class="field-used"><td>thumbnailUrl</td><td>サムネイル表示（公開URL）</td></tr>
+              <tr class="field-used"><td>fileKey</td><td>DL時に使用（永続識別子）</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel-section" id="panel-step1c" style="display:none;">
+          <div class="panel-header panel-header-bubble">Bubble DB書き込み</div>
+          <div class="panel-body">
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 共通印刷物グループ</div>
+            <table class="db-table">
+              <tr><th>フィールド</th><th>値の出処</th></tr>
+              <tr class="field-used"><td>commonPrintGroupId</td><td>API: GET /common-print-groups</td></tr>
+              <tr><td>グループ名</td><td>管理者が手入力</td></tr>
+              <tr><td>業界</td><td>管理者が選択</td></tr>
+              <tr><td>小分類</td><td>管理者が選択</td></tr>
+            </table>
+
+            <div style="font-size:.75rem; font-weight:600; margin:12px 0 4px;"><span class="db-badge db-bubble">Bubble</span> 共通印刷物</div>
+            <table class="db-table">
+              <tr><th>フィールド</th><th>値の出処</th></tr>
+              <tr class="field-used"><td>commonPrintId</td><td>API: GET /{id}/prints</td></tr>
+              <tr class="field-used"><td>fileName</td><td>API: GET /{id}/prints</td></tr>
+              <tr class="field-used"><td>thumbnailUrl</td><td>API: GET /{id}/prints（一覧表示用）</td></tr>
+              <tr class="field-used"><td>fileKey</td><td>API: GET /{id}/prints（DL用）</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 panels -->
+      <div class="step-panel" id="panel-step2" style="display:none;">
+        <div class="panel-section" id="panel-step2-noapi">
+          <div class="panel-header panel-header-none">API呼び出しなし（一覧表示）</div>
+          <div class="panel-body">
+            <div style="font-size:.8rem; color:var(--gray-500); text-align:center; padding:12px;">
+              Brother APIは呼び出しません<br>Bubble DBの thumbnailUrl で直接表示
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section" id="panel-step2-dbread">
+          <div class="panel-header panel-header-db-read">Bubble DB読み取り（一覧表示用）</div>
+          <div class="panel-body">
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 共通印刷物</div>
+            <table class="db-table">
+              <tr><th>フィールド</th><th>用途</th></tr>
+              <tr class="field-used"><td>thumbnailUrl</td><td>→ img srcに直接セット（公開URL）</td></tr>
+              <tr class="field-used"><td>fileName</td><td>→ ファイル名表示</td></tr>
+              <tr class="field-used"><td>fileKey</td><td>→ DL時にAPIパラメータに使用</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel-section" id="panel-step2-dl" style="display:none;">
+          <div class="panel-header panel-header-api">API呼び出し: DL用URL取得</div>
+          <div class="panel-body">
+            <div class="flow-indicator"><span class="flow-step">1</span>Bubble DBのfileKeyでURL取得</div>
+            <div><span class="api-method api-get">GET</span><span class="api-path">/files/{fileKey}/url</span></div>
+            <div class="field-section">
+              <div class="field-section-label">パスパラメータ</div>
+              <div class="field-chips">
+                <span class="field-chip highlight">fileKey</span>
+              </div>
+            </div>
+            <div class="field-section">
+              <div class="field-section-label">レスポンス</div>
+              <div class="field-chips">
+                <span class="field-chip highlight">url</span>
+                <span class="field-chip">expiresAt</span>
+              </div>
+            </div>
+            <div class="json-block"><span class="json-label">Response</span>
+{
+  <span class="json-key">"url"</span>: <span class="json-string">"https://storage.example.com/...?token=xxx"</span>,  <span class="json-comment">// 署名付き一時URL（期限付き）</span>
+  <span class="json-key">"expiresAt"</span>: <span class="json-string">"2026-04-22T12:00:00Z"</span>
+}
+<span class="json-comment">// → この一時URLでブラウザDLを実行</span></div>
+          </div>
+        </div>
+
+        <div class="panel-section" id="panel-step2-db" style="display:none;">
+          <div class="panel-header panel-header-db-read">DB読み取り</div>
+          <div class="panel-body">
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 共通印刷物</div>
+            <table class="db-table">
+              <tr class="field-used"><td>fileKey</td><td>→ APIパスパラメータに使用</td></tr>
+            </table>
+            <div class="note-box note-info" style="margin-top:8px;">
+              fileKeyは永続識別子。URLは期限付き一時URL。期限切れたら再度 GET /files/{fileKey}/url するだけ
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showStep(n) {
+  // Update nav
+  document.querySelectorAll('.step-nav-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === n - 1);
+  });
+
+  // Show step content
+  document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+
+  // Show step panel
+  document.querySelectorAll('.step-panel').forEach(el => el.style.display = 'none');
+  document.getElementById('panel-step' + n).style.display = 'block';
+
+  // Reset sub-steps
+  if (n === 1) showSubStep(1, 'a');
+  if (n === 2) showSubStep(2, 'a');
+}
+
+function showSubStep(step, sub) {
+  const subs = ['a', 'b', 'c'];
+  const container = document.getElementById('step' + step);
+
+  // Update sub-step buttons
+  container.querySelectorAll('.sub-step-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', subs[i] === sub);
+  });
+
+  // Show/hide sub-step screens
+  subs.forEach(s => {
+    const el = document.getElementById('step' + step + s);
+    if (el) el.style.display = (s === sub) ? 'block' : 'none';
+  });
+
+  // Update panels based on sub-step
+  if (step === 1) {
+    const p1a = document.getElementById('panel-step1a');
+    const p1b = document.getElementById('panel-step1b');
+    const p1dba = document.getElementById('panel-step1-dbread-a');
+    const p1dbb = document.getElementById('panel-step1-dbread-b');
+    const p1c = document.getElementById('panel-step1c');
+    if (p1a) p1a.style.display = (sub === 'a') ? 'block' : 'none';
+    if (p1dba) p1dba.style.display = (sub === 'a') ? 'block' : 'none';
+    if (p1b) p1b.style.display = (sub === 'b') ? 'block' : 'none';
+    if (p1dbb) p1dbb.style.display = (sub === 'b') ? 'block' : 'none';
+    if (p1c) p1c.style.display = (sub === 'c') ? 'block' : 'none';
+  }
+
+  if (step === 2) {
+    const pNoApi = document.getElementById('panel-step2-noapi');
+    const pDbRead = document.getElementById('panel-step2-dbread');
+    const pDl = document.getElementById('panel-step2-dl');
+    const pDb = document.getElementById('panel-step2-db');
+    if (pNoApi) pNoApi.style.display = (sub === 'a') ? 'block' : 'none';
+    if (pDbRead) pDbRead.style.display = (sub === 'a') ? 'block' : 'none';
+    if (pDl) pDl.style.display = (sub === 'b') ? 'block' : 'none';
+    if (pDb) pDb.style.display = (sub === 'b') ? 'block' : 'none';
+  }
+}
+
+// ========== STEP 1-a popup animation ==========
+let popupAnimTimer = null;
+
+function startPopupAnim() {
+  const popup = document.getElementById('group-popup');
+  const cursor = document.getElementById('popup-cursor');
+  const cards = [
+    document.getElementById('popup-card-1'),
+    document.getElementById('popup-card-2'),
+    document.getElementById('popup-card-3')
+  ];
+  if (!popup || !cursor) return;
+
+  let step = 0;
+  const totalSteps = 8;
+
+  function moveCursorToCard(idx) {
+    const card = cards[idx];
+    if (!card || !cursor) return;
+    const rect = card.getBoundingClientRect();
+    const popupRect = popup.querySelector('.template-popup-inner').getBoundingClientRect();
+    cursor.style.top = (rect.top - popupRect.top + rect.height / 2 - 9) + 'px';
+    cursor.style.left = (rect.right - popupRect.left - 30) + 'px';
+    cursor.style.opacity = '1';
+  }
+
+  function clearSelection() {
+    cards.forEach(c => { if(c) c.classList.remove('popup-selected'); });
+  }
+
+  function tick() {
+    switch(step) {
+      case 0:
+        popup.classList.add('show');
+        cursor.style.opacity = '0';
+        clearSelection();
+        break;
+      case 1: moveCursorToCard(0); break;
+      case 2: moveCursorToCard(1); break;
+      case 3: moveCursorToCard(2); break;
+      case 4: moveCursorToCard(0); break;
+      case 5: cards[0].classList.add('popup-selected'); break;
+      case 6:
+        popup.classList.remove('show');
+        cursor.style.opacity = '0';
+        break;
+      case 7: clearSelection(); break;
+    }
+    step = (step + 1) % totalSteps;
+  }
+
+  tick();
+  popupAnimTimer = setInterval(tick, 800);
+}
+
+function stopPopupAnim() {
+  if (popupAnimTimer) {
+    clearInterval(popupAnimTimer);
+    popupAnimTimer = null;
+  }
+  const popup = document.getElementById('group-popup');
+  const cursor = document.getElementById('popup-cursor');
+  if (popup) popup.classList.remove('show');
+  if (cursor) cursor.style.opacity = '0';
+  const cards = ['popup-card-1','popup-card-2','popup-card-3'];
+  cards.forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('popup-selected'); });
+}
+
+// Start/stop animation based on which step/substep is visible
+const origShowStep = showStep;
+showStep = function(n) {
+  stopPopupAnim();
+  origShowStep(n);
+  if (n === 1) startPopupAnim();
+};
+
+const origShowSubStep = showSubStep;
+showSubStep = function(step, sub) {
+  stopPopupAnim();
+  origShowSubStep(step, sub);
+  if (step === 1 && sub === 'a') startPopupAnim();
+};
+
+// Start on load
+startPopupAnim();
+</script>
+
+</body>
+</html>
