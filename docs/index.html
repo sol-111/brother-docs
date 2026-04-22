@@ -429,6 +429,20 @@
         <th class="tl-col-memo">メモ</th>
       </tr></thead>
       <tbody>
+        <tr data-id="ibis-5">
+          <td><select class="tl-status-select tl-sel-todo" onchange="tlCs(this)">
+            <option value="todo" selected>未着手</option><option value="wip">進行中</option><option value="done">完了</option><option value="blocked">ブロック</option><option value="deferred">延期</option>
+          </select></td>
+          <td class="tl-col-pri"><span class="tl-tag tl-tag-mid">中</span></td>
+          <td>
+            <span class="tl-task-name">セキュリティチェック用ブロック図の作成・提出</span><br>
+            <span class="tl-meta">初出: 4/20</span>
+            <div class="tl-detail">セキュリティチェック用のブロック図を作成して提出する。フォーマット指定なし、リリースまでに提出でOK（4/20確認済み）。</div>
+          </td>
+          <td>アイビス</td>
+          <td>リリースまで</td>
+          <td><textarea class="tl-task-comment" placeholder="メモ..." oninput="tlAs()"></textarea></td>
+        </tr>
       </tbody>
     </table>
   </div>
