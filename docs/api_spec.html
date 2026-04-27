@@ -2550,33 +2550,21 @@ sequenceDiagram
           <tbody>
             <tr>
               <td>1</td>
-              <td><strong>Design Template DB / Common Print Group DB の新設は対応可能か</strong></td>
-              <td>理想設計ではBrother側にグルーピング用DBの新設を提案している。対応可否を確認</td>
-              <td>STEP0, STEP1 / 共通STEP0, STEP1</td>
-            </tr>
-            <tr>
-              <td>2</td>
               <td><strong>リクエスト構造の拡張は対応可能か</strong></td>
               <td>現行の <code>originalText</code> / <code>replaceText</code> → <code>eventName</code>, <code>period</code>, <code>details</code>, <code>program</code>, <code>notes</code> の複数フィールド対応。理想設計の構造をこちらから提案する形で良いか</td>
               <td>STEP4</td>
             </tr>
             <tr>
-              <td>3</td>
+              <td>2</td>
               <td><strong>生成画像への thumbnailUrl 追加は対応可能か</strong></td>
               <td>現行の生成画像レスポンスは <code>imageUrl</code> のみ。元原稿（<code>GET /source-images</code>）には既に <code>thumbnailUrl</code> があるため、生成画像にも同様に公開URL（期限なし）のサムネイルを追加できるか</td>
               <td>STEP4, STEP5</td>
             </tr>
             <tr>
-              <td>4</td>
+              <td>3</td>
               <td><strong>fileKey + GET /files/{fileKey}/url 方式は対応可能か</strong></td>
               <td>DL用に <code>fileKey</code>（永続識別子）を返却し、<code>GET /files/{fileKey}/url</code> で署名付き一時URLを都度発行する新規API。行事の生成画像・共通印刷物で共通利用する想定</td>
               <td>STEP5 / 共通STEP2</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td><strong>バッチ生成エンドポイントは対応可能か</strong></td>
-              <td>現状は7サイズ分を個別に <code>POST /generated-images</code> × 7回並列送信している。行事情報（eventName等）が毎回重複するため、<code>POST /generated-images/batch</code> で複数 <code>sourceImageId</code> をまとめて送信し1回で済ませたい。Bubble側の並列制御が不要になり、部分失敗時のハンドリングもBrother側で完結する</td>
-              <td>STEP4, STEP6</td>
             </tr>
           </tbody>
         </table>
@@ -2589,58 +2577,22 @@ sequenceDiagram
           <thead><tr><th style="width:30px;">#</th><th style="width:240px;">論点</th><th>詳細</th><th style="width:140px;">関連フロー</th></tr></thead>
           <tbody>
             <tr>
-              <td>6</td>
+              <td>4</td>
               <td><strong>thumbnailUrl は公開URLか、署名付き一時URLか</strong></td>
               <td>元原稿（<code>GET /source-images</code>）が返す <code>thumbnailUrl</code> は期限なしの公開URLか、それとも <code>imageUrl</code> と同様に署名付き一時URLか。理想設計ではサムネイルを公開URL前提でBubble DBに保存する設計のため、期限の有無で方針が変わる</td>
               <td>STEP1, STEP5</td>
             </tr>
             <tr>
-              <td>7</td>
+              <td>5</td>
               <td><strong>imageUrl の有効期限と期限切れ時の挙動</strong></td>
               <td>現行の <code>imageUrl</code>（署名付き一時URL）の有効期限は何分/何時間か。期限切れ時のHTTPレスポンス（403？リダイレクト？）も確認したい</td>
               <td>STEP4, STEP5</td>
             </tr>
             <tr>
-              <td>8</td>
+              <td>6</td>
               <td><strong>認証方式と userId の受け渡し</strong></td>
               <td>API認証はAPIキー方式かBearer Token方式か。Generated Image DBに <code>userId</code> があるが、POSTリクエストのパラメータには含まれていない。認証トークンから取得する想定か、リクエストボディに追加が必要か</td>
               <td>全API共通</td>
-            </tr>
-            <tr>
-              <td>9</td>
-              <td><strong>生成完了の通知方式</strong></td>
-              <td>Webhook / ポーリングのどちらか。7サイズ並列POST時に完了をどう検知するか。ポーリングの場合、推奨間隔・最大リトライ回数も確認</td>
-              <td>STEP4, STEP6</td>
-            </tr>
-            <tr>
-              <td>10</td>
-              <td><strong>レート制限の有無</strong></td>
-              <td>最大7リクエストを並列POSTする。レート制限はあるか。バッチAPI（#5）が実現すればこの問題は解消される</td>
-              <td>STEP4</td>
-            </tr>
-            <tr>
-              <td>11</td>
-              <td><strong>sizeの表現方法</strong></td>
-              <td>A3 / A4 等のラベル指定か、px / mm 指定か。Bubble側からリクエストに含める値の形式</td>
-              <td>STEP4</td>
-            </tr>
-            <tr>
-              <td>12</td>
-              <td><strong>生成と再生成APIを分ける必要があるか</strong></td>
-              <td><code>POST /generated-images</code> と <code>POST /generated-images/{id}/regenerate</code> が別APIである理由。内部処理が異なるのか。統合する場合、オプショナルな <code>parentGeneratedImageId</code> で初回/再生成を区別する方式を想定</td>
-              <td>STEP4, STEP6</td>
-            </tr>
-            <tr>
-              <td>13</td>
-              <td><strong>ポーリングのバッチ取得は可能か</strong></td>
-              <td>現状は <code>GET /generated-images/{id}</code> を7件分個別にポーリングしている。<code>GET /generated-images?ids=gi_001,gi_002,...,gi_007</code> のようにクエリパラメータで複数件を一括取得できるとポーリングループが1本で済む</td>
-              <td>STEP4, STEP6</td>
-            </tr>
-            <tr>
-              <td>14</td>
-              <td><strong>テンプレートなし行事で「生成」を押した場合の挙動</strong></td>
-              <td>ユーザーがテンプレートを選ばずに行事を作成した場合、<code>sourceImageId</code> がないため生成APIを呼べない。UI側で生成ボタンを非活性にする対応で良いか、そもそもテンプレート必須にするか</td>
-              <td>STEP3</td>
             </tr>
           </tbody>
         </table>
