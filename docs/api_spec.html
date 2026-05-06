@@ -697,11 +697,17 @@
 <div class="layout">
 
 <nav class="sidebar">
-  <div class="sidebar-category">ブラザー提供</div>
+  <div class="sidebar-category">ブラザー提供_20260417</div>
   <div class="nav-item active" data-tab="db">DB設計</div>
   <div class="nav-item" data-tab="api">APIエンドポイント</div>
   <div class="nav-item" data-tab="seq1">シーケンス: 原稿一覧・詳細</div>
   <div class="nav-item" data-tab="seq2">シーケンス: AI画像生成</div>
+
+  <div class="sidebar-category">ブラザー提供_20260430</div>
+  <div class="nav-item" data-tab="db-0430">DB設計</div>
+  <div class="nav-item" data-tab="api-0430">APIエンドポイント</div>
+  <div class="nav-item" data-tab="seq1-0430">シーケンス: 原稿一覧・詳細</div>
+  <div class="nav-item" data-tab="seq2-0430">シーケンス: AI画像生成</div>
 
   <div class="sidebar-category">新フロー</div>
   <div class="nav-item" data-tab="summary">設計概要</div>
@@ -1339,6 +1345,621 @@ sequenceDiagram
   </div>
 </div>
 
+
+<!-- ==================== ブラザー提供_20260430: DB設計 ==================== -->
+<div class="section" id="db-0430">
+  <div class="container">
+    <h2 class="section-title">データベース設計</h2>
+    <p class="section-desc">2つのDBでソース画像と生成画像を管理（2026/04/30 更新版）</p>
+
+    <div class="db-grid">
+      <!-- DB1 -->
+      <div class="card db-card">
+        <div class="card-header">
+          <h3>DB1: Source Image DB</h3>
+        </div>
+        <div class="card-body">
+          <div class="db-role">
+            <p>事前に用意された元原稿画像の情報を管理</p>
+            <p>一覧表示、詳細表示、選択対象として利用</p>
+            <span class="badge badge-readonly">Read Only</span>
+          </div>
+          <table class="field-table">
+            <thead>
+              <tr><th>フィールド</th><th>説明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="field-name">sourceImageId</span><span class="field-pk">PK</span></td><td>元原稿画像ID</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">category</span></td><td>分類</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td></tr>
+              <tr><td><span class="field-name">thumbnailKey</span></td><td>サムネイル識別子</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>状態</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventName</span></td><td>行事名</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventPeriod</span></td><td>開催期間</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventDetails</span></td><td>詳細</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventProgram</span></td><td>プログラム</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">notes</span></td><td>備考</td></tr>
+              <tr><td><span class="field-name">description</span><span class="field-optional">任意</span></td><td>説明</td></tr>
+              <tr><td><span class="field-name">tags</span><span class="field-optional">任意</span></td><td>タグ</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DB2 -->
+      <div class="card db-card secondary">
+        <div class="card-header">
+          <h3>DB2: Generated Image DB</h3>
+        </div>
+        <div class="card-body">
+          <div class="db-role">
+            <p>元原稿画像 + 入れ替えテキストをもとに生成された画像情報を管理</p>
+            <p>生成履歴、状態管理、再生成の管理も担当</p>
+            <span class="badge badge-crud">CRUD</span>
+          </div>
+          <table class="field-table">
+            <thead>
+              <tr><th>フィールド</th><th>説明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="field-name">generatedImageId</span><span class="field-pk">PK</span></td><td>生成画像ID</td></tr>
+              <tr><td><span class="field-name">sourceImageId</span></td><td>元原稿画像ID</td></tr>
+              <tr><td><span class="field-name">userId</span></td><td>ユーザID</td></tr>
+              <tr><td><span class="field-name">replaceText</span></td><td>差し替えテキスト</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>生成状態</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>生成画像ファイル識別子</td></tr>
+              <tr><td><span class="field-name">parentGeneratedImageId</span></td><td>再生成元ID</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventName</span></td><td>行事名</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventPeriod</span></td><td>開催期間</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventDetails</span></td><td>詳細</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventProgram</span></td><td>プログラム</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">notes</span></td><td>備考</td></tr>
+              <tr><td><span class="field-name">deletedAt</span><span class="field-optional">任意</span></td><td>削除日時</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ブラザー提供_20260430: APIエンドポイント ==================== -->
+<div class="section" id="api-0430">
+  <div class="container">
+    <h2 class="section-title">APIエンドポイント</h2>
+    <p class="section-desc">全8エンドポイント（元原稿画像系 3 + 生成画像系 5）— 2026/04/30 更新版</p>
+
+    <div class="endpoint-list">
+
+      <div class="api-category">元原稿画像系 (Source Images)</div>
+
+      <!-- GET /source-images -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/source-images</span>
+          <span class="endpoint-summary">原稿一覧取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">title</span>
+              <span class="field-chip">thumbnailUrl</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">category</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /source-images/{id} -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/source-images/<span class="param">{sourceImageId}</span></span>
+          <span class="endpoint-summary">特定原稿詳細取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">title</span>
+              <span class="field-chip">imageUrl</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /source-images-size -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/source-images-size</span>
+          <span class="endpoint-summary">サイズ指定原稿一覧取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">クエリパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">size</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">title</span>
+              <span class="field-chip">thumbnailUrl</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">category</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-category">生成画像系 (Generated Images)</div>
+
+      <!-- POST /generated-images -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-post">POST</span>
+          <span class="endpoint-path">/generated-images</span>
+          <span class="async-badge">非同期</span>
+          <span class="endpoint-summary">新規生成</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">リクエストボディ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">eventName</span>
+              <span class="field-chip">eventPeriod</span>
+              <span class="field-chip">eventDetails</span>
+              <span class="field-chip">eventProgram</span>
+              <span class="field-chip">notes</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* statusは PENDING（生成受付完了）。生成結果は GET /generated-images/{generatedImageId} で取得する</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /generated-images/{id} -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span></span>
+          <span class="endpoint-summary">生成画像詳細取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">imageUrl</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* imageUrl は status=COMPLETED のときのみ返却</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /generated-images -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/generated-images</span>
+          <span class="endpoint-summary">生成画像一覧取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">クエリパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip">userId <span style="color:var(--gray-500); font-size:.8em;">(or 認証から取得)</span></span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">createdAt</span>
+              <span class="field-chip">thumbnailUrl</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POST /generated-images/{id}/regenerate -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-post">POST</span>
+          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span>/regenerate</span>
+          <span class="endpoint-summary">再生成</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ + リクエストボディ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">originalText</span>
+              <span class="field-chip">replaceText</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId <span style="font-size:.8em;">(新規)</span></span>
+              <span class="field-chip">parentGeneratedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* 新しいgeneratedImageIdが発行され、元のIDはparentGeneratedImageIdとして記録</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DELETE /generated-images/{id} -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-delete">DELETE</span>
+          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span></span>
+          <span class="endpoint-summary">生成画像削除</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ + リクエストボディ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">eventName</span>
+              <span class="field-chip">eventPeriod</span>
+              <span class="field-chip">eventDetails</span>
+              <span class="field-chip">eventProgram</span>
+              <span class="field-chip">notes</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ブラザー提供_20260430: シーケンス 原稿一覧・詳細 ==================== -->
+<div class="section" id="seq1-0430">
+  <div class="container">
+    <h2 class="section-title">シーケンス図: 原稿一覧・詳細取得</h2>
+    <p class="section-desc">原稿一覧画面の表示から、特定原稿の詳細取得までのフロー（2026/04/30 更新版）</p>
+
+    <div class="flow-explanation">
+      <h3>やっていることの流れ（かんたん解説）</h3>
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">1</span>原稿一覧を表示する</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザ</div>
+              <div class="step-text">ブラウザで<strong>原稿一覧画面</strong>を開きます。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">サーバーに「<strong>原稿の一覧をちょうだい</strong>」とリクエストを送ります。</div>
+              <div class="step-note">API呼び出し: GET /source-images</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">Source Image DBから<strong>原稿一覧メタ情報</strong>を取得し、File Storageから各サムネイルの<strong>表示用URLを生成</strong>します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">受け取った情報をもとに、<strong>サムネイル画像の一覧</strong>をユーザに表示します。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <hr class="flow-divider">
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">2</span>原稿の詳細を見る</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザ</div>
+              <div class="step-text">一覧の中から見たい<strong>原稿をクリック</strong>して選択します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">サーバーに「<strong>この原稿の詳しい情報をちょうだい</strong>」とリクエストを送ります。</div>
+              <div class="step-note">API呼び出し: GET /source-images/{sourceImageId}</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">Source Image DBから<strong>原稿詳細メタ情報</strong>を取得し、File Storageから<strong>原稿画像の表示用URL</strong>を生成して返します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">原稿の<strong>詳細情報と原稿画像</strong>をユーザに表示します。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mermaid-wrapper">
+      <h3>原稿一覧取得 &rarr; 特定原稿の詳細取得（シーケンス図）</h3>
+      <pre class="mermaid">
+sequenceDiagram
+    autonumber
+
+    actor User as ユーザ
+    participant FE as Frontend
+    participant API as Backend API
+    participant SIDB as Source Image DB
+    participant FS as File Storage
+
+    User ->> FE: 原稿一覧画面を開く
+    FE ->> API: GET /source-images
+
+    API ->> SIDB: 原稿一覧を検索
+    SIDB -->> API: 原稿一覧メタ情報を返却
+
+    API ->> FS: 各サムネイル用URLを取得
+    FS -->> API: サムネイルURL一覧を返却
+
+    API -->> FE: 原稿一覧 + サムネイルURL
+    FE -->> User: 原稿一覧を表示
+
+    User ->> FE: 特定原稿を選択
+    FE ->> API: GET /source-images/{sourceImageId}
+
+    API ->> SIDB: 特定原稿の詳細を取得
+    SIDB -->> API: 原稿詳細メタ情報を返却
+
+    API ->> FS: 原稿画像の表示用URLを取得
+    FS -->> API: imageUrl を返却
+
+    API -->> FE: 原稿詳細 + imageUrl
+    FE -->> User: 原稿詳細を表示
+      </pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ブラザー提供_20260430: シーケンス AI画像生成 ==================== -->
+<div class="section" id="seq2-0430">
+  <div class="container">
+    <h2 class="section-title">シーケンス図: AI画像生成</h2>
+    <p class="section-desc">特定原稿からイベント情報を指定して画像を生成し、結果を取得するまでのフロー（2026/04/30 更新版）</p>
+
+    <div class="flow-explanation">
+      <h3>やっていることの流れ（かんたん解説）</h3>
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">1</span>生成を依頼する</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザ</div>
+              <div class="step-text">行事名・開催期間・詳細・プログラム・備考を入力して<strong>「生成」ボタン</strong>を押します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">サーバーに「<strong>この原稿でイベント情報を差し替えた画像を作って</strong>」とリクエストを送ります。</div>
+              <div class="step-note">API呼び出し: POST /generated-images { sourceImageId, eventName, eventPeriod, eventDetails, eventProgram, notes }</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">sourceImageIdの存在を確認し、Generated Image DBに<strong>status=PENDINGのレコードを作成</strong>。すぐに generatedImageId を返します。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <hr class="flow-divider">
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">2</span>裏側でWorkerがAI画像を生成する（バックグラウンド）</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot ai"></span>
+            <div class="step-content">
+              <div class="step-who">Generation Worker</div>
+              <div class="step-text">非同期で起動し、statusを<strong>RUNNING</strong>に更新。Generative AIに<strong>画像生成を依頼</strong>します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot storage"></span>
+            <div class="step-content">
+              <div class="step-who">Worker &rarr; File Storage</div>
+              <div class="step-text">AIから返ってきた<strong>生成画像をFile Storageに保存</strong>し、fileKeyを取得します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot ai"></span>
+            <div class="step-content">
+              <div class="step-who">Generation Worker</div>
+              <div class="step-text">Generated Image DBのステータスを<strong>COMPLETED</strong>に更新し、fileKeyを記録します。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <hr class="flow-divider">
+
+      <div class="flow-phase">
+        <div class="flow-phase-title"><span class="phase-num">3</span>生成結果を確認する</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザ</div>
+              <div class="step-text"><strong>生成結果を確認</strong>する操作をします。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">サーバーに生成画像の情報をリクエストします。</div>
+              <div class="step-note">API呼び出し: GET /generated-images/{generatedImageId}</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot api"></span>
+            <div class="step-content">
+              <div class="step-who">サーバー（Backend API）</div>
+              <div class="step-text">Generated Image DBから結果を取得し、File Storageから<strong>表示用URLを生成</strong>して返します。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">画面（Frontend）</div>
+              <div class="step-text">AIが生成した<strong>イベント情報差し替え済みの画像</strong>をユーザに表示します。</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mermaid-wrapper">
+      <h3>特定原稿から新規生成 &rarr; 結果取得・表示（シーケンス図）</h3>
+      <pre class="mermaid">
+sequenceDiagram
+    autonumber
+
+    actor User as ユーザ
+    participant FE as Frontend
+    participant API as Backend API
+    participant SIDB as Source Image DB
+    participant GIDB as Generated Image DB
+    participant Worker as Generation Worker
+    participant AI as Generative AI
+    participant FS as File Storage
+
+
+    User ->> FE: 「生成」ボタンを実行
+    FE ->> API: POST /generated-images<br/>{ sourceImageId, eventName, eventPeriod, eventDetails, eventProgram, notes }
+
+    API ->> SIDB: sourceImageId の存在確認
+    SIDB -->> API: OK
+
+    API ->> GIDB: 生成レコード作成<br/>status = PENDING
+    GIDB -->> API: generatedImageId
+
+    API ->> Worker: 非同期生成処理を開始
+    API -->> FE: generatedImageId<br/>status = PENDING
+    FE -->> User: 生成中を表示
+
+    Worker ->> GIDB: status = RUNNING
+    Worker ->> AI: 画像生成依頼
+    AI -->> Worker: 生成画像データ
+
+    Worker ->> FS: 生成画像を保存
+    FS -->> Worker: generatedFileKey
+
+    Worker ->> GIDB: status = COMPLETED<br/>fileKey 更新
+
+    User ->> FE: 生成結果を確認
+    FE ->> API: GET /generated-images/{generatedImageId}
+
+    API ->> GIDB: 生成結果取得
+    GIDB -->> API: status, fileKey
+
+    API ->> FS: 表示用URL生成
+    FS -->> API: generatedImageUrl
+
+    API -->> FE: status = COMPLETED<br/>generatedImageUrl
+    FE -->> User: 生成画像を表示
+      </pre>
+    </div>
+  </div>
+</div>
 
 <!-- ==================== 原稿登録〜ダウンロード ==================== -->
 <div class="section" id="flow">
