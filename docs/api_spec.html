@@ -3265,6 +3265,11 @@ sequenceDiagram
           <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td><td>Brother内部のFile Storage用キー。Bubble側は使わない</td></tr>
           <tr><td><span class="field-name">thumbnailUrl</span></td><td>サムネイルURL</td><td>公開URL（期限なし）。Bubble DBに保存して再利用可</td></tr>
           <tr><td><span class="field-name">status</span></td><td>状態</td><td>有効/無効のフィルタ用。具体的な値はブラザーに要確認</td></tr>
+          <tr><td><span class="field-name">eventName</span></td><td>行事名</td><td></td></tr>
+          <tr><td><span class="field-name">eventPeriod</span></td><td>開催期間</td><td></td></tr>
+          <tr><td><span class="field-name">eventDetails</span></td><td>詳細</td><td></td></tr>
+          <tr><td><span class="field-name">eventProgram</span></td><td>プログラム</td><td></td></tr>
+          <tr><td><span class="field-name">notes</span></td><td>備考</td><td></td></tr>
           <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td></td></tr>
           <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td></td></tr>
         </tbody></table>
@@ -3289,6 +3294,11 @@ sequenceDiagram
           <tr><td><span class="field-name">fileKey</span></td><td>生成画像ファイル識別子</td><td>永続的な識別子。Bubble側に返却し、DL時に <code>GET /files/{fileKey}/url</code> でURL発行</td></tr>
           <tr><td><span class="field-name">thumbnailUrl</span></td><td>サムネイルURL</td><td>公開URL（期限なし）。一覧表示用にBubble DBに保存して直接使用</td></tr>
           <tr><td><span class="field-name">parentGeneratedImageId</span></td><td>再生成元ID</td><td>再生成時の履歴追跡。ブラザー内部の用途（品質分析等）か要確認</td></tr>
+          <tr><td><span class="field-name">eventName</span></td><td>行事名</td><td></td></tr>
+          <tr><td><span class="field-name">eventPeriod</span></td><td>開催期間</td><td></td></tr>
+          <tr><td><span class="field-name">eventDetails</span></td><td>詳細</td><td></td></tr>
+          <tr><td><span class="field-name">eventProgram</span></td><td>プログラム</td><td></td></tr>
+          <tr><td><span class="field-name">notes</span></td><td>備考</td><td></td></tr>
           <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td></td></tr>
           <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td></td></tr>
         </tbody></table>
@@ -3482,8 +3492,79 @@ sequenceDiagram
       </div>
     </div>
 
+    <!-- ER図 -->
+    <h3 style="font-size:1.1rem; font-weight:700; color:var(--primary); margin:32px 0 16px; padding-bottom:8px; border-bottom:2px solid var(--primary-bg);">ER図（Brother側）</h3>
+    <div class="mermaid-wrapper">
+      <pre class="mermaid">
+erDiagram
+    Design_Template_DB {
+        string designTemplateId PK
+        string name
+        string thumbnailUrl
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Source_Image_DB {
+        string sourceImageId PK
+        string designTemplateId FK
+        string fileName
+        string size
+        string fileKey
+        string thumbnailUrl
+        string status
+        string eventName
+        string eventPeriod
+        string eventDetails
+        string eventProgram
+        string notes
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Generated_Image_DB {
+        string generatedImageId PK
+        string sourceImageId FK
+        string userId
+        string status
+        string fileKey
+        string thumbnailUrl
+        string parentGeneratedImageId
+        string eventName
+        string eventPeriod
+        string eventDetails
+        string eventProgram
+        string notes
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Common_Print_Group_DB {
+        string commonPrintGroupId PK
+        string name
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Common_Print_DB {
+        string commonPrintId PK
+        string commonPrintGroupId FK
+        string fileName
+        string fileKey
+        string thumbnailUrl
+        string status
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Design_Template_DB ||--o{ Source_Image_DB : "1テンプレ = N サイズ"
+    Source_Image_DB ||--o{ Generated_Image_DB : "1原稿 → N 生成画像"
+    Common_Print_Group_DB ||--o{ Common_Print_DB : "1グループ = N 印刷物"
+      </pre>
+    </div>
+
     <!-- ポイント -->
-    <div style="padding:16px 20px; background:var(--green-bg); border-radius:var(--radius); border:1px solid #6ee7b7;">
+    <div style="padding:16px 20px; background:var(--green-bg); border-radius:var(--radius); border:1px solid #6ee7b7; margin-top:24px;">
       <h3 style="font-size:.9rem; font-weight:700; color:var(--green); margin-bottom:10px;">現行との主な違い</h3>
       <ul style="font-size:.85rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:2;">
         <li><strong>Design Template DB 新設</strong> — ブラザー側でデザインのグルーピングを管理。Bubbleはdesign TemplateId + sourceImageIdを保持</li>
