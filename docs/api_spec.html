@@ -3557,10 +3557,303 @@ erDiagram
         datetime updatedAt
     }
 
-    Design_Template_DB ||--o{ Source_Image_DB : "1テンプレ = N サイズ"
-    Source_Image_DB ||--o{ Generated_Image_DB : "1原稿 → N 生成画像"
-    Common_Print_Group_DB ||--o{ Common_Print_DB : "1グループ = N 印刷物"
+    Design_Template_DB ||--o{ Source_Image_DB : "1 to N sizes"
+    Source_Image_DB ||--o{ Generated_Image_DB : "1 to N images"
+    Common_Print_Group_DB ||--o{ Common_Print_DB : "1 to N prints"
       </pre>
+    </div>
+
+    <!-- データ構造マップ -->
+    <h3 style="font-size:1.1rem; font-weight:700; color:var(--primary); margin:32px 0 16px; padding-bottom:8px; border-bottom:2px solid var(--primary-bg);">データ構造マップ</h3>
+
+    <!-- ===== 行事パターン ===== -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:.9rem; font-weight:700; color:var(--primary); margin-bottom:12px;">行事パターン</div>
+      <div style="background:#1e1e2e; border-radius:12px; padding:16px; overflow-x:auto;">
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+
+          <!-- DesignTemplateDB -->
+          <div style="flex:0 0 auto;">
+            <div style="background:#10b981; color:#fff; display:inline-block; padding:3px 10px; border-radius:6px; font-size:.7rem; font-weight:700; font-family:monospace; margin-bottom:8px;">/design-templates</div>
+            <div style="background:#2a2a3e; border:1px solid #3a3a50; border-radius:8px; padding:12px;">
+              <div style="font-size:.8rem; font-weight:700; color:#e2e8f0; margin-bottom:10px;">DesignTemplateDB</div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:6px; padding:6px 10px; text-align:center;">
+                    <div style="font-size:.7rem; color:#c4b5fd; font-weight:600;">テンプレート1</div>
+                  </div>
+                  <div style="color:#6b7280; font-size:.8rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">designTemplateId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:6px; padding:6px 10px; text-align:center;">
+                    <div style="font-size:.7rem; color:#c4b5fd; font-weight:600;">テンプレート2</div>
+                  </div>
+                  <div style="color:#6b7280; font-size:.8rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">designTemplateId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:6px; padding:6px 10px; text-align:center;">
+                    <div style="font-size:.7rem; color:#c4b5fd; font-weight:600;">テンプレート3</div>
+                  </div>
+                  <div style="color:#6b7280; font-size:.8rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">designTemplateId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 矢印: designTemplateId -->
+          <div style="flex:0 0 auto; padding-top:36px; display:flex; flex-direction:column; align-items:center; gap:2px;">
+            <div style="font-size:.8rem; color:#ef4444; font-weight:700;">PK</div>
+            <div style="font-size:.8rem; color:#9ca3af; font-family:monospace;">designTemplateId</div>
+            <div style="color:#6b7280; font-size:1.2rem;">→</div>
+          </div>
+
+          <!-- SourceImageDB -->
+          <div style="flex:0 0 auto;">
+            <div style="background:#10b981; color:#fff; display:inline-block; padding:3px 10px; border-radius:6px; font-size:.7rem; font-weight:700; font-family:monospace; margin-bottom:8px;">/design-templates/{id}/source-images</div>
+            <div style="background:#2a2a3e; border:1px solid #3a3a50; border-radius:8px; padding:12px;">
+              <div style="font-size:.8rem; font-weight:700; color:#e2e8f0; margin-bottom:10px;">SourceImageDB</div>
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; width:60px; text-align:center; flex-shrink:0; font-size:.75rem; color:#93c5fd; font-weight:600;">A3</div>
+                  <div style="color:#6b7280; font-size:.7rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">size</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; width:60px; text-align:center; flex-shrink:0; font-size:.75rem; color:#93c5fd; font-weight:600;">A4</div>
+                  <div style="color:#6b7280; font-size:.7rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">size</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; width:60px; text-align:center; flex-shrink:0; font-size:.75rem; color:#93c5fd; font-weight:600;">長尺縦</div>
+                  <div style="color:#6b7280; font-size:.7rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">size</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; width:60px; text-align:center; flex-shrink:0; font-size:.75rem; color:#93c5fd; font-weight:600;">長尺横</div>
+                  <div style="color:#6b7280; font-size:.7rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">size</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; width:60px; text-align:center; flex-shrink:0; font-size:.75rem; color:#93c5fd; font-weight:600;">ハガキ</div>
+                  <div style="color:#6b7280; font-size:.7rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">size</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; width:60px; text-align:center; flex-shrink:0; font-size:.75rem; color:#93c5fd; font-weight:600;">封筒</div>
+                  <div style="color:#6b7280; font-size:.7rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">size</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; width:60px; text-align:center; flex-shrink:0; font-size:.75rem; color:#93c5fd; font-weight:600;">A4便箋</div>
+                  <div style="color:#6b7280; font-size:.7rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">size</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+              </div>
+              <div style="font-size:.6rem; color:#6b7280; margin-top:8px; text-align:center;">※ 1テンプレートにつき7サイズ × テンプレート数</div>
+            </div>
+          </div>
+
+          <!-- 矢印: sourceImageId -->
+          <div style="flex:0 0 auto; padding-top:36px; display:flex; flex-direction:column; align-items:center; gap:2px;">
+            <div style="font-size:.8rem; color:#ef4444; font-weight:700;">PK</div>
+            <div style="font-size:.8rem; color:#9ca3af; font-family:monospace;">sourceImageId</div>
+            <div style="color:#6b7280; font-size:1.2rem;">→</div>
+          </div>
+
+          <!-- GeneratedImageDB -->
+          <div style="flex:0 0 auto;">
+            <div style="background:#10b981; color:#fff; display:inline-block; padding:3px 10px; border-radius:6px; font-size:.7rem; font-weight:700; font-family:monospace; margin-bottom:4px;">POST /generated-images</div>
+            <div style="background:#3b82f6; color:#fff; display:inline-block; padding:3px 10px; border-radius:6px; font-size:.7rem; font-weight:700; font-family:monospace; margin-bottom:8px; margin-left:4px;">GET /generated-images/{id}</div>
+            <div style="background:#2a2a3e; border:1px solid #3a3a50; border-radius:8px; padding:12px;">
+              <div style="font-size:.8rem; font-weight:700; color:#e2e8f0; margin-bottom:10px;">GeneratedImageDB</div>
+              <div style="display:flex; align-items:flex-start; gap:8px;">
+                <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:6px; padding:8px 10px; text-align:center;">
+                  <div style="font-size:.6rem; color:#fbbf24; font-weight:600; margin-bottom:4px;">1つのsourceImageにつき</div>
+                  <div style="font-size:.75rem; color:#fbbf24; font-weight:600;">生成画像 1</div>
+                  <div style="font-size:.75rem; color:#fbbf24; font-weight:600;">生成画像 2</div>
+                  <div style="font-size:.75rem; color:#fbbf24; font-weight:600;">生成画像 3</div>
+                  <div style="font-size:.65rem; color:#6b7280; margin-top:3px;">（再生成で増える）</div>
+                </div>
+                <div style="color:#6b7280; font-size:.8rem; padding-top:24px;">→</div>
+                <div style="display:flex; flex-direction:column; gap:2px;">
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">generatedImageId</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageId</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">fileKey</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailUrl</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">parentGeneratedImageId</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">eventName</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">eventPeriod</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">eventDetails</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">eventProgram</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">notes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 共通印刷物パターン ===== -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:.9rem; font-weight:700; color:var(--primary); margin-bottom:12px;">共通印刷物パターン</div>
+      <div style="background:#1e1e2e; border-radius:12px; padding:24px; overflow-x:auto;">
+        <div style="display:flex; gap:24px; align-items:flex-start; min-width:900px;">
+
+          <!-- CommonPrintGroupDB -->
+          <div style="flex:0 0 420px;">
+            <div style="background:#10b981; color:#fff; display:inline-block; padding:4px 14px; border-radius:6px; font-size:.8rem; font-weight:700; font-family:monospace; margin-bottom:12px;">/common-print-groups</div>
+            <div style="background:#2a2a3e; border:1px solid #3a3a50; border-radius:10px; padding:20px;">
+              <div style="font-size:.9rem; font-weight:700; color:#e2e8f0; margin-bottom:16px;">CommonPrintGroupDB</div>
+              <div style="display:flex; flex-direction:column; gap:14px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:8px; padding:10px 16px; text-align:center; min-width:100px;">
+                    <div style="font-size:.8rem; color:#86efac; font-weight:600;">安全標識</div>
+                    <div style="font-size:.8rem; color:#86efac; font-weight:600;">セット</div>
+                  </div>
+                  <div style="color:#6b7280; font-size:1rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:5px 12px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">commonPrintGroupId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:5px 12px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">name</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:8px; padding:10px 16px; text-align:center; min-width:100px;">
+                    <div style="font-size:.8rem; color:#86efac; font-weight:600;">店舗案内</div>
+                    <div style="font-size:.8rem; color:#86efac; font-weight:600;">セット</div>
+                  </div>
+                  <div style="color:#6b7280; font-size:1rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:5px 12px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">commonPrintGroupId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:5px 12px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">name</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:8px; padding:10px 16px; text-align:center; min-width:100px;">
+                    <div style="font-size:.8rem; color:#86efac; font-weight:600;">衛生管理</div>
+                    <div style="font-size:.8rem; color:#86efac; font-weight:600;">セット</div>
+                  </div>
+                  <div style="color:#6b7280; font-size:1rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:5px 12px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">commonPrintGroupId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:5px 12px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">name</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Arrow: commonPrintGroupId -->
+          <div style="flex:0 0 auto; padding-top:36px; display:flex; flex-direction:column; align-items:center; gap:2px;">
+            <div style="font-size:.8rem; color:#ef4444; font-weight:700;">PK</div>
+            <div style="font-size:.8rem; color:#9ca3af; font-family:monospace;">commonPrintGroupId</div>
+            <div style="color:#6b7280; font-size:1.2rem;">→</div>
+          </div>
+
+          <!-- CommonPrintDB -->
+          <div style="flex:0 0 400px;">
+            <div style="background:#10b981; color:#fff; display:inline-block; padding:4px 14px; border-radius:6px; font-size:.8rem; font-weight:700; font-family:monospace; margin-bottom:12px;">/common-print-groups/{id}/prints</div>
+            <div style="background:#2a2a3e; border:1px solid #3a3a50; border-radius:10px; padding:20px;">
+              <div style="font-size:.9rem; font-weight:700; color:#e2e8f0; margin-bottom:16px;">CommonPrintDB</div>
+              <div style="display:flex; flex-direction:column; gap:16px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:6px; padding:5px 14px; width:90px; text-align:center; flex-shrink:0; font-size:.75rem; color:#86efac; font-weight:600;">立入禁止</div>
+                  <div style="color:#6b7280; font-size:.8rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">commonPrintId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">fileName</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">thumbnailUrl</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">fileKey</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:6px; padding:5px 14px; width:90px; text-align:center; flex-shrink:0; font-size:.75rem; color:#86efac; font-weight:600;">土足厳禁</div>
+                  <div style="color:#6b7280; font-size:.8rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">commonPrintId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">fileName</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">thumbnailUrl</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">fileKey</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:6px; padding:5px 14px; width:90px; text-align:center; flex-shrink:0; font-size:.75rem; color:#86efac; font-weight:600;">安全第一</div>
+                  <div style="color:#6b7280; font-size:.8rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">commonPrintId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">fileName</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">thumbnailUrl</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">fileKey</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:6px; padding:5px 14px; width:90px; text-align:center; flex-shrink:0; font-size:.75rem; color:#86efac; font-weight:600;">ヘルメット着用</div>
+                  <div style="color:#6b7280; font-size:.8rem;">→</div>
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">commonPrintId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">fileName</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">thumbnailUrl</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">fileKey</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:6px; padding:4px 10px; font-size:.7rem; color:#e2e8f0; font-family:monospace;">status</div>
+                  </div>
+                </div>
+              </div>
+              <div style="font-size:.7rem; color:#6b7280; margin-top:12px; text-align:center;">※ サイズ展開なし・AI生成なし。1グループ = N枚の印刷物</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ポイント -->
