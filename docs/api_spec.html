@@ -741,21 +741,21 @@
           </div>
           <table class="field-table">
             <thead>
-              <tr><th>フィールド</th><th>説明</th><th>いつ使う</th></tr>
+              <tr><th>フィールド</th><th>説明</th></tr>
             </thead>
             <tbody>
-              <tr><td><span class="field-name">sourceImageId</span><span class="field-pk">PK</span></td><td>元原稿画像ID</td><td>STEP1: Bubble DBに紐付け保存 / STEP4: POST時に送る</td></tr>
-              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td><td>STEP1: 画像選択時の表示</td></tr>
-              <tr><td><span class="field-name">category</span></td><td>分類</td><td>STEP1: 行事 or 共通印刷物でフィルタ</td></tr>
-              <tr><td><span class="field-name">size</span></td><td>サイズ</td><td>STEP1: サイズでフィルタ（パラメータ追加が必要）</td></tr>
-              <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td><td style="color:var(--gray-400);">Bubble側は使わない（Brother内部用）</td></tr>
-              <tr><td><span class="field-name">thumbnailKey</span></td><td>サムネイル識別子</td><td style="color:var(--gray-400);">Bubble側は使わない（APIがthumbnailUrlに変換）</td></tr>
-              <tr><td><span class="field-name">status</span></td><td>状態</td><td>STEP1: 有効な画像のみ表示するフィルタ</td></tr>
-              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td style="color:var(--gray-400);">用途不明</td></tr>
-              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td style="color:var(--gray-400);">用途不明</td></tr>
-              <tr><td><span class="field-name">description</span><span class="field-optional">任意</span></td><td>説明</td><td style="color:var(--gray-400);">用途不明</td></tr>
-              <tr><td><span class="field-name">tags</span><span class="field-optional">任意</span></td><td>タグ</td><td style="color:var(--gray-400);">用途不明</td></tr>
-              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td><td style="color:var(--gray-400);">用途不明</td></tr>
+              <tr><td><span class="field-name">sourceImageId</span><span class="field-pk">PK</span></td><td>元原稿画像ID</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">category</span></td><td>分類</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td></tr>
+              <tr><td><span class="field-name">thumbnailKey</span></td><td>サムネイル識別子</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>状態</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+              <tr><td><span class="field-name">description</span><span class="field-optional">任意</span></td><td>説明</td></tr>
+              <tr><td><span class="field-name">tags</span><span class="field-optional">任意</span></td><td>タグ</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
             </tbody>
           </table>
         </div>
@@ -774,22 +774,22 @@
           </div>
           <table class="field-table">
             <thead>
-              <tr><th>フィールド</th><th>説明</th><th>いつ使う</th></tr>
+              <tr><th>フィールド</th><th>説明</th></tr>
             </thead>
             <tbody>
-              <tr><td><span class="field-name">generatedImageId</span><span class="field-pk">PK</span></td><td>生成画像ID</td><td>STEP4: POSTレスポンスで受取 → Bubble DBに保存。再生成/削除時にも使用</td></tr>
-              <tr><td><span class="field-name">sourceImageId</span></td><td>元原稿画像ID</td><td>どの背景画像から生成したか（参照用）</td></tr>
-              <tr><td><span class="field-name">userId</span></td><td>ユーザID</td><td>どのユーザーの生成物か</td></tr>
-              <tr><td><span class="field-name">replaceText</span></td><td>差し替えテキスト</td><td>STEP4: リクエストで送る（ただし要拡張）</td></tr>
-              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td><td style="color:var(--gray-400);">用途不明</td></tr>
-              <tr><td><span class="field-name">status</span></td><td>生成状態</td><td>STEP4: 生成中/完了/失敗の判定</td></tr>
-              <tr><td><span class="field-name">fileKey</span></td><td>生成画像ファイル識別子</td><td style="color:var(--gray-400);">Bubble側は使わない（APIがimageUrlに変換）</td></tr>
-              <tr><td><span class="field-name">parentGeneratedImageId</span></td><td>再生成元ID</td><td>再生成時の履歴追跡用</td></tr>
-              <tr><td><span class="field-name">size</span></td><td>サイズ</td><td>どのサイズで生成したか</td></tr>
-              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td>履歴管理</td></tr>
-              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td>履歴管理</td></tr>
-              <tr><td><span class="field-name">deletedAt</span><span class="field-optional">任意</span></td><td>削除日時</td><td>論理削除用</td></tr>
-              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td><td style="color:var(--gray-400);">用途不明</td></tr>
+              <tr><td><span class="field-name">generatedImageId</span><span class="field-pk">PK</span></td><td>生成画像ID</td></tr>
+              <tr><td><span class="field-name">sourceImageId</span></td><td>元原稿画像ID</td></tr>
+              <tr><td><span class="field-name">userId</span></td><td>ユーザID</td></tr>
+              <tr><td><span class="field-name">replaceText</span></td><td>差し替えテキスト</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>生成状態</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>生成画像ファイル識別子</td></tr>
+              <tr><td><span class="field-name">parentGeneratedImageId</span></td><td>再生成元ID</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+              <tr><td><span class="field-name">deletedAt</span><span class="field-optional">任意</span></td><td>削除日時</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
             </tbody>
           </table>
         </div>
