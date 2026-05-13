@@ -709,6 +709,11 @@
   <div class="nav-item" data-tab="seq1-0430">シーケンス: 原稿一覧・詳細</div>
   <div class="nav-item" data-tab="seq2-0430">シーケンス: AI画像生成</div>
 
+  <div class="sidebar-category">ブラザー提供_20260511</div>
+  <div class="nav-item" data-tab="db-0511">DB設計</div>
+  <div class="nav-item" data-tab="api-0511">APIエンドポイント</div>
+  <div class="nav-item" data-tab="diff-0511">論点: 理想設計との差分</div>
+
   <div class="sidebar-category">新フロー</div>
   <div class="nav-item" data-tab="summary">設計概要</div>
   <div class="nav-item" data-tab="ideal-db">理想DB設計</div>
@@ -1958,6 +1963,746 @@ sequenceDiagram
     FE -->> User: 生成画像を表示
       </pre>
     </div>
+  </div>
+</div>
+
+<!-- ==================== ブラザー提供_20260511: DB設計 ==================== -->
+<div class="section" id="db-0511">
+  <div class="container">
+    <h2 class="section-title">データベース設計</h2>
+    <p class="section-desc">5つのDBで元原稿・生成画像・デザインテンプレート・共通印刷物を管理（2026/05/11 更新版）</p>
+
+    <div class="db-grid">
+      <!-- DB1 -->
+      <div class="card db-card">
+        <div class="card-header">
+          <h3>DB1: Source Image DB</h3>
+        </div>
+        <div class="card-body">
+          <div class="db-role">
+            <p>事前に用意された元原稿画像の情報を管理</p>
+            <p>一覧表示、詳細表示、選択対象として利用</p>
+            <span class="badge badge-readonly">Read Only</span>
+          </div>
+          <table class="field-table">
+            <thead>
+              <tr><th>フィールド</th><th>説明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="field-name">sourceImageId</span><span class="field-pk">PK</span></td><td>元原稿画像ID</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">category</span></td><td>分類</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td></tr>
+              <tr><td><span class="field-name">thumbnailKey</span></td><td>サムネイル識別子</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>状態</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventName</span></td><td>行事名</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventPeriod</span></td><td>開催期間</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventDetails</span></td><td>詳細</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventProgram</span></td><td>プログラム</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">notes</span></td><td>備考</td></tr>
+              <tr><td><span class="field-name">description</span><span class="field-optional">任意</span></td><td>説明</td></tr>
+              <tr><td><span class="field-name">tags</span><span class="field-optional">任意</span></td><td>タグ</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DB2 -->
+      <div class="card db-card secondary">
+        <div class="card-header">
+          <h3>DB2: Generated Image DB</h3>
+        </div>
+        <div class="card-body">
+          <div class="db-role">
+            <p>元原稿画像 + 入れ替えテキストをもとに生成された画像情報を管理</p>
+            <p>生成履歴、状態管理、再生成の管理も担当</p>
+            <span class="badge badge-crud">CRUD</span>
+          </div>
+          <table class="field-table">
+            <thead>
+              <tr><th>フィールド</th><th>説明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="field-name">generatedImageId</span><span class="field-pk">PK</span></td><td>生成画像ID</td></tr>
+              <tr><td><span class="field-name">sourceImageId</span></td><td>元原稿画像ID</td></tr>
+              <tr><td><span class="field-name">userId</span></td><td>ユーザID</td></tr>
+              <tr><td><span class="field-name">replaceText</span></td><td>差し替えテキスト</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>生成状態</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>生成画像ファイル識別子</td></tr>
+              <tr><td><span class="field-name">parentGeneratedImageId</span></td><td>再生成元ID</td></tr>
+              <tr><td><span class="field-name">size</span></td><td>サイズ</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventName</span></td><td>行事名</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventPeriod</span></td><td>開催期間</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventDetails</span></td><td>詳細</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">eventProgram</span></td><td>プログラム</td></tr>
+              <tr><td><span class="field-name" style="color:var(--amber);">notes</span></td><td>備考</td></tr>
+              <tr><td><span class="field-name">deletedAt</span><span class="field-optional">任意</span></td><td>削除日時</td></tr>
+              <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Design Template DB -->
+      <div class="card db-card" style="border-left: 4px solid var(--green);">
+        <div class="card-header" style="background: var(--green-bg);">
+          <h3 style="color: var(--green);">Design Template DB <span style="font-size:.75rem; font-weight:500; background:var(--green); color:#fff; padding:2px 8px; border-radius:4px; margin-left:8px;">NEW</span></h3>
+        </div>
+        <div class="card-body">
+          <div class="db-role">
+            <p>デザインテンプレートの管理用DB</p>
+            <p>テンプレート一覧表示に利用。thumbnailUrlは公開URL（期限なし）</p>
+            <span class="badge badge-readonly">Read Only</span>
+          </div>
+          <table class="field-table">
+            <thead>
+              <tr><th>フィールド</th><th>説明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="field-name">designTemplateId</span><span class="field-pk">PK</span></td><td>デザインテンプレートID（ブラザーが画像登録時に付与）</td></tr>
+              <tr><td><span class="field-name">name</span></td><td>テンプレート名（Brother内部管理用。APIレスポンスには含めない）</td></tr>
+              <tr><td><span class="field-name">thumbnailUrl</span></td><td>代表サムネイルURL（公開URL・期限なし。Bubble DBに保存して再利用）</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Common Print Group DB -->
+      <div class="card db-card" style="border-left: 4px solid var(--green);">
+        <div class="card-header" style="background: var(--green-bg);">
+          <h3 style="color: var(--green);">Common Print Group DB <span style="font-size:.75rem; font-weight:500; background:var(--green); color:#fff; padding:2px 8px; border-radius:4px; margin-left:8px;">NEW</span></h3>
+        </div>
+        <div class="card-body">
+          <div class="db-role">
+            <p>共通印刷物のグループを管理するDB</p>
+            <span class="badge badge-readonly">Read Only</span>
+          </div>
+          <table class="field-table">
+            <thead>
+              <tr><th>フィールド</th><th>説明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="field-name">commonPrintGroupId</span><span class="field-pk">PK</span></td><td>共通印刷物グループID（ブラザーがグループ登録時に付与）</td></tr>
+              <tr><td><span class="field-name">name</span></td><td>グループ名（Brother内部管理用）</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Common Print DB -->
+      <div class="card db-card" style="border-left: 4px solid var(--green);">
+        <div class="card-header" style="background: var(--green-bg);">
+          <h3 style="color: var(--green);">Common Print DB <span style="font-size:.75rem; font-weight:500; background:var(--green); color:#fff; padding:2px 8px; border-radius:4px; margin-left:8px;">NEW</span></h3>
+        </div>
+        <div class="card-body">
+          <div class="db-role">
+            <p>共通印刷物の個別アイテムを管理するDB</p>
+            <p>Common Print Group DBへの参照（FK）を持つ</p>
+            <span class="badge badge-readonly">Read Only</span>
+          </div>
+          <table class="field-table">
+            <thead>
+              <tr><th>フィールド</th><th>説明</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="field-name">commonPrintId</span><span class="field-pk">PK</span></td><td>共通印刷物ID</td></tr>
+              <tr><td><span class="field-name">commonPrintGroupId</span><span class="field-pk" style="background:var(--blue-bg); color:var(--blue);">FK</span></td><td>共通印刷物グループID（Common Print Group DBへの参照）</td></tr>
+              <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td></tr>
+              <tr><td><span class="field-name">fileKey</span></td><td>画像ファイル識別子（永続的。DL時は GET /files/{fileKey}/url で一時URL取得）</td></tr>
+              <tr><td><span class="field-name">thumbnailUrl</span></td><td>サムネイルURL（公開URL・期限なし。Bubble DBに保存して再利用可）</td></tr>
+              <tr><td><span class="field-name">status</span></td><td>状態</td></tr>
+              <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td></tr>
+              <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ブラザー提供_20260511: APIエンドポイント ==================== -->
+<div class="section" id="api-0511">
+  <div class="container">
+    <h2 class="section-title">APIエンドポイント</h2>
+    <p class="section-desc">全12エンドポイント（元原稿画像系 4 + 生成画像系 5 + ファイル系 1 + 共通印刷物系 2）— 2026/05/11 更新版</p>
+
+    <div class="endpoint-list">
+
+      <div class="api-category">元原稿画像系 (Source Images)</div>
+
+      <!-- GET /source-images -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/source-images</span>
+          <span class="endpoint-summary">原稿一覧取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">title</span>
+              <span class="field-chip">thumbnailUrl</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">category</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /design-templates -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/design-templates</span>
+          <span class="endpoint-summary">デザインテンプレート一覧取得</span>
+          <span style="font-size:.65rem; padding:2px 6px; border-radius:4px; background:var(--green-bg); color:var(--green); font-weight:700;">NEW</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">designTemplateId</span>
+              <span class="field-chip">thumbnailUrl</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* name（テンプレート名）はBrother内部管理用のため、レスポンスには含めない</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /source-images/{id} -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/source-images/<span class="param">{sourceImageId}</span></span>
+          <span class="endpoint-summary">特定原稿詳細取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">title</span>
+              <span class="field-chip">imageUrl</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /source-images-size -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/source-images-size</span>
+          <span class="endpoint-summary">サイズ指定原稿一覧取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">クエリパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">size</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">title</span>
+              <span class="field-chip">thumbnailUrl</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">category</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-category">生成画像系 (Generated Images)</div>
+
+      <!-- POST /generated-images -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-post">POST</span>
+          <span class="endpoint-path">/generated-images</span>
+          <span class="async-badge">非同期</span>
+          <span class="endpoint-summary">新規生成</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">リクエストボディ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">sourceImageId</span>
+              <span class="field-chip">eventName</span>
+              <span class="field-chip">eventPeriod</span>
+              <span class="field-chip">eventDetails</span>
+              <span class="field-chip">eventProgram</span>
+              <span class="field-chip">notes</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* statusは done（生成受付完了）。生成結果は GET /generated-images/{generatedImageId} で取得する</p>
+            <p class="note-text" style="color:var(--amber);">* リクエスト拡張 + fileKey（DL用）/ thumbnailUrl（表示用）をレスポンスに追加 ← 要相談</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /generated-images/{id} -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span></span>
+          <span class="endpoint-summary">生成画像詳細取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip" style="color:var(--amber);">fileKey <span style="font-size:.8em;">(暫定)</span></span>
+              <span class="field-chip" style="color:var(--amber);">thumbnailUrl</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /generated-images -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/generated-images</span>
+          <span class="endpoint-summary">生成画像一覧取得</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">クエリパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip">userId <span style="color:var(--gray-500); font-size:.8em;">(or 認証から取得)</span></span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+              <span class="field-chip">createdAt</span>
+              <span class="field-chip">thumbnailUrl</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POST /generated-images/{id}/regenerate -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-post">POST</span>
+          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span>/regenerate</span>
+          <span class="endpoint-summary">再生成</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ + リクエストボディ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">originalText</span>
+              <span class="field-chip">replaceText</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId <span style="font-size:.8em;">(新規)</span></span>
+              <span class="field-chip">parentGeneratedImageId</span>
+              <span class="field-chip">sourceImageId</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* 新しいgeneratedImageIdが発行され、元のIDはparentGeneratedImageIdとして記録</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DELETE /generated-images/{id} -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-delete">DELETE</span>
+          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span></span>
+          <span class="endpoint-summary">生成画像削除</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ + リクエストボディ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">eventName</span>
+              <span class="field-chip">eventPeriod</span>
+              <span class="field-chip">eventDetails</span>
+              <span class="field-chip">eventProgram</span>
+              <span class="field-chip">notes</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">generatedImageId</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-category">ファイル系 (Files)</div>
+
+      <!-- GET /files/{fileKey}/url -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/files/<span class="param">{fileKey}</span>/url</span>
+          <span class="endpoint-summary">署名付き一時URL取得</span>
+          <span style="font-size:.65rem; padding:2px 6px; border-radius:4px; background:var(--green-bg); color:var(--green); font-weight:700;">NEW</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">fileKey</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip">url <span style="font-size:.8em;">(署名付き一時URL)</span></span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* DL用の署名付き一時URLを取得するための新設エンドポイント（暫定）</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-category">共通印刷物系 (Common Prints)</div>
+
+      <!-- GET /common-print-groups -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/common-print-groups</span>
+          <span class="endpoint-summary">共通印刷物グループ一覧</span>
+          <span style="font-size:.65rem; padding:2px 6px; border-radius:4px; background:var(--green-bg); color:var(--green); font-weight:700;">NEW</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">commonPrintGroupId</span>
+              <span class="field-chip">name</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* GET /design-templates と同パターン</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GET /common-print-groups/{id}/prints -->
+      <div class="endpoint">
+        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
+          <span class="method-badge method-get">GET</span>
+          <span class="endpoint-path">/common-print-groups/<span class="param">{id}</span>/prints</span>
+          <span class="endpoint-summary">グループ内印刷物一覧</span>
+          <span style="font-size:.65rem; padding:2px 6px; border-radius:4px; background:var(--green-bg); color:var(--green); font-weight:700;">NEW</span>
+          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
+        </div>
+        <div class="endpoint-detail">
+          <div class="detail-section">
+            <div class="detail-label">パスパラメータ</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">id <span style="font-size:.8em;">(commonPrintGroupId)</span></span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">レスポンス</div>
+            <div class="detail-fields">
+              <span class="field-chip highlight">commonPrintId</span>
+              <span class="field-chip">fileName</span>
+              <span class="field-chip">fileKey</span>
+              <span class="field-chip">thumbnailUrl</span>
+              <span class="field-chip">status</span>
+            </div>
+          </div>
+          <div class="detail-section">
+            <p class="note-text">* GET /design-templates/{id}/source-images と同パターン</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ブラザー提供_20260511: 論点 理想設計との差分 ==================== -->
+<div class="section" id="diff-0511">
+  <div class="container">
+    <h2 class="section-title">論点: 0511版 vs 理想設計</h2>
+    <p class="section-desc">2026/05/11 ブラザー提供仕様と理想設計を比較。採用済み・未解決の差分を整理</p>
+
+    <!-- ===== 採用済み ===== -->
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-header" style="background:linear-gradient(135deg, #059669, #10b981);">
+        <h3 style="color:#fff;">理想に近づいた点（0511で採用済み）</h3>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <table class="field-table">
+          <thead>
+            <tr><th style="width:25%;">項目</th><th style="width:25%;">理想設計</th><th style="width:12%;">0511版</th><th style="width:38%;">差分（理想との違い）</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="font-weight:600;">Design Template DB 新設</span></td>
+              <td style="font-size:.82rem;">designTemplateId, name, thumbnailUrl, createdAt, updatedAt</td>
+              <td style="color:var(--green); font-weight:600;">完全一致</td>
+              <td style="font-size:.82rem; color:var(--gray-500);">なし</td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;">Common Print Group DB 新設</span></td>
+              <td style="font-size:.82rem;">commonPrintGroupId, name, createdAt, updatedAt</td>
+              <td style="color:var(--green); font-weight:600;">完全一致</td>
+              <td style="font-size:.82rem; color:var(--gray-500);">なし</td>
+            </tr>
+            <tr>
+              <td><span style="font-weight:600;">Common Print DB 新設</span><br><span style="font-size:.78rem; color:var(--gray-500);">commonPrintGroupId FK 含む</span></td>
+              <td style="font-size:.82rem;">commonPrintId, commonPrintGroupId(FK), fileName, fileKey, thumbnailUrl, status</td>
+              <td style="color:var(--green); font-weight:600;">完全一致</td>
+              <td style="font-size:.82rem; color:var(--gray-500);">なし</td>
+            </tr>
+            <tr>
+              <td><code>GET /design-templates</code></td>
+              <td style="font-size:.82rem;">デザインテンプレート一覧取得</td>
+              <td style="color:var(--green); font-weight:600;">一致</td>
+              <td style="font-size:.82rem; color:var(--amber);">理想では <code>GET /design-templates/{id}/source-images</code>（サイズ別画像一覧）もセットで必要だが、0511版には未実装。Source Image DB に <code>designTemplateId(FK)</code> もなし</td>
+            </tr>
+            <tr>
+              <td><code>GET /files/{fileKey}/url</code></td>
+              <td style="font-size:.82rem;">署名付き一時URL取得（DL用共通API）</td>
+              <td style="color:var(--green); font-weight:600;">一致（暫定）</td>
+              <td style="font-size:.82rem; color:var(--amber);">理想ではレスポンスに <code>expiresAt</code>（有効期限）も含む。0511版では未記載</td>
+            </tr>
+            <tr>
+              <td><code>GET /common-print-groups</code></td>
+              <td style="font-size:.82rem;">共通印刷物グループ一覧</td>
+              <td style="color:var(--green); font-weight:600;">一致</td>
+              <td style="font-size:.82rem; color:var(--gray-500);">なし</td>
+            </tr>
+            <tr>
+              <td><code>GET /common-print-groups/{id}/prints</code></td>
+              <td style="font-size:.82rem;">グループ内印刷物一覧</td>
+              <td style="color:var(--green); font-weight:600;">一致</td>
+              <td style="font-size:.82rem; color:var(--gray-500);">なし</td>
+            </tr>
+            <tr>
+              <td><code>GET /generated-images/{id}</code><br><span style="font-size:.78rem; color:var(--gray-500);">fileKey・thumbnailUrl 追加</span></td>
+              <td style="font-size:.82rem;">fileKey（DL用）+ thumbnailUrl（表示用）を返却</td>
+              <td style="color:var(--amber); font-weight:600;">暫定ながら方向一致</td>
+              <td style="font-size:.82rem; color:var(--amber);">0511版では fileKey が「暫定」表記。理想では確定項目として扱う。また <code>POST /generated-images</code> のレスポンスにも含める想定だが 0511版は「要相談」</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== 未解決の差分 ===== -->
+    <div class="card" style="margin-bottom:24px;">
+      <div class="card-header" style="background:linear-gradient(135deg, #dc2626, #ef4444);">
+        <h3 style="color:#fff;">未解決の差分（要協議）</h3>
+      </div>
+      <div class="card-body" style="display:flex; flex-direction:column; gap:20px;">
+
+        <!-- 差分1 -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#fef2f2; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">1. テンプレート → 画像の紐付けが未定義</span>
+            <span style="font-size:12px; color:#fff; background:#ef4444; padding:3px 10px; border-radius:99px; font-weight:600;">重要</span>
+          </div>
+          <div style="padding:0;">
+            <!-- 図解: DB関連 -->
+            <div style="padding:18px 20px; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;">
+              <div style="text-align:center;">
+                <div style="background:#dcfce7; border:2px solid #16a34a; border-radius:8px; padding:10px 16px; font-weight:700; font-size:13px; color:#15803d;">Design Template DB</div>
+                <div style="font-size:10px; color:#6b7280; margin-top:4px;">0511で新設 &#10003;</div>
+              </div>
+              <div style="font-size:24px; color:#d1d5db;">- - -</div>
+              <div style="text-align:center; position:relative;">
+                <div style="background:#fef2f2; border:2px dashed #ef4444; border-radius:8px; padding:10px 16px; font-weight:700; font-size:13px; color:#dc2626;">
+                  API が無い<br>
+                  <code style="font-size:11px; background:#fee2e2; padding:2px 6px; border-radius:4px;">GET /design-templates/{id}/source-images</code>
+                  <div style="font-size:11px; color:#9ca3af; font-weight:500; margin-top:4px;">テンプレートに紐づくサイズ別画像一覧</div>
+                </div>
+                <div style="font-size:10px; color:#ef4444; margin-top:4px; font-weight:600;">未実装</div>
+              </div>
+              <div style="font-size:24px; color:#d1d5db;">- - -</div>
+              <div style="text-align:center;">
+                <div style="background:#fef2f2; border:2px dashed #ef4444; border-radius:8px; padding:10px 16px; font-weight:700; font-size:13px; color:#dc2626;">
+                  Source Image DB<br>
+                  <code style="font-size:11px; background:#fee2e2; padding:2px 6px; border-radius:4px;">designTemplateId(FK)</code> なし
+                </div>
+                <div style="font-size:10px; color:#ef4444; margin-top:4px; font-weight:600;">FK 未定義</div>
+              </div>
+            </div>
+            <!-- 一行サマリ -->
+            <div style="background:#fffbeb; padding:10px 16px; border-top:1px solid #e5e7eb; font-size:13px; color:#92400e;">
+              DB は作ったが繋ぐ API と FK がない → Design Template DB が孤立テーブル化
+            </div>
+          </div>
+        </div>
+
+        <!-- 差分2 -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#fef2f2; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">2. 再生成APIのリクエストが旧仕様のまま</span>
+            <span style="font-size:12px; color:#fff; background:#f59e0b; padding:3px 10px; border-radius:99px; font-weight:600;">中</span>
+          </div>
+          <div style="padding:16px 20px;">
+            <div style="font-size:12px; color:#6b7280; margin-bottom:8px; font-weight:600;"><code>POST /generated-images/{id}/regenerate</code></div>
+            <!-- diff風表示 -->
+            <div style="font-family:'SF Mono',SFMono-Regular,Consolas,monospace; font-size:13px; border-radius:8px; overflow:hidden; border:1px solid #e5e7eb;">
+              <div style="background:#fef2f2; padding:6px 14px; color:#b91c1c; border-bottom:1px solid #fecaca;">
+                <span style="user-select:none; opacity:.5;">- </span>originalText, replaceText<span style="color:#9ca3af; font-style:italic; margin-left:12px;">// 汎用テキスト</span>
+              </div>
+              <div style="background:#f0fdf4; padding:6px 14px; color:#15803d;">
+                <span style="user-select:none; opacity:.5;">+ </span>eventName, period, details, program, notes<span style="color:#9ca3af; font-style:italic; margin-left:12px;">// 構造化データ</span>
+              </div>
+            </div>
+            <div style="margin-top:8px; font-size:12px; color:#6b7280;">新規生成 POST は構造化済み。再生成も揃えるべきか確認</div>
+          </div>
+        </div>
+
+        <!-- 差分3 -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#fef2f2; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">3. POST レスポンスに fileKey / thumbnailUrl が未確定</span>
+            <span style="font-size:12px; color:#fff; background:#f59e0b; padding:3px 10px; border-radius:99px; font-weight:600;">中</span>
+          </div>
+          <div style="padding:16px 20px;">
+            <div style="font-size:12px; color:#6b7280; margin-bottom:8px; font-weight:600;"><code>POST /generated-images</code> 画像生成リクエスト — レスポンス</div>
+            <div style="font-family:'SF Mono',SFMono-Regular,Consolas,monospace; font-size:13px; border-radius:8px; overflow:hidden; border:1px solid #e5e7eb;">
+              <div style="background:#f9fafb; padding:6px 14px; color:#374151; border-bottom:1px solid #e5e7eb;">
+                <span style="user-select:none; opacity:.4;">  </span>generatedImageId, sourceImageId, status
+              </div>
+              <div style="background:#fef2f2; padding:6px 14px; color:#b91c1c; border-bottom:1px solid #fecaca;">
+                <span style="user-select:none; opacity:.5;">? </span>fileKey<span style="color:#9ca3af; font-style:italic; margin-left:8px;">// DL用キー — 0511版「要相談」</span>
+              </div>
+              <div style="background:#fef2f2; padding:6px 14px; color:#b91c1c;">
+                <span style="user-select:none; opacity:.5;">? </span>thumbnailUrl<span style="color:#9ca3af; font-style:italic; margin-left:8px;">// 表示用サムネイル — 0511版「要相談」</span>
+              </div>
+            </div>
+            <div style="margin-top:8px; font-size:12px; color:#6b7280;">GET /{id} には暫定追加済み。POST にも含めるか方針確認</div>
+          </div>
+        </div>
+
+        <!-- 差分4 -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#fef2f2; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">4. 画像生成（POST / GET）の status 値が曖昧</span>
+            <span style="font-size:12px; color:#fff; background:#6b7280; padding:3px 10px; border-radius:99px; font-weight:600;">低</span>
+          </div>
+          <div style="padding:16px 20px;">
+            <div style="font-size:12px; color:#6b7280; margin-bottom:12px; font-weight:600;"><code>POST /generated-images</code> → <code>GET /generated-images/{id}</code> ポーリングの status 遷移</div>
+            <!-- 0511: done だけ -->
+            <div style="display:flex; align-items:center; gap:16px; margin-bottom:14px;">
+              <div style="font-size:11px; font-weight:700; color:#ef4444; width:50px; flex-shrink:0;">0511</div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <code style="background:#fef2f2; border:1px solid #fecaca; padding:5px 14px; border-radius:6px; font-size:13px; font-weight:600; color:#b91c1c;">done</code>
+                <span style="font-size:12px; color:#9ca3af;">← 受付？完了？曖昧</span>
+              </div>
+            </div>
+            <!-- 理想: 3状態 -->
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="font-size:11px; font-weight:700; color:#16a34a; width:50px; flex-shrink:0;">理想</div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <code style="background:#eff6ff; border:1px solid #bfdbfe; padding:5px 12px; border-radius:6px; font-size:13px; font-weight:600; color:#1d4ed8;">PROCESSING</code>
+                <span style="color:#d1d5db; font-size:16px;">&#8594;</span>
+                <code style="background:#f0fdf4; border:1px solid #bbf7d0; padding:5px 12px; border-radius:6px; font-size:13px; font-weight:600; color:#15803d;">COMPLETED</code>
+                <span style="color:#d1d5db; font-size:16px;">&#8594;</span>
+                <code style="background:#fef2f2; border:1px solid #fecaca; padding:5px 12px; border-radius:6px; font-size:13px; font-weight:600; color:#dc2626;">FAILED</code>
+              </div>
+            </div>
+            <div style="margin-top:10px; font-size:12px; color:#6b7280;">ポーリング実装に直結。status 遷移の定義をブラザーと合意する</div>
+          </div>
+        </div>
+
+        <!-- 差分5 -->
+        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+          <div style="background:#fef2f2; padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:15px;">5. 理想で不要とした既存APIが残存</span>
+            <span style="font-size:12px; color:#fff; background:#6b7280; padding:3px 10px; border-radius:99px; font-weight:600;">低</span>
+          </div>
+          <div style="padding:14px 18px;">
+            <div style="color:#64748b; font-size:14px; line-height:1.7;">
+              <p>以下のAPIは理想設計では不要（別APIで代替 or Bubble DB管理）としていたが、0511版ではまだ残っている:</p>
+              <div style="display:flex; flex-direction:column; gap:6px; margin-top:12px;">
+                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">GET /source-images</code><span style="font-size:13px; color:var(--gray-700);">原稿一覧取得</span></div>
+                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">GET /source-images/{id}</code><span style="font-size:13px; color:var(--gray-700);">特定原稿詳細取得</span></div>
+                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">GET /source-images-size</code><span style="font-size:13px; color:var(--gray-700);">サイズ指定原稿一覧取得</span></div>
+                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">GET /generated-images</code><span style="font-size:13px; color:var(--gray-700);">生成画像一覧取得</span></div>
+                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">DELETE /generated-images/{id}</code><span style="font-size:13px; color:var(--gray-700);">生成画像削除</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
   </div>
 </div>
 
