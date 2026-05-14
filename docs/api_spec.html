@@ -2135,33 +2135,11 @@ sequenceDiagram
 <div class="section" id="api-0511">
   <div class="container">
     <h2 class="section-title">APIエンドポイント</h2>
-    <p class="section-desc">全12エンドポイント（元原稿画像系 4 + 生成画像系 5 + ファイル系 1 + 共通印刷物系 2）— 2026/05/11 更新版</p>
+    <p class="section-desc">全7エンドポイント（デザインテンプレート系 1 + 生成画像系 3 + ファイル系 1 + 共通印刷物系 2）— 2026/05/11 更新版</p>
 
     <div class="endpoint-list">
 
-      <div class="api-category">元原稿画像系 (Source Images)</div>
-
-      <!-- GET /source-images -->
-      <div class="endpoint">
-        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-          <span class="method-badge method-get">GET</span>
-          <span class="endpoint-path">/source-images</span>
-          <span class="endpoint-summary">原稿一覧取得</span>
-          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
-        </div>
-        <div class="endpoint-detail">
-          <div class="detail-section">
-            <div class="detail-label">レスポンス</div>
-            <div class="detail-fields">
-              <span class="field-chip highlight">sourceImageId</span>
-              <span class="field-chip">title</span>
-              <span class="field-chip">thumbnailUrl</span>
-              <span class="field-chip">status</span>
-              <span class="field-chip">category</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="api-category">デザインテンプレート系 (Design Templates)</div>
 
       <!-- GET /design-templates -->
       <div class="endpoint">
@@ -2182,61 +2160,6 @@ sequenceDiagram
           </div>
           <div class="detail-section">
             <p class="note-text">* name（テンプレート名）はBrother内部管理用のため、レスポンスには含めない</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- GET /source-images/{id} -->
-      <div class="endpoint">
-        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-          <span class="method-badge method-get">GET</span>
-          <span class="endpoint-path">/source-images/<span class="param">{sourceImageId}</span></span>
-          <span class="endpoint-summary">特定原稿詳細取得</span>
-          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
-        </div>
-        <div class="endpoint-detail">
-          <div class="detail-section">
-            <div class="detail-label">パスパラメータ</div>
-            <div class="detail-fields">
-              <span class="field-chip highlight">sourceImageId</span>
-            </div>
-          </div>
-          <div class="detail-section">
-            <div class="detail-label">レスポンス</div>
-            <div class="detail-fields">
-              <span class="field-chip highlight">sourceImageId</span>
-              <span class="field-chip">title</span>
-              <span class="field-chip">imageUrl</span>
-              <span class="field-chip">status</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- GET /source-images-size -->
-      <div class="endpoint">
-        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-          <span class="method-badge method-get">GET</span>
-          <span class="endpoint-path">/source-images-size</span>
-          <span class="endpoint-summary">サイズ指定原稿一覧取得</span>
-          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
-        </div>
-        <div class="endpoint-detail">
-          <div class="detail-section">
-            <div class="detail-label">クエリパラメータ</div>
-            <div class="detail-fields">
-              <span class="field-chip highlight">size</span>
-            </div>
-          </div>
-          <div class="detail-section">
-            <div class="detail-label">レスポンス</div>
-            <div class="detail-fields">
-              <span class="field-chip highlight">sourceImageId</span>
-              <span class="field-chip">title</span>
-              <span class="field-chip">thumbnailUrl</span>
-              <span class="field-chip">status</span>
-              <span class="field-chip">category</span>
-            </div>
           </div>
         </div>
       </div>
@@ -2307,34 +2230,6 @@ sequenceDiagram
         </div>
       </div>
 
-      <!-- GET /generated-images -->
-      <div class="endpoint">
-        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-          <span class="method-badge method-get">GET</span>
-          <span class="endpoint-path">/generated-images</span>
-          <span class="endpoint-summary">生成画像一覧取得</span>
-          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
-        </div>
-        <div class="endpoint-detail">
-          <div class="detail-section">
-            <div class="detail-label">クエリパラメータ</div>
-            <div class="detail-fields">
-              <span class="field-chip">userId <span style="color:var(--gray-500); font-size:.8em;">(or 認証から取得)</span></span>
-            </div>
-          </div>
-          <div class="detail-section">
-            <div class="detail-label">レスポンス</div>
-            <div class="detail-fields">
-              <span class="field-chip highlight">generatedImageId</span>
-              <span class="field-chip">sourceImageId</span>
-              <span class="field-chip">status</span>
-              <span class="field-chip">createdAt</span>
-              <span class="field-chip">thumbnailUrl</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- POST /generated-images/{id}/regenerate -->
       <div class="endpoint">
         <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
@@ -2363,36 +2258,6 @@ sequenceDiagram
           </div>
           <div class="detail-section">
             <p class="note-text">* 新しいgeneratedImageIdが発行され、元のIDはparentGeneratedImageIdとして記録</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- DELETE /generated-images/{id} -->
-      <div class="endpoint">
-        <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
-          <span class="method-badge method-delete">DELETE</span>
-          <span class="endpoint-path">/generated-images/<span class="param">{generatedImageId}</span></span>
-          <span class="endpoint-summary">生成画像削除</span>
-          <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
-        </div>
-        <div class="endpoint-detail">
-          <div class="detail-section">
-            <div class="detail-label">パスパラメータ + リクエストボディ</div>
-            <div class="detail-fields">
-              <span class="field-chip highlight">generatedImageId</span>
-              <span class="field-chip">eventName</span>
-              <span class="field-chip">eventPeriod</span>
-              <span class="field-chip">eventDetails</span>
-              <span class="field-chip">eventProgram</span>
-              <span class="field-chip">notes</span>
-            </div>
-          </div>
-          <div class="detail-section">
-            <div class="detail-label">レスポンス</div>
-            <div class="detail-fields">
-              <span class="field-chip highlight">generatedImageId</span>
-              <span class="field-chip">status</span>
-            </div>
           </div>
         </div>
       </div>
@@ -3967,6 +3832,9 @@ sequenceDiagram
           <tr><td><span class="field-name">notes</span></td><td>備考</td><td></td></tr>
           <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td></td></tr>
           <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td></td></tr>
+          <tr><td><span class="field-name">description</span><span class="field-optional">任意</span></td><td>説明</td><td></td></tr>
+          <tr><td><span class="field-name">tags</span><span class="field-optional">任意</span></td><td>タグ</td><td></td></tr>
+          <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td><td></td></tr>
         </tbody></table>
         <div style="margin-top:12px; padding:10px 14px; background:var(--green-bg); border-radius:6px;">
           <p style="font-size:.8rem; color:var(--green); font-weight:600; margin:0; line-height:1.8;">なぜDesign Template DBを作るのか：Bubble側が <code>sourceImageId</code> を直接保持していると、ブラザーが画像を差し替えた際にIDが変わり、Bubble DBとの整合性が壊れる。<code>designTemplateId</code> で管理すれば、ブラザーが裏で画像を差し替えてもBubble側は影響を受けない。</p>
@@ -3996,6 +3864,8 @@ sequenceDiagram
           <tr><td><span class="field-name">notes</span></td><td>備考</td><td></td></tr>
           <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td></td></tr>
           <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td></td></tr>
+          <tr><td><span class="field-name">deletedAt</span><span class="field-optional">任意</span></td><td>削除日時</td><td></td></tr>
+          <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td><td></td></tr>
         </tbody></table>
       </div>
     </div>
@@ -4215,6 +4085,9 @@ erDiagram
         string notes
         datetime createdAt
         datetime updatedAt
+        string description
+        string tags
+        string version
     }
 
     Generated_Image_DB {
@@ -4232,6 +4105,8 @@ erDiagram
         string notes
         datetime createdAt
         datetime updatedAt
+        datetime deletedAt
+        string version
     }
 
     Common_Print_Group_DB {
