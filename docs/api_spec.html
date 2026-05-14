@@ -1839,7 +1839,7 @@ sequenceDiagram
             <span class="step-dot api"></span>
             <div class="step-content">
               <div class="step-who">サーバー（Backend API）</div>
-              <div class="step-text">sourceImageIdの存在を確認し、Generated Image DBに<strong>status=PENDINGのレコードを作成</strong>。すぐに generatedImageId を返します。</div>
+              <div class="step-text">sourceImageIdの存在を確認し、Generated Image DBに<strong>status=PROCESSINGのレコードを作成</strong>。すぐに generatedImageId を返します。</div>
             </div>
           </li>
         </ul>
@@ -1854,7 +1854,7 @@ sequenceDiagram
             <span class="step-dot ai"></span>
             <div class="step-content">
               <div class="step-who">Generation Worker</div>
-              <div class="step-text">非同期で起動し、statusを<strong>RUNNING</strong>に更新。Generative AIに<strong>画像生成を依頼</strong>します。</div>
+              <div class="step-text">非同期で起動し、Generative AIに<strong>画像生成を依頼</strong>します。（statusは<strong>PROCESSING</strong>のまま）</div>
             </div>
           </li>
           <li class="step-item">
@@ -1868,7 +1868,7 @@ sequenceDiagram
             <span class="step-dot ai"></span>
             <div class="step-content">
               <div class="step-who">Generation Worker</div>
-              <div class="step-text">Generated Image DBのステータスを<strong>COMPLETED</strong>に更新し、fileKeyを記録します。</div>
+              <div class="step-text">Generated Image DBのステータスを<strong>COMPLETED</strong>に更新し、fileKeyを記録します。失敗時は<strong>FAILED</strong>に更新。</div>
             </div>
           </li>
         </ul>
@@ -1934,14 +1934,13 @@ sequenceDiagram
     API ->> SIDB: sourceImageId の存在確認
     SIDB -->> API: OK
 
-    API ->> GIDB: 生成レコード作成<br/>status = PENDING
+    API ->> GIDB: 生成レコード作成<br/>status = PROCESSING
     GIDB -->> API: generatedImageId
 
     API ->> Worker: 非同期生成処理を開始
-    API -->> FE: generatedImageId<br/>status = PENDING
+    API -->> FE: generatedImageId<br/>status = PROCESSING
     FE -->> User: 生成中を表示
 
-    Worker ->> GIDB: status = RUNNING
     Worker ->> AI: 画像生成依頼
     AI -->> Worker: 生成画像データ
 
@@ -2648,56 +2647,7 @@ sequenceDiagram
           </div>
         </div>
 
-        <!-- 差分4 -->
-        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
-          <div style="background:#fef2f2; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
-            <span style="font-weight:700; font-size:15px;">4. 画像生成（POST / GET）の status 値が曖昧</span>
-            <span style="font-size:12px; color:#fff; background:#6b7280; padding:3px 10px; border-radius:99px; font-weight:600;">低</span>
-          </div>
-          <div style="padding:16px 20px;">
-            <div style="font-size:12px; color:#6b7280; margin-bottom:12px; font-weight:600;"><code>POST /generated-images</code> → <code>GET /generated-images/{id}</code> ポーリングの status 遷移</div>
-            <!-- 0511: done だけ -->
-            <div style="display:flex; align-items:center; gap:16px; margin-bottom:14px;">
-              <div style="font-size:11px; font-weight:700; color:#ef4444; width:50px; flex-shrink:0;">0511</div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <code style="background:#fef2f2; border:1px solid #fecaca; padding:5px 14px; border-radius:6px; font-size:13px; font-weight:600; color:#b91c1c;">done</code>
-                <span style="font-size:12px; color:#9ca3af;">← 受付？完了？曖昧</span>
-              </div>
-            </div>
-            <!-- 理想: 3状態 -->
-            <div style="display:flex; align-items:center; gap:16px;">
-              <div style="font-size:11px; font-weight:700; color:#16a34a; width:50px; flex-shrink:0;">理想</div>
-              <div style="display:flex; align-items:center; gap:6px;">
-                <code style="background:#eff6ff; border:1px solid #bfdbfe; padding:5px 12px; border-radius:6px; font-size:13px; font-weight:600; color:#1d4ed8;">PROCESSING</code>
-                <span style="color:#d1d5db; font-size:16px;">&#8594;</span>
-                <code style="background:#f0fdf4; border:1px solid #bbf7d0; padding:5px 12px; border-radius:6px; font-size:13px; font-weight:600; color:#15803d;">COMPLETED</code>
-                <span style="color:#d1d5db; font-size:16px;">&#8594;</span>
-                <code style="background:#fef2f2; border:1px solid #fecaca; padding:5px 12px; border-radius:6px; font-size:13px; font-weight:600; color:#dc2626;">FAILED</code>
-              </div>
-            </div>
-            <div style="margin-top:10px; font-size:12px; color:#6b7280;">ポーリング実装に直結。status 遷移の定義をブラザーと合意する</div>
-          </div>
-        </div>
 
-        <!-- 差分5 -->
-        <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
-          <div style="background:#fef2f2; padding:12px 16px; border-bottom:1px solid #e5e7eb; display:flex; align-items:center; justify-content:space-between;">
-            <span style="font-weight:700; font-size:15px;">5. 理想で不要とした既存APIが残存</span>
-            <span style="font-size:12px; color:#fff; background:#6b7280; padding:3px 10px; border-radius:99px; font-weight:600;">低</span>
-          </div>
-          <div style="padding:14px 18px;">
-            <div style="color:#64748b; font-size:14px; line-height:1.7;">
-              <p>以下のAPIは理想設計では不要（別APIで代替 or Bubble DB管理）としていたが、0511版ではまだ残っている:</p>
-              <div style="display:flex; flex-direction:column; gap:6px; margin-top:12px;">
-                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">GET /source-images</code><span style="font-size:13px; color:var(--gray-700);">原稿一覧取得</span></div>
-                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">GET /source-images/{id}</code><span style="font-size:13px; color:var(--gray-700);">特定原稿詳細取得</span></div>
-                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">GET /source-images-size</code><span style="font-size:13px; color:var(--gray-700);">サイズ指定原稿一覧取得</span></div>
-                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">GET /generated-images</code><span style="font-size:13px; color:var(--gray-700);">生成画像一覧取得</span></div>
-                <div style="display:flex; align-items:center; gap:8px;"><code style="background:#fef2f2; padding:4px 10px; border-radius:6px; font-size:13px; border:1px solid #fecaca; min-width:260px;">DELETE /generated-images/{id}</code><span style="font-size:13px; color:var(--gray-700);">生成画像削除</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
     </div>
