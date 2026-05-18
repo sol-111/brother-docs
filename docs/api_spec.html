@@ -2534,7 +2534,7 @@ sequenceDiagram
         <span style="font-weight:700; color:var(--gray-900);">ブラザー側がSource Image DBに画像を登録する</span>
         <span style="font-size:.75rem; color:var(--gray-500);">Brother</span>
         <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#eff6ff; color:#3b82f6; font-weight:600;">Source Image DB</span>
-        <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#eff6ff; color:#3b82f6; font-weight:600;">Design Template DB</span>
+        <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#eff6ff; color:#3b82f6; font-weight:600;">Source Image Group DB</span>
         <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="flow-accordion-body">
@@ -2551,15 +2551,15 @@ sequenceDiagram
             <span class="step-dot api"></span>
             <div class="step-content">
               <div class="step-who">Brother</div>
-              <div class="step-text"><strong>Design Template DBにデザインテンプレートを登録</strong>する。テンプレート名・代表サムネイルURL（thumbnailUrl）を設定。</div>
-              <div class="step-note">designTemplateId が発行される</div>
+              <div class="step-text"><strong>Source Image Group DBにソースイメージグループを登録</strong>する。テンプレート名・代表サムネイルURL（thumbnailUrl）を設定。</div>
+              <div class="step-note">sourceImageGroupId が発行される</div>
             </div>
           </li>
           <li class="step-item">
             <span class="step-dot api"></span>
             <div class="step-content">
               <div class="step-who">Brother</div>
-              <div class="step-text">デザインテンプレートに紐づけて<strong>Source Image DBに各サイズの元原稿画像を登録</strong>する。<code>designTemplateId</code>（FK）・<code>size</code>・<code>fileKey</code>・<code>thumbnailUrl</code> を設定。</div>
+              <div class="step-text">ソースイメージグループに紐づけて<strong>Source Image DBに各サイズの元原稿画像を登録</strong>する。<code>sourceImageGroupId</code>（FK）・<code>size</code>・<code>fileKey</code>・<code>thumbnailUrl</code> を設定。</div>
               <div class="step-note">Bubble側からは Read Only。サイズごとに1レコード（例: A3, A4, B4 ...）</div>
             </div>
           </li>
@@ -2571,10 +2571,10 @@ sequenceDiagram
     <div class="flow-accordion">
       <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">1</span>
-        <span style="font-weight:700; color:var(--gray-900);">デザインテンプレートを登録する</span>
-        <span style="font-size:.75rem; color:var(--gray-500);">管理者 / GET /design-templates → Bubble DB保存</span>
-        <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#eff6ff; color:#3b82f6; font-weight:600;">Design Template DB</span>
-        <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#fef3c7; color:#b45309; font-weight:600;">Bubble: デザインテンプレート</span>
+        <span style="font-weight:700; color:var(--gray-900);">ソースイメージグループを登録する</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">管理者 / GET /source-image-groups → Bubble DB保存</span>
+        <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#eff6ff; color:#3b82f6; font-weight:600;">Source Image Group DB</span>
+        <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#fef3c7; color:#b45309; font-weight:600;">Bubble: ソースイメージグループ</span>
         <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="flow-accordion-body">
@@ -2583,14 +2583,14 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">管理者</div>
-              <div class="step-text">Bubbleの管理画面でデザインテンプレートを作成。<strong>開催月</strong>・<strong>テンプレート名</strong>を設定する。</div>
+              <div class="step-text">Bubbleの管理画面でソースイメージグループを作成。<strong>開催月</strong>・<strong>テンプレート名</strong>を設定する。</div>
             </div>
           </li>
           <li class="step-item">
             <span class="step-dot frontend"></span>
             <div class="step-content">
               <div class="step-who">Bubble → Brother API</div>
-              <div class="step-text"><code>GET /design-templates</code> で<strong>デザインテンプレート一覧を取得</strong>し、テンプレートを選択する。<br>テンプレートを選ぶだけで<strong>全サイズの背景画像が自動で紐づく</strong>。</div>
+              <div class="step-text"><code>GET /source-image-groups</code> で<strong>ソースイメージグループ一覧を取得</strong>し、テンプレートを選択する。<br>テンプレートを選ぶだけで<strong>全サイズの背景画像が自動で紐づく</strong>。</div>
               <div class="step-note">個別のsourceImageIdを選ぶ必要がなくなり、画像差し替え時もBubble側に影響なし</div>
             </div>
           </li>
@@ -2598,7 +2598,7 @@ sequenceDiagram
             <span class="step-dot frontend"></span>
             <div class="step-content">
               <div class="step-who">Bubble → Brother API</div>
-              <div class="step-text"><code>GET /design-templates/{designTemplateId}/source-images</code> で<strong>選択したテンプレートのサイズ別画像一覧を取得</strong>し、サムネイルで内容を確認する。</div>
+              <div class="step-text"><code>GET /source-image-groups/{sourceImageGroupId}/source-images</code> で<strong>選択したテンプレートのサイズ別画像一覧を取得</strong>し、サムネイルで内容を確認する。</div>
               <div class="step-note">A3・A4等のサイズごとの画像を一覧で確認できる</div>
             </div>
           </li>
@@ -2607,23 +2607,23 @@ sequenceDiagram
             <div class="step-content">
               <div class="step-who">Bubble</div>
               <div class="step-text">以下を<strong>Bubble DBに保存</strong>する。<br>
-                ・<strong>デザインテンプレート</strong>（親）: 名前・開催月・<code>designTemplateId</code>・<code>thumbnailUrl</code><br>
-                ・<strong>デザインテンプレート画像</strong>（子）: 各サイズの <code>sourceImageId</code>・<code>size</code>・<code>thumbnailUrl</code> をリスト型で保持</div>
+                ・<strong>ソースイメージグループ</strong>（親）: 名前・開催月・<code>sourceImageGroupId</code>・<code>thumbnailUrl</code><br>
+                ・<strong>ソースイメージグループ画像</strong>（子）: 各サイズの <code>sourceImageId</code>・<code>size</code>・<code>thumbnailUrl</code> をリスト型で保持</div>
             </div>
           </li>
         </ul>
 
         <div class="card" style="margin-top:16px; border-left:4px solid var(--green);">
-          <div class="card-header"><h3>使用API: GET /design-templates</h3></div>
+          <div class="card-header"><h3>使用API: GET /source-image-groups</h3></div>
           <div class="card-body">
             <div class="db-role">
-              <p>ブラザー側のデザインテンプレート一覧を取得して、管理者がテンプレートを選択する</p>
+              <p>ブラザー側のソースイメージグループ一覧を取得して、管理者がテンプレートを選択する</p>
               <span class="badge" style="background:var(--green-bg);color:var(--green);margin-right:8px;">新規API</span>
             </div>
             <div class="detail-section" style="margin-top:12px;">
               <div class="detail-label">レスポンス</div>
               <div class="detail-fields">
-                <span class="field-chip highlight">designTemplateId</span>
+                <span class="field-chip highlight">sourceImageGroupId</span>
                 <span class="field-chip highlight">thumbnailUrl</span>
               </div>
             </div>
@@ -2631,7 +2631,7 @@ sequenceDiagram
         </div>
 
         <div class="card" style="margin-top:16px; border-left:4px solid var(--green);">
-          <div class="card-header"><h3>使用API: GET /design-templates/{designTemplateId}/source-images</h3></div>
+          <div class="card-header"><h3>使用API: GET /source-image-groups/{sourceImageGroupId}/source-images</h3></div>
           <div class="card-body">
             <div class="db-role">
               <p>選択したテンプレートに含まれる全サイズの画像を取得して、サムネイルで内容を確認する</p>
@@ -2640,7 +2640,7 @@ sequenceDiagram
             <div class="detail-section" style="margin-top:12px;">
               <div class="detail-label">パスパラメータ</div>
               <div class="detail-fields">
-                <span class="field-chip highlight">designTemplateId</span>
+                <span class="field-chip highlight">sourceImageGroupId</span>
               </div>
             </div>
             <div class="detail-section" style="margin-top:12px;">
@@ -2687,7 +2687,7 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">管理者</div>
-              <div class="step-text">ステップ1で作ったデザインテンプレートを<strong>最大3種</strong>紐づける（デザイン1は必須、デザイン2・3は任意）。</div>
+              <div class="step-text">ステップ1で作ったソースイメージグループを<strong>最大3種</strong>紐づける（デザイン1は必須、デザイン2・3は任意）。</div>
             </div>
           </li>
           <li class="step-item">
@@ -2742,7 +2742,7 @@ sequenceDiagram
         <div style="margin-top:16px; padding:12px 16px; background:var(--red-bg); border-radius:8px;">
           <p style="font-size:.85rem; font-weight:600; color:var(--red); margin-bottom:4px;">これどうするの？</p>
           <p style="font-size:.8rem; color:var(--gray-700); line-height:1.8; margin:0;">
-            テンプレートなしで行事を作成した場合、<strong>デザインテンプレート（背景画像）が紐づいていない</strong>。<br>
+            テンプレートなしで行事を作成した場合、<strong>ソースイメージグループ（背景画像）が紐づいていない</strong>。<br>
             この状態で「生成」ボタンを押したらどうなる？<code>sourceImageId</code> がないので生成できないはず。<br><br>
             → <strong>要確認</strong>
           </p>
@@ -2830,7 +2830,7 @@ sequenceDiagram
                 <span class="field-chip">program</span>
                 <span class="field-chip">notes</span>
               </div>
-              <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">sourceImageIdを直接指定。STEP1で取得済みのBubble DB.デザインテンプレート画像から取得</p>
+              <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">sourceImageIdを直接指定。STEP1で取得済みのBubble DB.ソースイメージグループ画像から取得</p>
             </div>
 
             <div class="detail-section" style="margin-top:16px;">
@@ -2932,7 +2932,7 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text"><strong>3種類のデザインテンプレート</strong>それぞれに<strong>五段階評価</strong>をつける。</div>
+              <div class="step-text"><strong>3種類のソースイメージグループ</strong>それぞれに<strong>五段階評価</strong>をつける。</div>
               <div class="step-note">例: A3のデザイン2をDLしたい場合、A3のデザイン1,2,3すべてを評価する必要がある</div>
             </div>
           </li>
@@ -3173,7 +3173,7 @@ sequenceDiagram
       <p style="font-size:.85rem; font-weight:600; color:var(--green); margin-bottom:4px;">前提条件</p>
       <p style="font-size:.8rem; color:var(--gray-700); margin:0; line-height:1.8;">
         共通印刷物は<strong>行事用とは別のCommon Print Group DB + Common Print DB</strong>で管理する。<br>
-        行事のデザインテンプレートと<strong>同じパターン</strong>: Brother側がグルーピング、Bubble側が業界紐付けを管理。<br>
+        行事のソースイメージグループと<strong>同じパターン</strong>: Brother側がグルーピング、Bubble側が業界紐付けを管理。<br>
         サイズ指定はないため、<strong>1グループ = N枚の印刷物</strong>（行事の「7サイズ」とは構造が異なる）。
       </p>
     </div>
@@ -3187,11 +3187,11 @@ sequenceDiagram
           <tr><td style="font-weight:600;">テキスト入力</td><td>あり（行事名・期間等）</td><td style="color:var(--red); font-weight:600;">なし</td></tr>
           <tr><td style="font-weight:600;">AI生成</td><td>あり</td><td style="color:var(--red); font-weight:600;">なし</td></tr>
           <tr><td style="font-weight:600;">サイズ展開</td><td>7サイズ</td><td style="font-weight:600;">なし（1画像 = 1印刷物）</td></tr>
-          <tr><td style="font-weight:600;">Brother側グルーピング</td><td>Design Template DB → Source Image DB</td><td style="font-weight:600;">Common Print Group DB → Common Print DB</td></tr>
+          <tr><td style="font-weight:600;">Brother側グルーピング</td><td>Source Image Group DB → Source Image DB</td><td style="font-weight:600;">Common Print Group DB → Common Print DB</td></tr>
           <tr><td style="font-weight:600;">Bubble側管理</td><td>行事テンプレート（業界紐付け）</td><td style="font-weight:600;">共通印刷物グループ（業界紐付け）</td></tr>
           <tr><td style="font-weight:600;">画像の出処</td><td>Brother DB → AI生成</td><td>Brother DBからそのまま配布</td></tr>
           <tr><td style="font-weight:600;">DL方式</td><td>fileKey → GET /files/{fileKey}/url</td><td>同じ</td></tr>
-          <tr><td style="font-weight:600;">使用API</td><td>GET /design-templates + POST /generated-images 等</td><td style="color:var(--green); font-weight:600;">GET /common-print-groups + GET /files/{fileKey}/url</td></tr>
+          <tr><td style="font-weight:600;">使用API</td><td>GET /source-image-groups + POST /generated-images 等</td><td style="color:var(--green); font-weight:600;">GET /common-print-groups + GET /files/{fileKey}/url</td></tr>
         </tbody>
       </table>
     </div>
@@ -3252,7 +3252,7 @@ sequenceDiagram
             <div class="step-content">
               <div class="step-who">Bubble → Brother API</div>
               <div class="step-text"><code>GET /common-print-groups</code> でBrother側の<strong>共通印刷物グループ一覧を取得</strong>し、グループを選択する。<br>グループを選ぶだけで<strong>全印刷物が自動で紐づく</strong>。</div>
-              <div class="step-note">デザインテンプレート登録（行事STEP1）と同じパターン</div>
+              <div class="step-note">ソースイメージグループ登録（行事STEP1）と同じパターン</div>
             </div>
           </li>
           <li class="step-item">
@@ -3414,9 +3414,9 @@ sequenceDiagram
           <div style="padding:16px; background:var(--primary-bg); border-radius:8px; border:1px solid #c7d2fe;">
             <p style="font-size:.85rem; font-weight:700; color:var(--primary); margin-bottom:12px;">行事原稿</p>
             <div style="display:flex; flex-direction:column; gap:6px; font-size:.8rem; color:var(--gray-700);">
-              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP0</span> Brotherがデザインテンプレート・元原稿画像を登録</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP0</span> Brotherがソースイメージグループ・元原稿画像を登録</div>
               <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP1</span> 管理者がテンプレートを選択・業界を紐付け</div>
-              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP2</span> 管理者が行事テンプレートを作成しデザインテンプレートを紐付け</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP2</span> 管理者が行事テンプレートを作成しソースイメージグループを紐付け</div>
               <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP3</span> ユーザーが行事を新規作成（テンプレートから or 手入力）</div>
               <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP4</span> <strong>AI生成</strong>（API送信 → ポーリング → 結果保存）</div>
               <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP5</span> ユーザーが生成結果を確認・ダウンロード</div>
@@ -3438,8 +3438,8 @@ sequenceDiagram
           <tbody>
             <tr>
               <td style="font-weight:600;">画像・グルーピング</td>
-              <td>Design Template DB / Common Print Group DB でグルーピング管理。画像はFile Storageに保存</td>
-              <td><code>designTemplateId</code> / <code>commonPrintGroupId</code> を参照するのみ</td>
+              <td>Source Image Group DB / Common Print Group DB でグルーピング管理。画像はFile Storageに保存</td>
+              <td><code>sourceImageGroupId</code> / <code>commonPrintGroupId</code> を参照するのみ</td>
             </tr>
             <tr>
               <td style="font-weight:600;">業界・業種</td>
@@ -3468,10 +3468,10 @@ sequenceDiagram
       </div>
       <div class="card-body" style="display:flex; flex-direction:column; gap:20px;">
 
-        <!-- 1. Design Template DB -->
+        <!-- 1. Source Image Group DB -->
         <div style="border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
           <div style="background:#f8fafc; padding:12px 16px; border-bottom:1px solid #e5e7eb;">
-            <span style="font-weight:700; font-size:15px;">Design Template DB / Common Print Group DB の新設</span>
+            <span style="font-weight:700; font-size:15px;">Source Image Group DB / Common Print Group DB の新設</span>
           </div>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
             <div style="padding:14px 18px; border-right:1px solid #e5e7eb;">
@@ -3480,7 +3480,7 @@ sequenceDiagram
             </div>
             <div style="padding:14px 18px;">
               <div style="font-size:11px; font-weight:700; color:#16a34a; margin-bottom:8px; letter-spacing:0.5px;">&#x2713; 理想設計の解決策</div>
-              <div style="color:#1e293b; font-size:14px; line-height:1.7;">グループID（<code>designTemplateId</code> / <code>commonPrintGroupId</code>）で管理。Brother側が裏で画像を差し替えても<strong>グループIDは不変なのでBubble側に影響なし</strong>。画像の実体管理はBrother側に閉じる</div>
+              <div style="color:#1e293b; font-size:14px; line-height:1.7;">グループID（<code>sourceImageGroupId</code> / <code>commonPrintGroupId</code>）で管理。Brother側が裏で画像を差し替えても<strong>グループIDは不変なのでBubble側に影響なし</strong>。画像の実体管理はBrother側に閉じる</div>
             </div>
           </div>
         </div>
@@ -3577,7 +3577,7 @@ sequenceDiagram
             <div style="padding:0 8px; color:#94a3b8; font-size:20px;">→</div>
             <div style="padding:14px 18px; background:#f0fdf4;">
               <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">理想設計</div>
-              <div style="color:#16a34a; font-weight:600;">Design Template DB を新設し、designTemplateId でグルーピング</div>
+              <div style="color:#16a34a; font-weight:600;">Source Image Group DB を新設し、sourceImageGroupId でグルーピング</div>
             </div>
           </div>
         </div>
@@ -3595,7 +3595,7 @@ sequenceDiagram
             <div style="padding:0 8px; color:#94a3b8; font-size:20px;">→</div>
             <div style="padding:14px 18px; background:#f0fdf4;">
               <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">理想設計</div>
-              <div style="color:#16a34a; font-weight:600;"><code>sourceImageId</code> を直接指定（Design Template経由で7サイズ分を一括取得済み）</div>
+              <div style="color:#16a34a; font-weight:600;"><code>sourceImageId</code> を直接指定（Source Image Group経由で7サイズ分を一括取得済み）</div>
             </div>
           </div>
         </div>
@@ -3690,7 +3690,7 @@ sequenceDiagram
                 <tr style="border-bottom:1px solid #f1f5f9;">
                   <td style="padding:10px 12px;"><code style="color:#ef4444;">GET /source-images</code></td>
                   <td style="padding:10px 12px;">元原稿の一覧取得</td>
-                  <td style="padding:10px 12px; color:#64748b;">テンプレート方式に移行。<code>GET /design-templates</code> で代替</td>
+                  <td style="padding:10px 12px; color:#64748b;">テンプレート方式に移行。<code>GET /source-image-groups</code> で代替</td>
                 </tr>
                 <tr style="border-bottom:1px solid #f1f5f9;">
                   <td style="padding:10px 12px;"><code style="color:#ef4444;">GET /source-images/{id}</code></td>
@@ -3795,13 +3795,13 @@ sequenceDiagram
 
     <div class="card db-accordion" style="border-left:4px solid var(--primary); margin-bottom:16px;">
       <div class="card-header" onclick="this.parentElement.classList.toggle('open')">
-        <h3>Design Template DB<span class="badge" style="background:var(--green-bg);color:var(--green);margin-left:8px;">新規</span></h3>
-        <span class="db-summary">デザインテンプレートのグルーピング情報。Read Only（Bubble側から）</span>
+        <h3>Source Image Group DB<span class="badge" style="background:var(--green-bg);color:var(--green);margin-left:8px;">新規</span></h3>
+        <span class="db-summary">ソースイメージグループのグルーピング情報。Read Only（Bubble側から）</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="card-body">
         <table class="field-table"><thead><tr><th>フィールド</th><th>説明</th><th>備考</th></tr></thead><tbody>
-          <tr><td><span class="field-name">designTemplateId</span><span class="field-pk">PK</span></td><td>デザインテンプレートID</td><td>ブラザーが画像登録時に付与</td></tr>
+          <tr><td><span class="field-name">sourceImageGroupId</span><span class="field-pk">PK</span></td><td>ソースイメージグループID</td><td>ブラザーが画像登録時に付与</td></tr>
           <tr><td><span class="field-name">name</span></td><td>テンプレート名</td><td>Brother内部の管理用。APIレスポンスには含めない</td></tr>
           <tr><td><span class="field-name">thumbnailUrl</span></td><td>代表サムネイルURL</td><td>テンプレート一覧表示用。公開URL（期限なし）で返却。Bubble DBに保存して再利用</td></tr>
           <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td></td></tr>
@@ -3813,13 +3813,13 @@ sequenceDiagram
     <div class="card db-accordion" style="border-left:4px solid var(--primary); margin-bottom:16px;">
       <div class="card-header" onclick="this.parentElement.classList.toggle('open')">
         <h3>Source Image DB<span class="badge" style="background:var(--amber-bg);color:#b45309;margin-left:8px;">拡張</span></h3>
-        <span class="db-summary">元原稿画像。designTemplateIdでグルーピング。Read Only（Bubble側から）</span>
+        <span class="db-summary">元原稿画像。sourceImageGroupIdでグルーピング。Read Only（Bubble側から）</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="card-body">
         <table class="field-table"><thead><tr><th>フィールド</th><th>説明</th><th>備考</th></tr></thead><tbody>
           <tr><td><span class="field-name">sourceImageId</span><span class="field-pk">PK</span></td><td>元原稿画像ID</td><td></td></tr>
-          <tr><td><span class="field-name">designTemplateId</span><span class="field-pk">FK</span></td><td>デザインテンプレートID</td><td style="color:var(--green); font-weight:600;">★追加 — Design Template DBへの参照</td></tr>
+          <tr><td><span class="field-name">sourceImageGroupId</span><span class="field-pk">FK</span></td><td>ソースイメージグループID</td><td style="color:var(--green); font-weight:600;">★追加 — Source Image Group DBへの参照</td></tr>
           <tr><td><span class="field-name">fileName</span></td><td>ファイル名</td><td></td></tr>
           <tr><td><span class="field-name">size</span></td><td>サイズ</td><td>A3, A4 等のラベルを想定（px/mm指定かはブラザーに要確認）</td></tr>
           <tr><td><span class="field-name">fileKey</span></td><td>元画像ファイル識別子</td><td>Brother内部のFile Storage用キー。Bubble側は使わない</td></tr>
@@ -3837,7 +3837,7 @@ sequenceDiagram
           <tr><td><span class="field-name">version</span><span class="field-optional">任意</span></td><td>バージョン</td><td></td></tr>
         </tbody></table>
         <div style="margin-top:12px; padding:10px 14px; background:var(--green-bg); border-radius:6px;">
-          <p style="font-size:.8rem; color:var(--green); font-weight:600; margin:0; line-height:1.8;">なぜDesign Template DBを作るのか：Bubble側が <code>sourceImageId</code> を直接保持していると、ブラザーが画像を差し替えた際にIDが変わり、Bubble DBとの整合性が壊れる。<code>designTemplateId</code> で管理すれば、ブラザーが裏で画像を差し替えてもBubble側は影響を受けない。</p>
+          <p style="font-size:.8rem; color:var(--green); font-weight:600; margin:0; line-height:1.8;">なぜSource Image Group DBを作るのか：Bubble側が <code>sourceImageId</code> を直接保持していると、ブラザーが画像を差し替えた際にIDが変わり、Bubble DBとの整合性が壊れる。<code>sourceImageGroupId</code> で管理すれば、ブラザーが裏で画像を差し替えてもBubble側は影響を受けない。</p>
         </div>
       </div>
     </div>
@@ -3873,7 +3873,7 @@ sequenceDiagram
     <div class="card db-accordion" style="border-left:4px solid var(--primary); margin-bottom:16px;">
       <div class="card-header" onclick="this.parentElement.classList.toggle('open')">
         <h3>Common Print Group DB<span class="badge" style="background:var(--green-bg);color:var(--green);margin-left:8px;">新規</span></h3>
-        <span class="db-summary">共通印刷物のグルーピング情報。Design Template DBと同じパターン。Read Only（Bubble側から）</span>
+        <span class="db-summary">共通印刷物のグルーピング情報。Source Image Group DBと同じパターン。Read Only（Bubble側から）</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="card-body">
@@ -3911,19 +3911,19 @@ sequenceDiagram
 
     <div class="card db-accordion" style="border-left:4px solid var(--blue); margin-bottom:16px;">
       <div class="card-header" onclick="this.parentElement.classList.toggle('open')">
-        <h3>デザインテンプレート</h3>
-        <span class="db-summary">Brother側のdesignTemplateIdを参照。画像リストをリスト型で保持</span>
+        <h3>ソースイメージグループ</h3>
+        <span class="db-summary">Brother側のsourceImageGroupIdを参照。画像リストをリスト型で保持</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="card-body">
         <table class="field-table">
           <thead><tr><th>カラム</th><th>備考</th></tr></thead>
           <tbody>
-            <tr><td><code>designTemplateId</code></td><td>Brother側のdesignTemplateIdを参照</td></tr>
+            <tr><td><code>sourceImageGroupId</code></td><td>Brother側のsourceImageGroupIdを参照</td></tr>
             <tr><td>名前</td><td></td></tr>
             <tr><td>開催月</td><td></td></tr>
-            <tr><td><code>thumbnailUrl</code></td><td>GET /design-templatesのレスポンスから保存</td></tr>
-            <tr><td>デザインテンプレート画像（リスト型）</td><td>子テーブルへの参照。Search for不要</td></tr>
+            <tr><td><code>thumbnailUrl</code></td><td>GET /source-image-groupsのレスポンスから保存</td></tr>
+            <tr><td>ソースイメージグループ画像（リスト型）</td><td>子テーブルへの参照。Search for不要</td></tr>
           </tbody>
         </table>
       </div>
@@ -3931,15 +3931,15 @@ sequenceDiagram
 
     <div class="card db-accordion" style="border-left:4px solid var(--blue); margin-bottom:16px;">
       <div class="card-header" onclick="this.parentElement.classList.toggle('open')">
-        <h3>デザインテンプレート画像</h3>
-        <span class="db-summary">デザインテンプレートの子テーブル。サイズごとに1レコード</span>
+        <h3>ソースイメージグループ画像</h3>
+        <span class="db-summary">ソースイメージグループの子テーブル。サイズごとに1レコード</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="card-body">
         <table class="field-table">
           <thead><tr><th>カラム</th><th>備考</th></tr></thead>
           <tbody>
-            <tr><td><code>sourceImageId</code></td><td>GET /design-templates/{id}/source-imagesのレスポンスから保存</td></tr>
+            <tr><td><code>sourceImageId</code></td><td>GET /source-image-groups/{id}/source-imagesのレスポンスから保存</td></tr>
             <tr><td><code>size</code></td><td>A3, A4 等</td></tr>
             <tr><td><code>thumbnailUrl</code></td><td>サイズ別サムネイル</td></tr>
           </tbody>
@@ -3950,7 +3950,7 @@ sequenceDiagram
     <div class="card db-accordion" style="border-left:4px solid var(--blue); margin-bottom:16px;">
       <div class="card-header" onclick="this.parentElement.classList.toggle('open')">
         <h3>行事テンプレート</h3>
-        <span class="db-summary">管理者が作成。業界・デザインテンプレートを紐付け</span>
+        <span class="db-summary">管理者が作成。業界・ソースイメージグループを紐付け</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="card-body">
@@ -4006,7 +4006,7 @@ sequenceDiagram
           <tbody>
             <tr><td><code>generatedImageId</code></td><td>POSTレスポンスから取得</td></tr>
             <tr><td>行事ID</td><td></td></tr>
-            <tr><td>designTemplateId</td><td></td></tr>
+            <tr><td>sourceImageGroupId</td><td></td></tr>
             <tr><td>designIndex</td><td></td></tr>
             <tr><td>size</td><td></td></tr>
             <tr><td>fileKey</td><td>DL用。GET /files/{fileKey}/urlで一時URL取得</td></tr>
@@ -4062,8 +4062,8 @@ sequenceDiagram
     <div class="mermaid-wrapper">
       <pre class="mermaid">
 erDiagram
-    Design_Template_DB {
-        string designTemplateId PK
+    Source_Image_Group_DB {
+        string sourceImageGroupId PK
         string name
         string thumbnailUrl
         datetime createdAt
@@ -4072,7 +4072,7 @@ erDiagram
 
     Source_Image_DB {
         string sourceImageId PK
-        string designTemplateId FK
+        string sourceImageGroupId FK
         string fileName
         string size
         string fileKey
@@ -4127,7 +4127,7 @@ erDiagram
         datetime updatedAt
     }
 
-    Design_Template_DB ||--o{ Source_Image_DB : "1 to N sizes"
+    Source_Image_Group_DB ||--o{ Source_Image_DB : "1 to N sizes"
     Source_Image_DB ||--o{ Generated_Image_DB : "1 to N images"
     Common_Print_Group_DB ||--o{ Common_Print_DB : "1 to N prints"
       </pre>
@@ -4142,11 +4142,11 @@ erDiagram
       <div style="background:#1e1e2e; border-radius:12px; padding:16px; overflow-x:auto;">
         <div style="display:flex; gap:12px; align-items:flex-start;">
 
-          <!-- DesignTemplateDB -->
+          <!-- SourceImageGroupDB -->
           <div style="flex:0 0 auto;">
-            <div style="background:#10b981; color:#fff; display:inline-block; padding:3px 10px; border-radius:6px; font-size:.7rem; font-weight:700; font-family:monospace; margin-bottom:8px;">/design-templates</div>
+            <div style="background:#10b981; color:#fff; display:inline-block; padding:3px 10px; border-radius:6px; font-size:.7rem; font-weight:700; font-family:monospace; margin-bottom:8px;">/source-image-groups</div>
             <div style="background:#2a2a3e; border:1px solid #3a3a50; border-radius:8px; padding:12px;">
-              <div style="font-size:.8rem; font-weight:700; color:#e2e8f0; margin-bottom:10px;">DesignTemplateDB</div>
+              <div style="font-size:.8rem; font-weight:700; color:#e2e8f0; margin-bottom:10px;">SourceImageGroupDB</div>
               <div style="display:flex; flex-direction:column; gap:8px;">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <div style="background:#3a3a50; border:1px solid #4a4a60; border-radius:6px; padding:6px 10px; text-align:center;">
@@ -4154,7 +4154,7 @@ erDiagram
                   </div>
                   <div style="color:#6b7280; font-size:.8rem;">→</div>
                   <div style="display:flex; flex-direction:column; gap:2px;">
-                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">designTemplateId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageGroupId</div>
                     <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
                   </div>
                 </div>
@@ -4164,7 +4164,7 @@ erDiagram
                   </div>
                   <div style="color:#6b7280; font-size:.8rem;">→</div>
                   <div style="display:flex; flex-direction:column; gap:2px;">
-                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">designTemplateId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageGroupId</div>
                     <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
                   </div>
                 </div>
@@ -4174,7 +4174,7 @@ erDiagram
                   </div>
                   <div style="color:#6b7280; font-size:.8rem;">→</div>
                   <div style="display:flex; flex-direction:column; gap:2px;">
-                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">designTemplateId</div>
+                    <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">sourceImageGroupId</div>
                     <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">thumbnailURL</div>
                   </div>
                 </div>
@@ -4182,16 +4182,16 @@ erDiagram
             </div>
           </div>
 
-          <!-- 矢印: designTemplateId -->
+          <!-- 矢印: sourceImageGroupId -->
           <div style="flex:0 0 auto; padding-top:36px; display:flex; flex-direction:column; align-items:center; gap:2px;">
             <div style="font-size:.8rem; color:#ef4444; font-weight:700;">PK</div>
-            <div style="font-size:.8rem; color:#9ca3af; font-family:monospace;">designTemplateId</div>
+            <div style="font-size:.8rem; color:#9ca3af; font-family:monospace;">sourceImageGroupId</div>
             <div style="color:#6b7280; font-size:1.2rem;">→</div>
           </div>
 
           <!-- SourceImageDB -->
           <div style="flex:0 0 auto;">
-            <div style="background:#10b981; color:#fff; display:inline-block; padding:3px 10px; border-radius:6px; font-size:.7rem; font-weight:700; font-family:monospace; margin-bottom:8px;">/design-templates/{id}/source-images</div>
+            <div style="background:#10b981; color:#fff; display:inline-block; padding:3px 10px; border-radius:6px; font-size:.7rem; font-weight:700; font-family:monospace; margin-bottom:8px;">/source-image-groups/{id}/source-images</div>
             <div style="background:#2a2a3e; border:1px solid #3a3a50; border-radius:8px; padding:12px;">
               <div style="font-size:.8rem; font-weight:700; color:#e2e8f0; margin-bottom:10px;">SourceImageDB</div>
               <div style="display:flex; flex-direction:column; gap:4px;">
@@ -4430,7 +4430,7 @@ erDiagram
     <div style="padding:16px 20px; background:var(--green-bg); border-radius:var(--radius); border:1px solid #6ee7b7; margin-top:24px;">
       <h3 style="font-size:.9rem; font-weight:700; color:var(--green); margin-bottom:10px;">現行との主な違い</h3>
       <ul style="font-size:.85rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:2;">
-        <li><strong>Design Template DB 新設</strong> — ブラザー側でデザインのグルーピングを管理。Bubbleはdesign TemplateId + sourceImageIdを保持</li>
+        <li><strong>Source Image Group DB 新設</strong> — ブラザー側でデザインのグルーピングを管理。Bubbleはdesign TemplateId + sourceImageIdを保持</li>
         <li><strong>sourceImageId直接指定</strong> — 生成リクエストでsourceImageIdを直接指定。STEP1で取得済みのため、Brother側の内部解決が不要でシンプル</li>
         <li><strong>行事情報はBubble側で管理</strong> — Brother側Generated Image DBには行事データを持たない。生成・再生成時にBubbleからリクエストパラメータとして都度送信</li>
         <li><strong>fileKey + thumbnailUrl の使い分け</strong> — サムネイルは <code>thumbnailUrl</code>（公開URL・期限なし）で直接表示。DL用フルサイズ画像は <code>fileKey</code>（永続識別子）を保存し、DL時に <code>GET /files/{fileKey}/url</code> で一時URLを取得</li>
@@ -4453,38 +4453,38 @@ erDiagram
 
     <div class="endpoint-list">
 
-      <div class="api-category">デザインテンプレート系（新規）</div>
+      <div class="api-category">ソースイメージグループ系（新規）</div>
 
-      <!-- GET /design-templates -->
+      <!-- GET /source-image-groups -->
       <div class="endpoint">
         <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
           <span class="method-badge method-get">GET</span>
-          <span class="endpoint-path">/design-templates</span>
+          <span class="endpoint-path">/source-image-groups</span>
           <span class="badge" style="background:var(--green-bg);color:var(--green);font-size:.7rem;">新規</span>
-          <span class="endpoint-summary">デザインテンプレート一覧取得</span>
+          <span class="endpoint-summary">ソースイメージグループ一覧取得</span>
           <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
         </div>
         <div class="endpoint-detail">
           <div class="detail-section">
             <div class="detail-label">レスポンス</div>
             <div class="detail-fields">
-              <span class="field-chip highlight">designTemplateId</span>
+              <span class="field-chip highlight">sourceImageGroupId</span>
               <span class="field-chip highlight">thumbnailUrl</span>
             </div>
           </div>
           <div class="detail-section">
-            <p class="note-text">* STEP1: デザインテンプレート登録時にテンプレ一覧を取得。designTemplateIdを選ぶだけで全サイズの画像が紐づく。thumbnailUrlは代表サムネイルの公開URL（期限なし）。Bubble DBに保存して再利用可</p>
+            <p class="note-text">* STEP1: ソースイメージグループ登録時にテンプレ一覧を取得。sourceImageGroupIdを選ぶだけで全サイズの画像が紐づく。thumbnailUrlは代表サムネイルの公開URL（期限なし）。Bubble DBに保存して再利用可</p>
           </div>
           <div class="detail-section">
             <div class="json-block"><span class="json-label">Response</span>
 {
-  <span class="json-key">"designTemplates"</span>: [
+  <span class="json-key">"sourceImageGroups"</span>: [
     {
-      <span class="json-key">"designTemplateId"</span>: <span class="json-string">"dt_001"</span>,      <span class="json-comment">// Design Template DB.designTemplateId</span>
-      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.example.com/thumbnails/dt_001.png"</span>  <span class="json-comment">// Design Template DB.thumbnailUrl</span>
+      <span class="json-key">"sourceImageGroupId"</span>: <span class="json-string">"dt_001"</span>,      <span class="json-comment">// Source Image Group DB.sourceImageGroupId</span>
+      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.example.com/thumbnails/dt_001.png"</span>  <span class="json-comment">// Source Image Group DB.thumbnailUrl</span>
     },
     {
-      <span class="json-key">"designTemplateId"</span>: <span class="json-string">"dt_002"</span>,
+      <span class="json-key">"sourceImageGroupId"</span>: <span class="json-string">"dt_002"</span>,
       <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.example.com/thumbnails/dt_002.png"</span>
     }
   ]
@@ -4493,11 +4493,11 @@ erDiagram
         </div>
       </div>
 
-      <!-- GET /design-templates/{id}/source-images -->
+      <!-- GET /source-image-groups/{id}/source-images -->
       <div class="endpoint">
         <div class="endpoint-header" onclick="this.parentElement.classList.toggle('open')">
           <span class="method-badge method-get">GET</span>
-          <span class="endpoint-path">/design-templates/<span class="param">{designTemplateId}</span>/source-images</span>
+          <span class="endpoint-path">/source-image-groups/<span class="param">{sourceImageGroupId}</span>/source-images</span>
           <span class="badge" style="background:var(--green-bg);color:var(--green);font-size:.7rem;">新規</span>
           <span class="endpoint-summary">テンプレートのサイズ別画像一覧</span>
           <svg class="endpoint-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
@@ -4506,7 +4506,7 @@ erDiagram
           <div class="detail-section">
             <div class="detail-label">パスパラメータ</div>
             <div class="detail-fields">
-              <span class="field-chip highlight">designTemplateId</span>
+              <span class="field-chip highlight">sourceImageGroupId</span>
             </div>
           </div>
           <div class="detail-section">
@@ -4566,7 +4566,7 @@ erDiagram
               <span class="field-chip">program</span>
               <span class="field-chip">notes</span>
             </div>
-            <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">sourceImageIdを直接指定。STEP1で取得済みのBubble DB.デザインテンプレート画像から取得</p>
+            <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">sourceImageIdを直接指定。STEP1で取得済みのBubble DB.ソースイメージグループ画像から取得</p>
           </div>
           <div class="detail-section">
             <div class="detail-label">レスポンス</div>
@@ -4585,7 +4585,7 @@ erDiagram
           <div class="detail-section">
             <div class="json-block"><span class="json-label">Request</span>
 {
-  <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,    <span class="json-comment">// Bubble DB.デザインテンプレート画像.sourceImageId</span>
+  <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,    <span class="json-comment">// Bubble DB.ソースイメージグループ画像.sourceImageId</span>
   <span class="json-key">"eventName"</span>: <span class="json-string">"春季例大祭"</span>,    <span class="json-comment">// Bubble DB.行事データ.行事名</span>
   <span class="json-key">"period"</span>: <span class="json-string">"2026年4月20日（日）〜4月22日（火）"</span>,  <span class="json-comment">// Bubble DB.行事データ.期間</span>
   <span class="json-key">"details"</span>: <span class="json-string">"境内にて神事・奉納行事を執り行います"</span>,  <span class="json-comment">// Bubble DB.行事データ.詳細</span>
@@ -4767,7 +4767,7 @@ erDiagram
             </div>
           </div>
           <div class="detail-section">
-            <p class="note-text">* STEP1: 管理者がグループを選択する際に使用。デザインテンプレート一覧（GET /design-templates）と同パターン</p>
+            <p class="note-text">* STEP1: 管理者がグループを選択する際に使用。ソースイメージグループ一覧（GET /source-image-groups）と同パターン</p>
           </div>
           <div class="detail-section">
             <div class="json-block"><span class="json-label">Response</span>
@@ -4814,7 +4814,7 @@ erDiagram
             <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">commonPrintId・thumbnailUrl・fileKeyをBubble DBに保存。thumbnailUrlは一覧表示用、fileKeyはDL用</p>
           </div>
           <div class="detail-section">
-            <p class="note-text">* GET /design-templates/{id}/source-images と同パターン。グループ選択で全印刷物が自動紐付け</p>
+            <p class="note-text">* GET /source-image-groups/{id}/source-images と同パターン。グループ選択で全印刷物が自動紐付け</p>
           </div>
           <div class="detail-section">
             <div class="json-block"><span class="json-label">Response</span>
@@ -4847,7 +4847,7 @@ erDiagram
         <table class="field-table">
           <thead><tr><th>現行API</th><th>理想</th><th>変更点</th></tr></thead>
           <tbody>
-            <tr><td><code>GET /source-images</code></td><td><code>GET /design-templates</code></td><td>個別画像選択 → テンプレート単位の選択に変更</td></tr>
+            <tr><td><code>GET /source-images</code></td><td><code>GET /source-image-groups</code></td><td>個別画像選択 → テンプレート単位の選択に変更</td></tr>
             <tr><td><code>GET /source-images/{id}</code></td><td>不要</td><td>テンプレートのサイズ別画像一覧で代替</td></tr>
             <tr><td><code>POST /generated-images</code></td><td><code>POST /generated-images</code></td><td>リクエスト拡張 + fileKey（DL用）/ thumbnailUrl（表示用）をレスポンスに追加</td></tr>
             <tr><td><code>GET /generated-images/{id}</code></td><td><code>GET /generated-images/{id}</code></td><td>ポーリング用。完了後fileKey + thumbnailUrlを取得</td></tr>
@@ -4855,8 +4855,8 @@ erDiagram
             <tr><td><code>POST /generated-images/{id}/regenerate</code></td><td><code>POST /generated-images/{id}/regenerate</code></td><td>リクエスト拡張</td></tr>
             <tr><td><code>DELETE /generated-images/{id}</code></td><td>不要</td><td>今回スコープ外</td></tr>
             <tr><td>—</td><td><code>GET /files/{fileKey}/url</code></td><td>DL用の署名付き一時URL取得。新設</td></tr>
-            <tr><td>—</td><td><code>GET /common-print-groups</code></td><td>共通印刷物グループ一覧。GET /design-templatesと同パターン</td></tr>
-            <tr><td>—</td><td><code>GET /common-print-groups/{id}/prints</code></td><td>グループ内印刷物一覧。GET /design-templates/{id}/source-imagesと同パターン</td></tr>
+            <tr><td>—</td><td><code>GET /common-print-groups</code></td><td>共通印刷物グループ一覧。GET /source-image-groupsと同パターン</td></tr>
+            <tr><td>—</td><td><code>GET /common-print-groups/{id}/prints</code></td><td>グループ内印刷物一覧。GET /source-image-groups/{id}/source-imagesと同パターン</td></tr>
           </tbody>
         </table>
       </div>
