@@ -592,11 +592,11 @@
         <!-- 1-a -->
         <div class="mock-screen" id="step1a" style="position:relative;">
           <div class="mock-header">
-            <span>管理画面 ＞ デザインテンプレート登録</span>
+            <span>管理画面 ＞ ソースイメージグループ登録</span>
             <span class="role-badge role-admin">管理者</span>
           </div>
           <div class="mock-body">
-            <div class="mock-title">デザインテンプレート登録</div>
+            <div class="mock-title">ソースイメージグループ登録</div>
 
             <div class="form-group">
               <label class="mock-label">テンプレート名（Bubble側で入力）</label>
@@ -608,7 +608,7 @@
             </div>
 
             <div class="form-group">
-              <label class="mock-label">デザインテンプレート選択</label>
+              <label class="mock-label">ソースイメージグループ選択</label>
               <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; border:2px dashed var(--gray-300); border-radius:8px; background:var(--gray-50); cursor:pointer;">
                 <div style="width:80px; height:56px; border-radius:6px; background:var(--gray-200); display:flex; align-items:center; justify-content:center; font-size:.65rem; color:var(--gray-400); flex-shrink:0;">未選択</div>
                 <div style="flex:1;">
@@ -654,8 +654,8 @@
             <div id="template-popup" class="template-popup">
               <div class="template-popup-inner" style="max-width:520px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                  <div style="font-size:.95rem; font-weight:700;">デザインテンプレート一覧</div>
-                  <div style="font-size:.65rem; padding:3px 8px; border-radius:4px; background:var(--blue-bg); color:var(--blue); font-weight:600;">GET /design-templates で取得</div>
+                  <div style="font-size:.95rem; font-weight:700;">ソースイメージグループ一覧</div>
+                  <div style="font-size:.65rem; padding:3px 8px; border-radius:4px; background:var(--blue-bg); color:var(--blue); font-weight:600;">GET /source-image-groups で取得</div>
                 </div>
 
                 <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
@@ -699,11 +699,11 @@
         <!-- 1-b -->
         <div class="mock-screen" id="step1b" style="display:none;">
           <div class="mock-header">
-            <span>管理画面 ＞ デザインテンプレート登録</span>
+            <span>管理画面 ＞ ソースイメージグループ登録</span>
             <span class="role-badge role-admin">管理者</span>
           </div>
           <div class="mock-body">
-            <div class="mock-title">デザインテンプレート登録</div>
+            <div class="mock-title">ソースイメージグループ登録</div>
 
             <div class="form-group">
               <label class="mock-label">テンプレート名（Bubble側で入力）</label>
@@ -715,18 +715,18 @@
             </div>
 
             <div class="form-group">
-              <label class="mock-label">デザインテンプレート選択 <span class="status-badge status-completed" style="font-size:.6rem;">選択済</span></label>
+              <label class="mock-label">ソースイメージグループ選択 <span class="status-badge status-completed" style="font-size:.6rem;">選択済</span></label>
               <div style="display:flex; align-items:center; gap:12px; padding:10px 14px; border:2px solid var(--primary); border-radius:8px; background:var(--primary-bg); cursor:pointer;">
                 <div class="mock-thumb">dt_001</div>
                 <div style="flex:1;">
                   <div style="font-size:.85rem; font-weight:600; color:var(--primary);">テンプレート dt_001</div>
-                  <div style="font-size:.7rem; color:var(--gray-400);">designTemplateId: dt_001</div>
+                  <div style="font-size:.7rem; color:var(--gray-400);">sourceImageGroupId: dt_001</div>
                 </div>
                 <div style="font-size:.75rem; color:var(--primary); font-weight:600;">変更 ▼</div>
               </div>
             </div>
 
-            <div class="mock-subtitle" style="margin-top:12px;">サイズ別サムネイル（7サイズ） <span style="font-size:.65rem; padding:2px 8px; border-radius:4px; background:var(--blue-bg); color:var(--blue); font-weight:600;">GET /design-templates/dt_001/source-images で取得</span></div>
+            <div class="mock-subtitle" style="margin-top:12px;">サイズ別サムネイル（7サイズ） <span style="font-size:.65rem; padding:2px 8px; border-radius:4px; background:var(--blue-bg); color:var(--blue); font-weight:600;">GET /source-image-groups/dt_001/source-images で取得</span></div>
             <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
               <div style="text-align:center; padding:8px; border:1px solid var(--gray-200); border-radius:8px; background:#fff;">
                 <div style="width:100%; height:50px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A3</div>
@@ -775,7 +775,7 @@
         <!-- 1-c -->
         <div class="mock-screen" id="step1c" style="display:none;">
           <div class="mock-header">
-            <span>管理画面 ＞ デザインテンプレート登録 ＞ 保存完了</span>
+            <span>管理画面 ＞ ソースイメージグループ登録 ＞ 保存完了</span>
             <span class="role-badge role-admin">管理者</span>
           </div>
           <div class="mock-body">
@@ -783,11 +783,11 @@
             <div class="mock-subtitle">以下の情報がBubble DBに保存されました</div>
 
             <div class="note-box note-info">
-              <strong>Bubble DB: デザインテンプレート（親）</strong><br>
-              designTemplateId = dt_001 / 名前 = 桜デザイン - 春季用 / 開催月 = 4月 / thumbnailUrl = https://cdn.../dt_001.png
+              <strong>Bubble DB: ソースイメージグループ（親）</strong><br>
+              sourceImageGroupId = dt_001 / 名前 = 桜デザイン - 春季用 / 開催月 = 4月 / thumbnailUrl = https://cdn.../dt_001.png
             </div>
             <div class="note-box note-info">
-              <strong>Bubble DB: デザインテンプレート画像（子 × 3件）</strong><br>
+              <strong>Bubble DB: ソースイメージグループ画像（子 × 3件）</strong><br>
               [A3] sourceImageId=si_001, thumbnailUrl=https://cdn.../a3.png<br>
               [A4] sourceImageId=si_002, thumbnailUrl=https://cdn.../a4.png<br>
               [B4] sourceImageId=si_003, thumbnailUrl=https://cdn.../b4.png
@@ -810,7 +810,7 @@
           <div class="mock-body">
             <div class="mock-title">行事テンプレートを作成</div>
             <div class="note-box note-info" style="margin-bottom:16px;">
-              <strong>Brother APIは呼ばない</strong> — STEP1で登録済みのデザインテンプレートをBubble DB内から選択
+              <strong>Brother APIは呼ばない</strong> — STEP1で登録済みのソースイメージグループをBubble DB内から選択
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
@@ -843,7 +843,7 @@
             </div>
 
             <div style="margin-top:16px;">
-              <div class="mock-label">デザインテンプレート紐付け（STEP1で登録済みから選択）</div>
+              <div class="mock-label">ソースイメージグループ紐付け（STEP1で登録済みから選択）</div>
               <div style="display:flex; gap:8px; margin-top:8px;">
                 <div id="design-slot-1" class="design-slot design-slot-empty" style="flex:1; padding:10px; border:2px dashed var(--gray-300); border-radius:8px; background:var(--gray-50); text-align:center; cursor:pointer; transition:all .3s;">
                   <div style="font-size:.7rem; color:var(--gray-400); font-weight:700;">デザイン1（必須）</div>
@@ -864,7 +864,7 @@
             <div id="step2-popup" class="template-popup">
               <div class="template-popup-inner" style="max-width:420px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                  <div style="font-size:.95rem; font-weight:700;">デザインテンプレート選択</div>
+                  <div style="font-size:.95rem; font-weight:700;">ソースイメージグループ選択</div>
                   <div style="font-size:.65rem; padding:3px 8px; border-radius:4px; background:var(--amber-bg); color:#b45309; font-weight:600;">Bubble DBから取得</div>
                 </div>
 
@@ -1003,7 +1003,7 @@
             </div>
 
             <div class="note-box note-warn">
-              <strong>未解決</strong>: 「テンプレなしで作成」の場合、designTemplateIdが紐づかない。生成ボタンを押したらどうなる？ → 要確認
+              <strong>未解決</strong>: 「テンプレなしで作成」の場合、sourceImageGroupIdが紐づかない。生成ボタンを押したらどうなる？ → 要確認
             </div>
 
             <div class="action-area">
@@ -1435,23 +1435,23 @@
           <div class="panel-header panel-header-api">API呼び出し</div>
           <div class="panel-body">
             <div class="flow-indicator"><span class="flow-step">1</span>テンプレート一覧取得</div>
-            <div><span class="api-method api-get">GET</span><span class="api-path">/design-templates</span></div>
+            <div><span class="api-method api-get">GET</span><span class="api-path">/source-image-groups</span></div>
             <div class="field-section">
               <div class="field-section-label">レスポンス</div>
               <div class="field-chips">
-                <span class="field-chip highlight">designTemplateId</span>
+                <span class="field-chip highlight">sourceImageGroupId</span>
                 <span class="field-chip highlight">thumbnailUrl</span>
               </div>
             </div>
             <div class="json-block"><span class="json-label">Response</span>
 {
-  <span class="json-key">"designTemplates"</span>: [
+  <span class="json-key">"sourceImageGroups"</span>: [
     {
-      <span class="json-key">"designTemplateId"</span>: <span class="json-string">"dt_001"</span>,      <span class="json-comment">// Design Template DB.designTemplateId</span>
-      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../dt_001.png"</span>   <span class="json-comment">// Design Template DB.thumbnailUrl</span>
+      <span class="json-key">"sourceImageGroupId"</span>: <span class="json-string">"dt_001"</span>,      <span class="json-comment">// Source Image Group DB.sourceImageGroupId</span>
+      <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../dt_001.png"</span>   <span class="json-comment">// Source Image Group DB.thumbnailUrl</span>
     },
     {
-      <span class="json-key">"designTemplateId"</span>: <span class="json-string">"dt_002"</span>,
+      <span class="json-key">"sourceImageGroupId"</span>: <span class="json-string">"dt_002"</span>,
       <span class="json-key">"thumbnailUrl"</span>: <span class="json-string">"https://cdn.../dt_002.png"</span>
     },
     ...
@@ -1464,11 +1464,11 @@
           <div class="panel-header panel-header-api">API呼び出し</div>
           <div class="panel-body">
             <div class="flow-indicator"><span class="flow-step">2</span>サイズ別画像一覧取得</div>
-            <div><span class="api-method api-get">GET</span><span class="api-path">/design-templates/{designTemplateId}/source-images</span></div>
+            <div><span class="api-method api-get">GET</span><span class="api-path">/source-image-groups/{sourceImageGroupId}/source-images</span></div>
             <div class="field-section">
               <div class="field-section-label">パスパラメータ</div>
               <div class="field-chips">
-                <span class="field-chip highlight">designTemplateId</span>
+                <span class="field-chip highlight">sourceImageGroupId</span>
               </div>
             </div>
             <div class="field-section">
@@ -1504,10 +1504,10 @@
         <div class="panel-section" id="panel-step1-dbread-a">
           <div class="panel-header panel-header-db-read">DB読み取り（Brother側）</div>
           <div class="panel-body">
-            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-brother">Brother</span> Design Template DB</div>
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-brother">Brother</span> Source Image Group DB</div>
             <table class="db-table">
               <tr><th>フィールド</th><th>用途</th></tr>
-              <tr class="field-used"><td>designTemplateId</td><td>テンプレ識別キー</td></tr>
+              <tr class="field-used"><td>sourceImageGroupId</td><td>テンプレ識別キー</td></tr>
               <tr class="field-used"><td>thumbnailUrl</td><td>一覧表示用サムネイル</td></tr>
             </table>
           </div>
@@ -1530,16 +1530,16 @@
         <div class="panel-section" id="panel-step1c" style="display:none;">
           <div class="panel-header panel-header-bubble">Bubble DB書き込み</div>
           <div class="panel-body">
-            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> デザインテンプレート</div>
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> ソースイメージグループ</div>
             <table class="db-table">
               <tr><th>フィールド</th><th>値の出処</th></tr>
-              <tr class="field-used"><td>designTemplateId</td><td>API: GET /design-templates</td></tr>
-              <tr class="field-used"><td>thumbnailUrl</td><td>API: GET /design-templates</td></tr>
+              <tr class="field-used"><td>sourceImageGroupId</td><td>API: GET /source-image-groups</td></tr>
+              <tr class="field-used"><td>thumbnailUrl</td><td>API: GET /source-image-groups</td></tr>
               <tr><td>名前</td><td>管理者が手入力</td></tr>
               <tr><td>開催月</td><td>管理者が手入力</td></tr>
             </table>
 
-            <div style="font-size:.75rem; font-weight:600; margin:12px 0 4px;"><span class="db-badge db-bubble">Bubble</span> デザインテンプレート画像</div>
+            <div style="font-size:.75rem; font-weight:600; margin:12px 0 4px;"><span class="db-badge db-bubble">Bubble</span> ソースイメージグループ画像</div>
             <table class="db-table">
               <tr><th>フィールド</th><th>値の出処</th></tr>
               <tr class="field-used"><td>sourceImageId</td><td>API: GET /{id}/source-images</td></tr>
@@ -1563,14 +1563,14 @@
         <div class="panel-section">
           <div class="panel-header panel-header-db-read">Bubble DB読み取り（ポップアップ表示用）</div>
           <div class="panel-body">
-            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> デザインテンプレート</div>
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> ソースイメージグループ</div>
             <table class="db-table">
               <tr><th>フィールド</th><th>用途</th></tr>
-              <tr class="field-used"><td>designTemplateId</td><td>テンプレ識別キー</td></tr>
+              <tr class="field-used"><td>sourceImageGroupId</td><td>テンプレ識別キー</td></tr>
               <tr class="field-used"><td>thumbnailUrl</td><td>ポップアップのサムネイル表示</td></tr>
             </table>
             <div class="note-box note-info" style="margin-top:8px;">
-              STEP1でBubble DBに保存済みのデザインテンプレート一覧を読み取って、選択ポップアップに表示
+              STEP1でBubble DBに保存済みのソースイメージグループ一覧を読み取って、選択ポップアップに表示
             </div>
           </div>
         </div>
@@ -1661,7 +1661,7 @@
             </div>
             <div class="json-block"><span class="json-label">Request（× 7回並列送信）</span>
 {
-  <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,       <span class="json-comment">// Bubble DB.デザインテンプレート画像</span>
+  <span class="json-key">"sourceImageId"</span>: <span class="json-string">"si_001"</span>,       <span class="json-comment">// Bubble DB.ソースイメージグループ画像</span>
 
   <span class="json-key">"eventName"</span>: <span class="json-string">"春季例大祭"</span>,         <span class="json-comment">// Bubble DB.行事データ</span>
   <span class="json-key">"period"</span>: <span class="json-string">"2026年4月20日〜22日"</span>,
@@ -1719,7 +1719,7 @@
         <div class="panel-section" id="panel-step4-dbread">
           <div class="panel-header panel-header-db-read">DB読み取り（リクエスト構築用）</div>
           <div class="panel-body">
-            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> デザインテンプレート画像</div>
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> ソースイメージグループ画像</div>
             <table class="db-table">
               <tr class="field-used"><td>sourceImageId</td><td>→ リクエストに含める</td></tr>
             </table>
@@ -1763,7 +1763,7 @@
               <tr class="field-used"><td>fileKey</td><td>GETポーリング完了時</td></tr>
               <tr class="field-used"><td>thumbnailUrl</td><td>GETポーリング完了時</td></tr>
               <tr><td>行事ID</td><td>Bubble DB.行事データ</td></tr>
-              <tr><td>designTemplateId</td><td>Bubble DB.デザインテンプレート</td></tr>
+              <tr><td>sourceImageGroupId</td><td>Bubble DB.ソースイメージグループ</td></tr>
               <tr><td>designIndex</td><td>1, 2, 3（何番目のデザインか）</td></tr>
               <tr><td>size</td><td>A3, A4 等</td></tr>
               <tr><td>status</td><td>COMPLETED</td></tr>
