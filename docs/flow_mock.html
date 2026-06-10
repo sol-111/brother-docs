@@ -565,13 +565,13 @@
       <span class="step-num">2</span>行事テンプレ作成<span class="no-api">API なし</span>
     </button>
     <button class="step-nav-btn" onclick="showStep(3)">
-      <span class="step-num">3</span>行事を新規作成<span class="no-api">API なし</span>
+      <span class="step-num">3</span>行事情報を編集<span class="no-api">API なし</span>
     </button>
     <button class="step-nav-btn" onclick="showStep(4)">
-      <span class="step-num">4</span>原稿を生成する
+      <span class="step-num">4</span>評価して生成
     </button>
     <button class="step-nav-btn" onclick="showStep(5)">
-      <span class="step-num">5</span>評価・ダウンロード
+      <span class="step-num">5</span>ダウンロード
     </button>
     <button class="step-nav-btn" onclick="showStep(6)">
       <span class="step-num">6</span>再生成する
@@ -902,83 +902,15 @@
 
       <!-- ==================== STEP 3 ==================== -->
       <div class="step-content" id="step3">
-        <div class="sub-step-nav">
-          <button class="sub-step-btn active" onclick="showSubStep(3,'a')">3-a. 行事テンプレ選択</button>
-          <button class="sub-step-btn" onclick="showSubStep(3,'b')">3-b. 行事情報入力</button>
-        </div>
-
-        <!-- 3-a -->
-        <div class="mock-screen" id="step3a" style="position:relative;">
+        <div class="mock-screen">
           <div class="mock-header">
-            <span>ユーザー画面 ＞ 行事テンプレートを選択してください</span>
+            <span>ユーザー画面 ＞ 行事情報を編集</span>
             <span class="role-badge role-user">ユーザー</span>
           </div>
           <div class="mock-body">
-            <div class="mock-title">行事テンプレートを選択してください</div>
+            <div class="mock-title">行事情報を編集</div>
             <div class="note-box note-info" style="margin-bottom:16px;">
-              <strong>Brother APIは呼ばない</strong> — Bubble DBの行事テンプレートから選択
-            </div>
-            <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
-              <div class="mock-card" id="s3-tpl-1">
-                <div style="font-size:.8rem; font-weight:700; margin-bottom:6px;">春季例大祭（神社）</div>
-                <div style="display:flex; gap:4px;">
-                  <div style="flex:1; aspect-ratio:0.72; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.5rem; color:var(--gray-500);">dt_001</div>
-                  <div style="flex:1; aspect-ratio:0.72; background:linear-gradient(135deg,#bbf7d0,#a7f3d0); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.5rem; color:var(--gray-500);">dt_002</div>
-                  <div style="flex:1; aspect-ratio:0.72; background:linear-gradient(135deg,#fde68a,#fed7aa); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.5rem; color:var(--gray-500);">dt_003</div>
-                </div>
-                <div style="font-size:.6rem; color:var(--gray-400); margin-top:4px;">4月 / 神社 / 3デザイン</div>
-              </div>
-              <div class="mock-card" id="s3-tpl-2">
-                <div style="font-size:.8rem; font-weight:700; margin-bottom:6px;">盆踊り大会（寺院）</div>
-                <div style="display:flex; gap:4px;">
-                  <div style="flex:1; aspect-ratio:0.72; background:linear-gradient(135deg,#fbcfe8,#f9a8d4); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.5rem; color:var(--gray-500);">dt_004</div>
-                  <div style="flex:1; aspect-ratio:0.72; background:linear-gradient(135deg,#bae6fd,#93c5fd); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.5rem; color:var(--gray-500);">dt_005</div>
-                  <div style="flex:1; aspect-ratio:0.72; background:var(--gray-200); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.5rem; color:var(--gray-400);">—</div>
-                </div>
-                <div style="font-size:.6rem; color:var(--gray-400); margin-top:4px;">8月 / 寺院 / 2デザイン</div>
-              </div>
-              <div class="mock-card" id="s3-tpl-3">
-                <div style="font-size:.8rem; font-weight:700; margin-bottom:6px;">七五三（神社）</div>
-                <div style="display:flex; gap:4px;">
-                  <div style="flex:1; aspect-ratio:0.72; background:linear-gradient(135deg,#fecaca,#fca5a5); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.5rem; color:var(--gray-500);">dt_006</div>
-                  <div style="flex:1; aspect-ratio:0.72; background:var(--gray-200); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.5rem; color:var(--gray-400);">—</div>
-                  <div style="flex:1; aspect-ratio:0.72; background:var(--gray-200); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.5rem; color:var(--gray-400);">—</div>
-                </div>
-                <div style="font-size:.6rem; color:var(--gray-400); margin-top:4px;">11月 / 神社 / 1デザイン</div>
-              </div>
-              <div class="mock-card" style="border:2px dashed var(--gray-300); display:flex; align-items:center; justify-content:center;">
-                <div style="text-align:center; color:var(--gray-400);">
-                  <div style="font-size:1.2rem;">+</div>
-                  <div style="font-size:.7rem; font-weight:600;">テンプレなしで作成</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="action-area">
-              <button class="mock-btn mock-btn-primary" onclick="showSubStep(3,'b')">選択して次へ →</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3-b -->
-        <div class="mock-screen" id="step3b" style="display:none;">
-          <div class="mock-header">
-            <span>ユーザー画面 ＞ 行事情報を新規作成</span>
-            <span class="role-badge role-user">ユーザー</span>
-          </div>
-          <div class="mock-body">
-            <div class="mock-title">行事情報を新規作成</div>
-            <div style="padding:10px 14px; background:var(--green-bg); border:1px solid var(--green); border-radius:6px; margin-bottom:16px;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span class="status-badge status-completed" style="font-size:.6rem;">選択済</span>
-                <div style="font-size:.8rem; font-weight:600; color:var(--green);">春季例大祭（神社）</div>
-              </div>
-              <div style="font-size:.65rem; color:var(--gray-500); margin-top:4px;">← 選択したテンプレのデフォルト値が各項目にセットされます</div>
-              <div style="display:flex; gap:6px; margin-top:6px;">
-                <div style="width:36px; height:26px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:.4rem; color:var(--gray-500);">dt_001</div>
-                <div style="width:36px; height:26px; background:linear-gradient(135deg,#bbf7d0,#a7f3d0); border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:.4rem; color:var(--gray-500);">dt_002</div>
-                <div style="width:36px; height:26px; background:linear-gradient(135deg,#fde68a,#fed7aa); border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:.4rem; color:var(--gray-500);">dt_003</div>
-              </div>
+              <strong>Brother APIは呼ばない</strong> — Bubble DBの行事データを編集・保存
             </div>
 
             <div class="form-group">
@@ -990,7 +922,7 @@
               <input class="mock-input" value="2026年4月20日（日）〜4月22日（火）" readonly>
             </div>
             <div class="form-group">
-              <label class="mock-label">詳細</label>
+              <label class="mock-label">行事詳細</label>
               <input class="mock-input" value="境内にて神事・奉納行事を執り行います" readonly>
             </div>
             <div class="form-group">
@@ -1001,13 +933,16 @@
               <label class="mock-label">備考</label>
               <input class="mock-input" value="雨天時は社務所にて執り行います" readonly>
             </div>
-
-            <div class="note-box note-warn">
-              <strong>未解決</strong>: 「テンプレなしで作成」の場合、sourceImageGroupIdが紐づかない。生成ボタンを押したらどうなる？ → 要確認
+            <div class="form-group">
+              <label class="mock-label">連絡先名</label>
+              <input class="mock-input" value="○○神社" readonly>
+            </div>
+            <div class="form-group">
+              <label class="mock-label">連絡先詳細</label>
+              <input class="mock-input" value="〒000-0000 東京都○○区○○ / 03-0000-0000 / info@example.com" readonly>
             </div>
 
             <div class="action-area">
-              <button class="mock-btn mock-btn-gray" onclick="showSubStep(3,'a')">← 戻る</button>
               <button class="mock-btn mock-btn-green" onclick="showStep(4)">保存して生成画面へ →</button>
             </div>
           </div>
@@ -1017,27 +952,29 @@
       <!-- ==================== STEP 4 ==================== -->
       <div class="step-content" id="step4">
         <div class="sub-step-nav">
-          <button class="sub-step-btn active" onclick="showSubStep(4,'a')">4-a. 生成ボタン押下</button>
-          <button class="sub-step-btn" onclick="showSubStep(4,'b')">4-b. ポーリング中</button>
-          <button class="sub-step-btn" onclick="showSubStep(4,'c')">4-c. 生成完了</button>
+          <button class="sub-step-btn active" onclick="showSubStep(4,'a')">4-a. デザイン評価</button>
+          <button class="sub-step-btn" onclick="showSubStep(4,'b')">4-b. 全て評価後</button>
+          <button class="sub-step-btn" onclick="showSubStep(4,'c')">4-c. 生成中</button>
+          <button class="sub-step-btn" onclick="showSubStep(4,'d')">4-d. 生成完了</button>
         </div>
 
-        <!-- 4-a -->
+        <!-- 4-a: デザイン評価（ランディング時） -->
         <div class="mock-screen" id="step4a">
           <div class="mock-header">
-            <span>ユーザー画面 ＞ 春季例大祭 ＞ 原稿生成</span>
+            <span>ユーザー画面 ＞ 春季例大祭 ＞ デザインを評価</span>
             <span class="role-badge role-user">ユーザー</span>
           </div>
           <div class="mock-body">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-              <div class="mock-title" style="margin-bottom:0;">≪ 春季例大祭</div>
+              <div class="mock-title" style="margin-bottom:0;">デザインを評価してダウンロード</div>
               <div style="display:flex; gap:8px;">
-                <button class="mock-btn mock-btn-primary" onclick="showSubStep(4,'b')">生成</button>
+                <button class="mock-btn mock-btn-disabled" disabled>生成</button>
                 <button class="mock-btn mock-btn-gray">行事情報を編集</button>
               </div>
             </div>
+            <div class="mock-subtitle">入力された行事情報をもとに、3種のデザインを生成しました。3種すべてを評価した後、全サイズを生成できます。</div>
 
-            <!-- デザイン3種（サムネイル表示済み・STEP1で取得したthumbnailUrl） -->
+            <!-- デザイン3種（サムネイル表示済み・評価が空） -->
             <div class="design-grid" style="margin-bottom:20px;">
               <div class="design-item">
                 <div class="design-thumb">dt_001<br><span style="font-size:.55rem;">サムネイル表示</span></div>
@@ -1056,149 +993,47 @@
               </div>
             </div>
 
-            <!-- サイズ別プレビュー（STEP1で取得済みのソース画像サムネイル） -->
-            <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:8px;">デザインを評価してダウンロード</div>
-            <div style="font-size:.75rem; color:var(--gray-400); margin-bottom:12px;">「生成」ボタンを押して原稿を作成してください</div>
-            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A3</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A3</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#e0e7ff,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺縦</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#e9d5ff); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺縦</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺横</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fde68a,#fed7aa); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺横</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">ハガキ</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bbf7d0,#a7f3d0); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">ハガキ</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">封筒</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fbcfe8,#f9a8d4); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">封筒</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4便箋</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bae6fd,#93c5fd); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4便箋</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
+            <!-- 生成ボタン（disabled） -->
+            <div style="text-align:center; margin-bottom:20px;">
+              <button class="mock-btn mock-btn-disabled" disabled style="padding:12px 32px; font-size:.9rem;">この評価で決定して全サイズを生成</button>
+              <div style="font-size:.7rem; color:var(--gray-400); margin-top:6px;">3種すべてを評価すると有効になります</div>
+            </div>
+
+            <!-- 生成できるサイズ一覧 -->
+            <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:8px;">生成できるサイズ一覧</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span style="padding:4px 12px; background:var(--gray-100); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--gray-500);">A4</span>
+              <span style="padding:4px 12px; background:var(--gray-100); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--gray-500);">A3</span>
+              <span style="padding:4px 12px; background:var(--gray-100); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--gray-500);">長尺縦</span>
+              <span style="padding:4px 12px; background:var(--gray-100); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--gray-500);">長尺横</span>
+              <span style="padding:4px 12px; background:var(--gray-100); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--gray-500);">ハガキ</span>
+              <span style="padding:4px 12px; background:var(--gray-100); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--gray-500);">封筒 長形3号</span>
+              <span style="padding:4px 12px; background:var(--gray-100); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--gray-500);">A4便箋</span>
+            </div>
+
+            <div class="action-area">
+              <button class="mock-btn mock-btn-green" onclick="showSubStep(4,'b')">（デモ）評価を入力した状態へ →</button>
             </div>
           </div>
         </div>
 
-        <!-- 4-b: polling -->
+        <!-- 4-b: 全て評価後 -->
         <div class="mock-screen" id="step4b" style="display:none;">
           <div class="mock-header">
-            <span>ユーザー画面 ＞ 春季例大祭 ＞ 生成中...</span>
+            <span>ユーザー画面 ＞ 春季例大祭 ＞ デザインを評価</span>
             <span class="role-badge role-user">ユーザー</span>
           </div>
           <div class="mock-body">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-              <div class="mock-title" style="margin-bottom:0;">≪ 春季例大祭 <span class="status-badge status-running">生成中</span></div>
-            </div>
-
-            <!-- デザイン3種（サムネイル表示済み・生成対象ではない） -->
-            <div class="design-grid" style="margin-bottom:20px;">
-              <div class="design-item">
-                <div class="design-thumb">dt_001<br><span style="font-size:.55rem;">サムネイル表示</span></div>
-                <div class="design-label">デザイン1</div>
-                <div class="rating"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-              </div>
-              <div class="design-item">
-                <div class="design-thumb" style="background:linear-gradient(135deg,#bbf7d0,#a7f3d0)">dt_002<br><span style="font-size:.55rem;">サムネイル表示</span></div>
-                <div class="design-label">デザイン2</div>
-                <div class="rating"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-              </div>
-              <div class="design-item">
-                <div class="design-thumb" style="background:linear-gradient(135deg,#fde68a,#fed7aa)">dt_003<br><span style="font-size:.55rem;">サムネイル表示</span></div>
-                <div class="design-label">デザイン3</div>
-                <div class="rating"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-              </div>
-            </div>
-
-            <!-- サイズ別: 生成中 -->
-            <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:12px;">サイズ別プレビュー</div>
-            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">A3</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-200); border-radius:4px; background:var(--gray-100); color:var(--gray-400); cursor:not-allowed;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">A4</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-200); border-radius:4px; background:var(--gray-100); color:var(--gray-400); cursor:not-allowed;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">長尺縦</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-200); border-radius:4px; background:var(--gray-100); color:var(--gray-400); cursor:not-allowed;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">長尺横</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-200); border-radius:4px; background:var(--gray-100); color:var(--gray-400); cursor:not-allowed;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">ハガキ</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-200); border-radius:4px; background:var(--gray-100); color:var(--gray-400); cursor:not-allowed;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">封筒</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-200); border-radius:4px; background:var(--gray-100); color:var(--gray-400); cursor:not-allowed;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">A4便箋</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-200); border-radius:4px; background:var(--gray-100); color:var(--gray-400); cursor:not-allowed;">DL</button></div></div>
-            </div>
-
-            <div class="action-area">
-              <button class="mock-btn mock-btn-green" onclick="showSubStep(4,'c')">（デモ）完了にする →</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4-c: completed -->
-        <div class="mock-screen" id="step4c" style="display:none;">
-          <div class="mock-header">
-            <span>ユーザー画面 ＞ 春季例大祭 ＞ 生成完了</span>
-            <span class="role-badge role-user">ユーザー</span>
-          </div>
-          <div class="mock-body">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-              <div class="mock-title" style="margin-bottom:0;">≪ 春季例大祭 <span class="status-badge status-completed">生成完了</span></div>
+              <div class="mock-title" style="margin-bottom:0;">デザインを評価してダウンロード</div>
               <div style="display:flex; gap:8px;">
-                <button class="mock-btn mock-btn-primary">生成</button>
-                <button class="mock-btn mock-btn-gray" onclick="showStep(6)">行事情報を編集</button>
+                <button class="mock-btn mock-btn-primary" onclick="showSubStep(4,'c')">生成</button>
+                <button class="mock-btn mock-btn-gray">行事情報を編集</button>
               </div>
             </div>
+            <div class="mock-subtitle">入力された行事情報をもとに、3種のデザインを生成しました。3種すべてを評価した後、全サイズを生成できます。</div>
 
-            <!-- デザイン3種（サムネイル表示済み・生成対象ではない） -->
-            <div class="design-grid" style="margin-bottom:20px;">
-              <div class="design-item">
-                <div class="design-thumb">dt_001<br><span style="font-size:.55rem;">サムネイル表示</span></div>
-                <div class="design-label">デザイン1</div>
-                <div class="rating"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-              </div>
-              <div class="design-item">
-                <div class="design-thumb" style="background:linear-gradient(135deg,#bbf7d0,#a7f3d0)">dt_002<br><span style="font-size:.55rem;">サムネイル表示</span></div>
-                <div class="design-label">デザイン2</div>
-                <div class="rating"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-              </div>
-              <div class="design-item">
-                <div class="design-thumb" style="background:linear-gradient(135deg,#fde68a,#fed7aa)">dt_003<br><span style="font-size:.55rem;">サムネイル表示</span></div>
-                <div class="design-label">デザイン3</div>
-                <div class="rating"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-              </div>
-            </div>
-
-            <!-- サイズ別: 完了 -->
-            <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:12px;">サイズ別プレビュー</div>
-            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A3</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A3</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#e0e7ff,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺縦</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#e9d5ff); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺縦</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺横</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fde68a,#fed7aa); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺横</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">ハガキ</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bbf7d0,#a7f3d0); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">ハガキ</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">封筒</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fbcfe8,#f9a8d4); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">封筒</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4便箋</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bae6fd,#93c5fd); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4便箋</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-            </div>
-
-            <div class="note-box note-info" style="margin-top:12px;">
-              <strong>Bubble DBに保存済:</strong> 各デザイン × 各サイズの generatedImageId / fileKey / thumbnailUrl
-            </div>
-
-            <div class="action-area">
-              <button class="mock-btn mock-btn-primary" onclick="showStep(5)">STEP5: 評価・DLへ →</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ==================== STEP 5 ==================== -->
-      <div class="step-content" id="step5">
-        <div class="sub-step-nav">
-          <button class="sub-step-btn active" onclick="showSubStep(5,'a')">5-a. 評価する</button>
-          <button class="sub-step-btn" onclick="showSubStep(5,'b')">5-b. ダウンロード</button>
-        </div>
-
-        <!-- 5-a -->
-        <div class="mock-screen" id="step5a">
-          <div class="mock-header">
-            <span>ユーザー画面 ＞ 春季例大祭 ＞ 評価</span>
-            <span class="role-badge role-user">ユーザー</span>
-          </div>
-          <div class="mock-body">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-              <div class="mock-title" style="margin-bottom:0;">≪ 春季例大祭</div>
-              <div style="display:flex; gap:8px;">
-                <button class="mock-btn mock-btn-primary">生成</button>
-                <button class="mock-btn mock-btn-gray" onclick="showStep(6)">行事情報を編集</button>
-              </div>
-            </div>
-
-            <!-- デザイン3種（サムネイル + 評価） -->
+            <!-- デザイン3種（評価済み） -->
             <div class="design-grid" style="margin-bottom:20px;">
               <div class="design-item">
                 <div class="design-thumb">dt_001<br><span style="font-size:.55rem;">サムネイル表示</span></div>
@@ -1207,11 +1042,11 @@
                   <span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span>
                 </div>
               </div>
-              <div class="design-item" style="border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,.15);">
+              <div class="design-item">
                 <div class="design-thumb" style="background:linear-gradient(135deg,#bbf7d0,#a7f3d0)">dt_002<br><span style="font-size:.55rem;">サムネイル表示</span></div>
-                <div class="design-label" style="color:var(--primary);">デザイン2</div>
+                <div class="design-label">デザイン2</div>
                 <div class="rating">
-                  <span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span>
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
                 </div>
               </div>
               <div class="design-item">
@@ -1223,61 +1058,282 @@
               </div>
             </div>
 
-            <!-- サイズ別プレビュー + DL -->
-            <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:4px;">デザインを評価してダウンロード</div>
-            <div style="font-size:.75rem; color:var(--gray-500); margin-bottom:12px;">3種類すべてを評価するとダウンロードできます。</div>
-
-            <div class="note-box note-info" style="margin-bottom:12px;">
-              <strong>Brother APIは呼ばない</strong> — 評価データはBubble DBに保存。thumbnailUrlで画像を直接表示
+            <!-- 生成ボタン（有効） -->
+            <div style="text-align:center; margin-bottom:20px;">
+              <button class="mock-btn mock-btn-primary" onclick="showSubStep(4,'c')" style="padding:12px 32px; font-size:.9rem;">この評価で決定して全サイズを生成</button>
+              <div style="font-size:.7rem; color:var(--green); margin-top:6px;">全デザインの評価が完了しました</div>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A3</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A3</div><div style="margin-top:4px;"><button onclick="showSubStep(5,'b')" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#e0e7ff,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4</div><div style="margin-top:4px;"><button onclick="showSubStep(5,'b')" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺縦</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#e9d5ff); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺縦</div><div style="margin-top:4px;"><button onclick="showSubStep(5,'b')" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺横</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fde68a,#fed7aa); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺横</div><div style="margin-top:4px;"><button onclick="showSubStep(5,'b')" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">ハガキ</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bbf7d0,#a7f3d0); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">ハガキ</div><div style="margin-top:4px;"><button onclick="showSubStep(5,'b')" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">封筒</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fbcfe8,#f9a8d4); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">封筒</div><div style="margin-top:4px;"><button onclick="showSubStep(5,'b')" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
-              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4便箋</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bae6fd,#93c5fd); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4便箋</div><div style="margin-top:4px;"><button onclick="showSubStep(5,'b')" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--gray-300); border-radius:4px; background:#fff; color:var(--gray-600); cursor:pointer;">DL</button></div></div>
+            <!-- 生成できるサイズ一覧 -->
+            <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:8px;">生成できるサイズ一覧</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span style="padding:4px 12px; background:var(--primary-bg); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--primary);">A4</span>
+              <span style="padding:4px 12px; background:var(--primary-bg); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--primary);">A3</span>
+              <span style="padding:4px 12px; background:var(--primary-bg); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--primary);">長尺縦</span>
+              <span style="padding:4px 12px; background:var(--primary-bg); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--primary);">長尺横</span>
+              <span style="padding:4px 12px; background:var(--primary-bg); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--primary);">ハガキ</span>
+              <span style="padding:4px 12px; background:var(--primary-bg); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--primary);">封筒 長形3号</span>
+              <span style="padding:4px 12px; background:var(--primary-bg); border-radius:6px; font-size:.75rem; font-weight:600; color:var(--primary);">A4便箋</span>
             </div>
           </div>
         </div>
 
-        <!-- 5-b -->
-        <div class="mock-screen" id="step5b" style="display:none;">
+        <!-- 4-c: 生成中（ポーリング） -->
+        <div class="mock-screen" id="step4c" style="display:none;">
+          <div class="mock-header">
+            <span>ユーザー画面 ＞ 春季例大祭 ＞ 生成中...</span>
+            <span class="role-badge role-user">ユーザー</span>
+          </div>
+          <div class="mock-body">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <div class="mock-title" style="margin-bottom:0;">≪ 春季例大祭 <span class="status-badge status-running">生成中</span></div>
+            </div>
+
+            <!-- 評価済みデザイン3種 -->
+            <div class="design-grid" style="margin-bottom:20px;">
+              <div class="design-item">
+                <div class="design-thumb">dt_001<br><span style="font-size:.55rem;">サムネイル表示</span></div>
+                <div class="design-label">デザイン1</div>
+                <div class="rating">
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span>
+                </div>
+              </div>
+              <div class="design-item">
+                <div class="design-thumb" style="background:linear-gradient(135deg,#bbf7d0,#a7f3d0)">dt_002<br><span style="font-size:.55rem;">サムネイル表示</span></div>
+                <div class="design-label">デザイン2</div>
+                <div class="rating">
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                </div>
+              </div>
+              <div class="design-item">
+                <div class="design-thumb" style="background:linear-gradient(135deg,#fde68a,#fed7aa)">dt_003<br><span style="font-size:.55rem;">サムネイル表示</span></div>
+                <div class="design-label">デザイン3</div>
+                <div class="rating">
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span><span class="star">★</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- サイズ別: 生成中 -->
+            <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:12px;">サイズ別生成状況</div>
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">A4</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">A3</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">長尺縦</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">長尺横</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">ハガキ</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">封筒 長形3号</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; color:var(--gray-500); margin-bottom:4px;">A4便箋</div><div style="width:100%; height:80px; background:var(--gray-100); border-radius:6px; display:flex; align-items:center; justify-content:center;"><div class="polling-dots"><span></span><span></span><span></span></div></div></div>
+            </div>
+
+            <div class="action-area">
+              <button class="mock-btn mock-btn-green" onclick="showSubStep(4,'d')">（デモ）完了にする →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4-d: 生成完了 -->
+        <div class="mock-screen" id="step4d" style="display:none;">
+          <div class="mock-header">
+            <span>ユーザー画面 ＞ 春季例大祭 ＞ 生成完了</span>
+            <span class="role-badge role-user">ユーザー</span>
+          </div>
+          <div class="mock-body">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <div class="mock-title" style="margin-bottom:0;">≪ 春季例大祭 <span class="status-badge status-completed">生成完了</span></div>
+              <div style="display:flex; gap:8px;">
+                <button class="mock-btn mock-btn-primary">デザインを再生成する</button>
+                <button class="mock-btn mock-btn-gray" onclick="showStep(6)">行事情報を編集</button>
+              </div>
+            </div>
+
+            <!-- 通知バー（行事情報変更時） -->
+            <div class="note-box note-warn" style="margin-bottom:16px;">
+              <strong>行事情報が変更されています。</strong>デザインに反映するには再生成してください。
+            </div>
+
+            <!-- デザインタブ（評価付き + 再評価リンク） -->
+            <div style="display:flex; gap:12px; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--gray-200);">
+              <div style="flex:1; padding:8px; border:2px solid var(--primary); border-radius:8px; text-align:center; background:var(--primary-bg);">
+                <div style="width:100%; height:60px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500); margin-bottom:4px;">dt_001</div>
+                <div style="font-size:.72rem; font-weight:600;">デザイン1</div>
+                <div class="rating" style="margin:2px 0;">
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span>
+                </div>
+                <a href="#" onclick="showStep(5);showSubStep(5,'b');return false;" style="font-size:.65rem; color:var(--primary);">再評価</a>
+              </div>
+              <div style="flex:1; padding:8px; border:2px solid var(--gray-200); border-radius:8px; text-align:center;">
+                <div style="width:100%; height:60px; background:linear-gradient(135deg,#bbf7d0,#a7f3d0); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500); margin-bottom:4px;">dt_002</div>
+                <div style="font-size:.72rem; font-weight:600;">デザイン2</div>
+                <div class="rating" style="margin:2px 0;">
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                </div>
+                <a href="#" onclick="showStep(5);showSubStep(5,'b');return false;" style="font-size:.65rem; color:var(--primary);">再評価</a>
+              </div>
+              <div style="flex:1; padding:8px; border:2px solid var(--gray-200); border-radius:8px; text-align:center;">
+                <div style="width:100%; height:60px; background:linear-gradient(135deg,#fde68a,#fed7aa); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500); margin-bottom:4px;">dt_003</div>
+                <div style="font-size:.72rem; font-weight:600;">デザイン3</div>
+                <div class="rating" style="margin:2px 0;">
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span><span class="star">★</span>
+                </div>
+                <a href="#" onclick="showStep(5);showSubStep(5,'b');return false;" style="font-size:.65rem; color:var(--primary);">再評価</a>
+              </div>
+            </div>
+
+            <!-- 7サイズ グリッド with DLボタン -->
+            <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:12px;">サイズ別プレビュー</div>
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#e0e7ff,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4</div><div style="margin-top:4px;"><button onclick="showStep(5);showSubStep(5,'a');" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A3</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A3</div><div style="margin-top:4px;"><button onclick="showStep(5);showSubStep(5,'a');" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺縦</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#e9d5ff); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺縦</div><div style="margin-top:4px;"><button onclick="showStep(5);showSubStep(5,'a');" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺横</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fde68a,#fed7aa); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺横</div><div style="margin-top:4px;"><button onclick="showStep(5);showSubStep(5,'a');" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">ハガキ</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bbf7d0,#a7f3d0); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">ハガキ</div><div style="margin-top:4px;"><button onclick="showStep(5);showSubStep(5,'a');" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">封筒 長形3号</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fbcfe8,#f9a8d4); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">封筒</div><div style="margin-top:4px;"><button onclick="showStep(5);showSubStep(5,'a');" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4便箋</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bae6fd,#93c5fd); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4便箋</div><div style="margin-top:4px;"><button onclick="showStep(5);showSubStep(5,'a');" style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+            </div>
+
+            <div class="note-box note-info" style="margin-top:12px;">
+              <strong>Bubble DBに保存済:</strong> 各デザイン x 各サイズの generatedImageId / fileKey / thumbnailUrl
+            </div>
+
+            <div style="text-align:center; margin-top:16px; font-size:.8rem; color:var(--gray-500);">
+              別のデザインを試したい場合は <a href="#" onclick="showStep(6);return false;" style="color:var(--primary); font-weight:600;">デザインを再生成する</a>
+            </div>
+
+            <div class="action-area">
+              <button class="mock-btn mock-btn-primary" onclick="showStep(5)">STEP5: ダウンロードへ →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== STEP 5 ==================== -->
+      <div class="step-content" id="step5">
+        <div class="sub-step-nav">
+          <button class="sub-step-btn active" onclick="showSubStep(5,'a')">5-a. サイズ別DL</button>
+          <button class="sub-step-btn" onclick="showSubStep(5,'b')">5-b. 再評価モーダル</button>
+        </div>
+
+        <!-- 5-a: サイズ別ダウンロード -->
+        <div class="mock-screen" id="step5a">
           <div class="mock-header">
             <span>ユーザー画面 ＞ 春季例大祭 ＞ ダウンロード</span>
             <span class="role-badge role-user">ユーザー</span>
           </div>
           <div class="mock-body">
-            <div class="mock-title" style="color:var(--green);">ダウンロード中...</div>
-
-            <div style="padding:16px; background:var(--green-bg); border-radius:8px; margin-bottom:16px;">
-              <div style="font-size:.85rem; font-weight:600; color:var(--green);">デザイン2（全7サイズ）をダウンロード</div>
-              <div style="font-size:.75rem; color:var(--gray-500); margin-top:4px;">
-                Bubble DBの fileKey を使って一時DL用URLを取得
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <div class="mock-title" style="margin-bottom:0;">≪ 春季例大祭 <span class="status-badge status-completed">生成完了</span></div>
+              <div style="display:flex; gap:8px;">
+                <button class="mock-btn mock-btn-primary">デザインを再生成する</button>
+                <button class="mock-btn mock-btn-gray" onclick="showStep(6)">行事情報を編集</button>
               </div>
             </div>
 
-            <div style="display:flex; gap:12px; align-items:stretch;">
-              <div style="flex:1; padding:12px; background:var(--amber-bg); border-radius:8px;">
-                <div style="font-size:.75rem; font-weight:700; color:#b45309;">Bubble DB から取得</div>
-                <div style="font-size:.7rem; margin-top:4px; font-family:monospace;">fileKey = "generated/gi_002.png"</div>
+            <!-- デザインタブ（評価付き + 再評価リンク） -->
+            <div style="display:flex; gap:12px; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--gray-200);">
+              <div style="flex:1; padding:8px; border:2px solid var(--primary); border-radius:8px; text-align:center; background:var(--primary-bg);">
+                <div style="width:100%; height:60px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500); margin-bottom:4px;">dt_001</div>
+                <div style="font-size:.72rem; font-weight:600;">デザイン1</div>
+                <div class="rating" style="margin:2px 0;">
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span>
+                </div>
+                <a href="#" onclick="showSubStep(5,'b');return false;" style="font-size:.65rem; color:var(--primary);">再評価</a>
               </div>
-              <div style="display:flex; align-items:center; font-size:1.2rem; color:var(--gray-400);">→</div>
-              <div style="flex:1; padding:12px; background:var(--blue-bg); border-radius:8px;">
-                <div style="font-size:.75rem; font-weight:700; color:var(--blue);">API で一時URL取得</div>
-                <div style="font-size:.7rem; margin-top:4px; font-family:monospace;">GET /files/{fileKey}/url</div>
+              <div style="flex:1; padding:8px; border:2px solid var(--gray-200); border-radius:8px; text-align:center;">
+                <div style="width:100%; height:60px; background:linear-gradient(135deg,#bbf7d0,#a7f3d0); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500); margin-bottom:4px;">dt_002</div>
+                <div style="font-size:.72rem; font-weight:600;">デザイン2</div>
+                <div class="rating" style="margin:2px 0;">
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                </div>
+                <a href="#" onclick="showSubStep(5,'b');return false;" style="font-size:.65rem; color:var(--primary);">再評価</a>
               </div>
-              <div style="display:flex; align-items:center; font-size:1.2rem; color:var(--gray-400);">→</div>
-              <div style="flex:1; padding:12px; background:var(--green-bg); border-radius:8px;">
-                <div style="font-size:.75rem; font-weight:700; color:var(--green);">ダウンロード開始</div>
-                <div style="font-size:.7rem; margin-top:4px; font-family:monospace;">署名付きURL（期限付き）</div>
+              <div style="flex:1; padding:8px; border:2px solid var(--gray-200); border-radius:8px; text-align:center;">
+                <div style="width:100%; height:60px; background:linear-gradient(135deg,#fde68a,#fed7aa); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500); margin-bottom:4px;">dt_003</div>
+                <div style="font-size:.72rem; font-weight:600;">デザイン3</div>
+                <div class="rating" style="margin:2px 0;">
+                  <span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span><span class="star">★</span>
+                </div>
+                <a href="#" onclick="showSubStep(5,'b');return false;" style="font-size:.65rem; color:var(--primary);">再評価</a>
               </div>
+            </div>
+
+            <!-- DLフロー説明 -->
+            <div style="padding:12px 16px; background:var(--blue-bg); border-radius:8px; margin-bottom:16px;">
+              <div style="font-size:.75rem; font-weight:700; color:var(--blue); margin-bottom:6px;">ダウンロードフロー</div>
+              <div style="display:flex; gap:8px; align-items:center; font-size:.7rem; color:var(--gray-600);">
+                <span style="padding:3px 8px; background:#fff; border-radius:4px; font-family:monospace;">Bubble DB fileKey</span>
+                <span>→</span>
+                <span style="padding:3px 8px; background:#fff; border-radius:4px; font-family:monospace;">GET /files/{fileKey}/url</span>
+                <span>→</span>
+                <span style="padding:3px 8px; background:#fff; border-radius:4px; font-family:monospace;">Download</span>
+              </div>
+            </div>
+
+            <!-- 7サイズ with DLボタン -->
+            <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:12px;">サイズ別ダウンロード</div>
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#e0e7ff,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A3</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A3</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺縦</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#ddd6fe,#e9d5ff); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺縦</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">長尺横</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fde68a,#fed7aa); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">長尺横</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">ハガキ</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bbf7d0,#a7f3d0); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">ハガキ</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">封筒 長形3号</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#fbcfe8,#f9a8d4); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">封筒</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
+              <div style="text-align:center;"><div style="font-size:.75rem; font-weight:600; margin-bottom:4px;">A4便箋</div><div style="width:100%; height:80px; background:linear-gradient(135deg,#bae6fd,#93c5fd); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--gray-500);">A4便箋</div><div style="margin-top:4px;"><button style="font-size:.65rem; padding:3px 10px; border:1px solid var(--primary); border-radius:4px; background:var(--primary-bg); color:var(--primary); cursor:pointer; font-weight:600;">ダウンロード</button></div></div>
             </div>
 
             <div class="action-area">
               <button class="mock-btn mock-btn-primary" onclick="showStep(6)">STEP6: 再生成へ →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5-b: 再評価モーダル -->
+        <div class="mock-screen" id="step5b" style="display:none; position:relative;">
+          <div class="mock-header">
+            <span>ユーザー画面 ＞ 春季例大祭 ＞ ダウンロード</span>
+            <span class="role-badge role-user">ユーザー</span>
+          </div>
+          <div class="mock-body" style="position:relative; min-height:400px;">
+            <!-- 背景（グレーアウト） -->
+            <div style="opacity:.3; pointer-events:none;">
+              <div style="font-size:.85rem; font-weight:700; color:var(--gray-700); margin-bottom:12px;">サイズ別ダウンロード</div>
+              <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;">
+                <div style="text-align:center;"><div style="width:100%; height:60px; background:var(--gray-100); border-radius:6px;"></div></div>
+                <div style="text-align:center;"><div style="width:100%; height:60px; background:var(--gray-100); border-radius:6px;"></div></div>
+                <div style="text-align:center;"><div style="width:100%; height:60px; background:var(--gray-100); border-radius:6px;"></div></div>
+                <div style="text-align:center;"><div style="width:100%; height:60px; background:var(--gray-100); border-radius:6px;"></div></div>
+              </div>
+            </div>
+
+            <!-- モーダルオーバーレイ -->
+            <div style="position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; border-radius:0 0 var(--radius) var(--radius);">
+              <div style="background:#fff; border-radius:var(--radius); padding:24px; width:360px; box-shadow:var(--shadow-lg);">
+                <div style="font-size:1rem; font-weight:700; color:var(--gray-800); margin-bottom:16px;">デザインを再評価</div>
+
+                <!-- デザインサムネイル大 -->
+                <div style="width:100%; height:140px; background:linear-gradient(135deg,#ddd6fe,#c7d2fe); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:.8rem; color:var(--gray-500); margin-bottom:12px;">
+                  dt_001 - デザイン1
+                </div>
+
+                <!-- 星評価 -->
+                <div style="text-align:center; margin-bottom:16px;">
+                  <div style="font-size:.8rem; font-weight:600; color:var(--gray-600); margin-bottom:6px;">評価を選択</div>
+                  <div class="rating" style="font-size:1.5rem;">
+                    <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                  </div>
+                </div>
+
+                <!-- 注意書き -->
+                <div class="note-box note-info" style="margin-bottom:16px;">
+                  評価を更新しても、生成済みのデザインに影響はありません。
+                </div>
+
+                <!-- ボタン -->
+                <div style="display:flex; gap:8px; justify-content:flex-end;">
+                  <button class="mock-btn mock-btn-gray" onclick="showSubStep(5,'a')">キャンセル</button>
+                  <button class="mock-btn mock-btn-primary" onclick="showSubStep(5,'a')">評価を更新する</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1291,7 +1347,7 @@
           <button class="sub-step-btn" onclick="showSubStep(6,'c')">6-c. 再生成完了</button>
         </div>
 
-        <!-- 6-a -->
+        <!-- 5-a -->
         <div class="mock-screen" id="step6a">
           <div class="mock-header">
             <span>ユーザー画面 ＞ 春季例大祭 ＞ 行事情報編集</span>
@@ -1317,6 +1373,14 @@
               <label class="mock-label">備考</label>
               <input class="mock-input" value="雨天時は社務所にて執り行います" readonly>
             </div>
+            <div class="form-group">
+              <label class="mock-label">連絡先名</label>
+              <input class="mock-input" value="○○神社" readonly>
+            </div>
+            <div class="form-group">
+              <label class="mock-label">連絡先詳細</label>
+              <input class="mock-input" value="〒000-0000 東京都○○区○○ / 03-0000-0000 / info@example.com" readonly>
+            </div>
 
             <div class="action-area">
               <button class="mock-btn mock-btn-primary" onclick="showSubStep(6,'b')">再生成</button>
@@ -1324,7 +1388,7 @@
           </div>
         </div>
 
-        <!-- 6-b -->
+        <!-- 5-b -->
         <div class="mock-screen" id="step6b" style="display:none;">
           <div class="mock-header">
             <span>ユーザー画面 ＞ 春季例大祭 ＞ 再生成中...</span>
@@ -1372,7 +1436,7 @@
           </div>
         </div>
 
-        <!-- 6-c -->
+        <!-- 5-c -->
         <div class="mock-screen" id="step6c" style="display:none;">
           <div class="mock-header">
             <span>ユーザー画面 ＞ 春季例大祭 ＞ 再生成完了</span>
@@ -1594,38 +1658,27 @@
 
       <!-- STEP 3 panels -->
       <div class="step-panel" id="panel-step3" style="display:none;">
-        <div class="panel-section" id="panel-step3-noapi">
+        <div class="panel-section">
           <div class="panel-header panel-header-none">API呼び出しなし</div>
           <div class="panel-body">
-            <div style="font-size:.8rem; color:var(--gray-500); text-align:center; padding:8px 0;">
-              Brother APIは呼び出しません
+            <div style="font-size:.8rem; color:var(--gray-500); text-align:center; padding:12px;">
+              Brother APIは呼び出しません<br>Bubble DB内で完結します
             </div>
           </div>
         </div>
-        <div class="panel-section" id="panel-step3-dbread">
-          <div class="panel-header panel-header-db-read">Bubble DB読み取り（テンプレ一覧表示用）</div>
-          <div class="panel-body">
-            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 行事テンプレート</div>
-            <table class="db-table">
-              <tr><th>フィールド</th><th>用途</th></tr>
-              <tr class="field-used"><td>行事名</td><td>カード表示</td></tr>
-              <tr class="field-used"><td>開催月</td><td>カード表示</td></tr>
-              <tr class="field-used"><td>業界 / サブ業種</td><td>カード表示</td></tr>
-              <tr class="field-used"><td>デザインテンプレ × 3</td><td>サムネイル表示（thumbnailUrl）</td></tr>
-            </table>
-          </div>
-        </div>
-        <div class="panel-section" id="panel-step3-dbwrite" style="display:none;">
-          <div class="panel-header panel-header-bubble">Bubble DB書き込み</div>
+        <div class="panel-section">
+          <div class="panel-header panel-header-bubble">Bubble DB読み取り・書き込み</div>
           <div class="panel-body">
             <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 行事データ</div>
             <table class="db-table">
               <tr><th>フィールド</th><th>値の出処</th></tr>
-              <tr class="field-used"><td>行事テンプレートID</td><td>選択したテンプレート</td></tr>
               <tr class="field-used"><td>行事名</td><td>テンプレ値 or ユーザー入力</td></tr>
               <tr class="field-used"><td>期間</td><td>テンプレ値 or ユーザー入力</td></tr>
+              <tr class="field-used"><td>詳細</td><td>テンプレ値 or ユーザー入力</td></tr>
               <tr class="field-used"><td>プログラム</td><td>テンプレ値 or ユーザー入力</td></tr>
-              <tr class="field-used"><td>詳細 / 備考</td><td>テンプレ値 or ユーザー入力</td></tr>
+              <tr class="field-used"><td>備考</td><td>テンプレ値 or ユーザー入力</td></tr>
+              <tr class="field-used"><td>連絡先名</td><td>企業情報から初期値セット</td></tr>
+              <tr class="field-used"><td>連絡先詳細</td><td>企業情報から初期値セット</td></tr>
             </table>
           </div>
         </div>
@@ -1633,7 +1686,30 @@
 
       <!-- STEP 4 panels -->
       <div class="step-panel" id="panel-step4" style="display:none;">
-        <div class="panel-section" id="panel-step4-post">
+        <!-- 4-a, 4-b: 評価はAPI呼び出しなし -->
+        <div class="panel-section" id="panel-step4-noapi">
+          <div class="panel-header panel-header-none">API呼び出しなし</div>
+          <div class="panel-body">
+            <div style="font-size:.8rem; color:var(--gray-500); text-align:center; padding:8px 0;">
+              評価はBubble内で完結 -- Brother APIは呼び出しません
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section" id="panel-step4-eval-dbread">
+          <div class="panel-header panel-header-db-read">Bubble DB読み取り（サムネイル表示用）</div>
+          <div class="panel-body">
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> ソースイメージグループ画像</div>
+            <table class="db-table">
+              <tr><th>フィールド</th><th>用途</th></tr>
+              <tr class="field-used"><td>thumbnailUrl</td><td>→ デザインサムネイル表示</td></tr>
+              <tr class="field-used"><td>sourceImageId</td><td>→ 各デザインの識別</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4-c: 生成 API -->
+        <div class="panel-section" id="panel-step4-post" style="display:none;">
           <div class="panel-header panel-header-api">API呼び出し ①: 生成リクエスト</div>
           <div class="panel-body">
             <div class="flow-indicator"><span class="flow-step">1</span>7サイズ × 並列にPOST</div>
@@ -1647,6 +1723,8 @@
                 <span class="field-chip">details</span>
                 <span class="field-chip">program</span>
                 <span class="field-chip">notes</span>
+                <span class="field-chip">contactName</span>
+                <span class="field-chip">contactDetails</span>
               </div>
             </div>
             <div class="field-section">
@@ -1667,7 +1745,9 @@
   <span class="json-key">"period"</span>: <span class="json-string">"2026年4月20日〜22日"</span>,
   <span class="json-key">"details"</span>: <span class="json-string">"境内にて..."</span>,
   <span class="json-key">"program"</span>: <span class="json-string">"10:00 神事..."</span>,
-  <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は..."</span>
+  <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は..."</span>,
+  <span class="json-key">"contactName"</span>: <span class="json-string">"○○神社"</span>,          <span class="json-comment">// Bubble DB.行事データ</span>
+  <span class="json-key">"contactDetails"</span>: <span class="json-string">"〒000-0000 東京都○○区○○ / 03-0000-0000 / info@example.com"</span>
 }</div>
             <div class="json-block"><span class="json-label">Response（即座に返る / 非同期）</span>
 {
@@ -1680,7 +1760,7 @@
           </div>
         </div>
 
-        <div class="panel-section" id="panel-step4-poll">
+        <div class="panel-section" id="panel-step4-poll" style="display:none;">
           <div class="panel-header panel-header-api">API呼び出し ②: ポーリング</div>
           <div class="panel-body">
             <div class="flow-indicator"><span class="flow-step">2</span>完了まで繰り返しGET</div>
@@ -1716,7 +1796,7 @@
           </div>
         </div>
 
-        <div class="panel-section" id="panel-step4-dbread">
+        <div class="panel-section" id="panel-step4-dbread" style="display:none;">
           <div class="panel-header panel-header-db-read">DB読み取り（リクエスト構築用）</div>
           <div class="panel-body">
             <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> ソースイメージグループ画像</div>
@@ -1730,30 +1810,14 @@
               <tr class="field-used"><td>詳細</td><td>→ details</td></tr>
               <tr class="field-used"><td>プログラム</td><td>→ program</td></tr>
               <tr class="field-used"><td>備考</td><td>→ notes</td></tr>
+              <tr class="field-used"><td>連絡先名</td><td>→ contactName</td></tr>
+              <tr class="field-used"><td>連絡先詳細</td><td>→ contactDetails</td></tr>
             </table>
           </div>
         </div>
 
-        <div class="panel-section" id="panel-step4-dbwrite">
-          <div class="panel-header panel-header-db-write">Brother DB書き込み</div>
-          <div class="panel-body">
-            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-brother">Brother</span> Generated Image DB</div>
-            <table class="db-table">
-              <tr class="field-used"><td>generatedImageId</td><td>新規発行</td></tr>
-              <tr class="field-used"><td>sourceImageId</td><td>リクエストで直接指定</td></tr>
-              <tr class="field-used"><td>status</td><td>PENDING→RUNNING→COMPLETED</td></tr>
-              <tr class="field-used"><td>fileKey</td><td>生成完了後にセット</td></tr>
-              <tr class="field-used"><td>thumbnailUrl</td><td>生成完了後にセット</td></tr>
-              <tr class="field-used"><td>eventName</td><td>リクエストから保存</td></tr>
-              <tr class="field-used"><td>eventPeriod</td><td>リクエストから保存</td></tr>
-              <tr class="field-used"><td>eventDetails</td><td>リクエストから保存</td></tr>
-              <tr class="field-used"><td>eventProgram</td><td>リクエストから保存</td></tr>
-              <tr class="field-used"><td>notes</td><td>リクエストから保存</td></tr>
-            </table>
-          </div>
-        </div>
-
-        <div class="panel-section" id="panel-step4-bubblewrite">
+        <!-- 4-d: Bubble DB書き込み（完了後） -->
+        <div class="panel-section" id="panel-step4-bubblewrite" style="display:none;">
           <div class="panel-header panel-header-bubble">Bubble DB書き込み（完了後）</div>
           <div class="panel-body">
             <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 生成画像</div>
@@ -1774,39 +1838,8 @@
 
       <!-- STEP 5 panels -->
       <div class="step-panel" id="panel-step5" style="display:none;">
-        <div class="panel-section" id="panel-step5-rating">
-          <div class="panel-header panel-header-none">API呼び出しなし</div>
-          <div class="panel-body">
-            <div style="font-size:.8rem; color:var(--gray-500); text-align:center; padding:8px 0;">
-              Brother APIは呼び出しません
-            </div>
-          </div>
-        </div>
-
-        <div class="panel-section" id="panel-step5-rating-dbread">
-          <div class="panel-header panel-header-db-read">Bubble DB読み取り（画像表示用）</div>
-          <div class="panel-body">
-            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 生成画像</div>
-            <table class="db-table">
-              <tr><th>フィールド</th><th>用途</th></tr>
-              <tr class="field-used"><td>thumbnailUrl</td><td>→ img srcに直接セット（公開URL）</td></tr>
-              <tr class="field-used"><td>generatedImageId</td><td>→ 各デザインの識別</td></tr>
-            </table>
-          </div>
-        </div>
-
-        <div class="panel-section" id="panel-step5-rating-dbwrite">
-          <div class="panel-header panel-header-bubble">Bubble DB書き込み</div>
-          <div class="panel-body">
-            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 生成画像</div>
-            <table class="db-table">
-              <tr><th>フィールド</th><th>値の出処</th></tr>
-              <tr class="field-used"><td>評価</td><td>ユーザーの五段階評価</td></tr>
-            </table>
-          </div>
-        </div>
-
-        <div class="panel-section" id="panel-step5-dl" style="display:none;">
+        <!-- 5-a: DL用API -->
+        <div class="panel-section" id="panel-step5-dl">
           <div class="panel-header panel-header-api">API呼び出し: DL用URL取得</div>
           <div class="panel-body">
             <div class="flow-indicator"><span class="flow-step">1</span>Bubble DBのfileKeyでURL取得</div>
@@ -1833,7 +1866,7 @@
           </div>
         </div>
 
-        <div class="panel-section" id="panel-step5-db" style="display:none;">
+        <div class="panel-section" id="panel-step5-db">
           <div class="panel-header panel-header-db-read">DB読み取り</div>
           <div class="panel-body">
             <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 生成画像</div>
@@ -1842,6 +1875,30 @@
             </table>
             <div class="note-box note-info" style="margin-top:8px;">
               fileKeyは永続識別子。URLは期限付き一時URL。期限切れたら再度 GET /files/{fileKey}/url するだけ
+            </div>
+          </div>
+        </div>
+
+        <!-- 5-b: 再評価（API呼び出しなし） -->
+        <div class="panel-section" id="panel-step5-reeval-noapi" style="display:none;">
+          <div class="panel-header panel-header-none">API呼び出しなし</div>
+          <div class="panel-body">
+            <div style="font-size:.8rem; color:var(--gray-500); text-align:center; padding:8px 0;">
+              再評価はBubble内で完結 -- Brother APIは呼び出しません
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section" id="panel-step5-reeval-dbwrite" style="display:none;">
+          <div class="panel-header panel-header-bubble">Bubble DB書き込み（評価更新）</div>
+          <div class="panel-body">
+            <div style="font-size:.75rem; font-weight:600; margin-bottom:4px;"><span class="db-badge db-bubble">Bubble</span> 生成画像</div>
+            <table class="db-table">
+              <tr><th>フィールド</th><th>値の出処</th></tr>
+              <tr class="field-used"><td>評価</td><td>ユーザーの五段階評価（更新）</td></tr>
+            </table>
+            <div class="note-box note-info" style="margin-top:8px;">
+              評価を更新しても生成済みデザインには影響なし。次回再生成時の参考データとして保存。
             </div>
           </div>
         </div>
@@ -1868,6 +1925,8 @@
                 <span class="field-chip">details</span>
                 <span class="field-chip">program</span>
                 <span class="field-chip">notes</span>
+                <span class="field-chip">contactName</span>
+                <span class="field-chip">contactDetails</span>
               </div>
             </div>
             <div class="field-section">
@@ -1888,7 +1947,9 @@
   <span class="json-key">"period"</span>: <span class="json-string">"2026年4月20日〜4月23日"</span>,
   <span class="json-key">"details"</span>: <span class="json-string">"境内にて..."</span>,
   <span class="json-key">"program"</span>: <span class="json-string">"10:00 神事.../ 15:00 閉会"</span>,
-  <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は..."</span>
+  <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は..."</span>,
+  <span class="json-key">"contactName"</span>: <span class="json-string">"○○神社"</span>,
+  <span class="json-key">"contactDetails"</span>: <span class="json-string">"〒000-0000 東京都○○区○○ / 03-0000-0000 / info@example.com"</span>
 }</div>
             <div class="json-block"><span class="json-label">Response</span>
 {
@@ -1951,6 +2012,8 @@
               <tr class="field-used"><td>プログラム（変更後）</td><td>→ program</td></tr>
               <tr class="field-used"><td>詳細</td><td>→ details</td></tr>
               <tr class="field-used"><td>備考</td><td>→ notes</td></tr>
+              <tr class="field-used"><td>連絡先名</td><td>→ contactName</td></tr>
+              <tr class="field-used"><td>連絡先詳細</td><td>→ contactDetails</td></tr>
             </table>
           </div>
         </div>
@@ -1994,14 +2057,22 @@ function showStep(n) {
 
   // Reset sub-steps
   if (n === 1) showSubStep(1, 'a');
-  if (n === 3) showSubStep(3, 'a');
   if (n === 4) showSubStep(4, 'a');
   if (n === 5) showSubStep(5, 'a');
   if (n === 6) showSubStep(6, 'a');
 }
 
 function showSubStep(step, sub) {
-  const subs = ['a', 'b', 'c'];
+  // Determine valid sub-steps per step
+  var subsMap = {
+    1: ['a', 'b', 'c'],
+    2: ['a', 'b', 'c'],
+    3: ['a', 'b', 'c'],
+    4: ['a', 'b', 'c', 'd'],
+    5: ['a', 'b'],
+    6: ['a', 'b', 'c']
+  };
+  const subs = subsMap[step] || ['a', 'b', 'c'];
   const container = document.getElementById('step' + step);
 
   // Update sub-step buttons
@@ -2029,31 +2100,22 @@ function showSubStep(step, sub) {
     if (p1c) p1c.style.display = (sub === 'c') ? 'block' : 'none';
   }
 
-  if (step === 3) {
-    const pNoApi = document.getElementById('panel-step3-noapi');
-    const pDbRead = document.getElementById('panel-step3-dbread');
-    const pDbWrite = document.getElementById('panel-step3-dbwrite');
-    // 3-a: DB読み取り（テンプレ一覧）
-    if (pNoApi) pNoApi.style.display = 'block';
-    if (pDbRead) pDbRead.style.display = (sub === 'a') ? 'block' : 'none';
-    // 3-b: DB書き込み（行事データ保存）
-    if (pDbWrite) pDbWrite.style.display = (sub === 'b') ? 'block' : 'none';
-  }
-
   if (step === 4) {
+    const pNoApi = document.getElementById('panel-step4-noapi');
+    const pEvalDbRead = document.getElementById('panel-step4-eval-dbread');
     const pPost = document.getElementById('panel-step4-post');
     const pPoll = document.getElementById('panel-step4-poll');
     const pDbRead = document.getElementById('panel-step4-dbread');
-    const pDbWrite = document.getElementById('panel-step4-dbwrite');
     const pBubbleWrite = document.getElementById('panel-step4-bubblewrite');
-    // 4-a: POST + DB読み取り（リクエスト構築用）
-    if (pPost) pPost.style.display = (sub === 'a') ? 'block' : 'none';
-    if (pDbRead) pDbRead.style.display = (sub === 'a') ? 'block' : 'none';
-    // 4-b: ポーリング + Brother DB書き込み
-    if (pPoll) pPoll.style.display = (sub === 'b') ? 'block' : 'none';
-    if (pDbWrite) pDbWrite.style.display = (sub === 'b') ? 'block' : 'none';
-    // 4-c: Bubble DB書き込み（完了後）
-    if (pBubbleWrite) pBubbleWrite.style.display = (sub === 'c') ? 'block' : 'none';
+    // 4-a, 4-b: 評価（API呼び出しなし + Bubble DB読み取り）
+    if (pNoApi) pNoApi.style.display = (sub === 'a' || sub === 'b') ? 'block' : 'none';
+    if (pEvalDbRead) pEvalDbRead.style.display = (sub === 'a' || sub === 'b') ? 'block' : 'none';
+    // 4-c: POST + ポーリング + DB読み取り
+    if (pPost) pPost.style.display = (sub === 'c') ? 'block' : 'none';
+    if (pPoll) pPoll.style.display = (sub === 'c') ? 'block' : 'none';
+    if (pDbRead) pDbRead.style.display = (sub === 'c') ? 'block' : 'none';
+    // 4-d: Bubble DB書き込み（完了後）
+    if (pBubbleWrite) pBubbleWrite.style.display = (sub === 'd') ? 'block' : 'none';
   }
 
   if (step === 6) {
@@ -2071,16 +2133,16 @@ function showSubStep(step, sub) {
   }
 
   if (step === 5) {
-    const pRating = document.getElementById('panel-step5-rating');
-    const pRatingDbRead = document.getElementById('panel-step5-rating-dbread');
-    const pRatingDbWrite = document.getElementById('panel-step5-rating-dbwrite');
     const pDl = document.getElementById('panel-step5-dl');
     const pDb = document.getElementById('panel-step5-db');
-    if (pRating) pRating.style.display = (sub === 'a') ? 'block' : 'none';
-    if (pRatingDbRead) pRatingDbRead.style.display = (sub === 'a') ? 'block' : 'none';
-    if (pRatingDbWrite) pRatingDbWrite.style.display = (sub === 'a') ? 'block' : 'none';
-    if (pDl) pDl.style.display = (sub === 'b') ? 'block' : 'none';
-    if (pDb) pDb.style.display = (sub === 'b') ? 'block' : 'none';
+    const pReevalNoApi = document.getElementById('panel-step5-reeval-noapi');
+    const pReevalDbWrite = document.getElementById('panel-step5-reeval-dbwrite');
+    // 5-a: DL用API + DB読み取り
+    if (pDl) pDl.style.display = (sub === 'a') ? 'block' : 'none';
+    if (pDb) pDb.style.display = (sub === 'a') ? 'block' : 'none';
+    // 5-b: 再評価（API呼び出しなし + Bubble DB書き込み）
+    if (pReevalNoApi) pReevalNoApi.style.display = (sub === 'b') ? 'block' : 'none';
+    if (pReevalDbWrite) pReevalDbWrite.style.display = (sub === 'b') ? 'block' : 'none';
   }
 }
 
@@ -2282,89 +2344,22 @@ function stopStep2Anim() {
   if (cursor) cursor.style.opacity = '0';
 }
 
-// ========== STEP 3 animation ==========
-let step3AnimTimer = null;
-
-function startStep3Anim() {
-  const cards = [
-    document.getElementById('s3-tpl-1'),
-    document.getElementById('s3-tpl-2'),
-    document.getElementById('s3-tpl-3')
-  ];
-
-  // Timeline: cursor browsing through cards, then selects card 1
-  // 0: reset
-  // 1: hover card 1
-  // 2: hover card 2
-  // 3: hover card 3
-  // 4: back to card 1
-  // 5: select card 1 (highlight)
-  // 6: pause
-  // 7: reset
-  let step = 0;
-  const totalSteps = 8;
-
-  function clearCards() {
-    cards.forEach(c => { if(c) { c.classList.remove('selected'); c.style.boxShadow = ''; } });
-  }
-
-  function hoverCard(idx) {
-    clearCards();
-    if (cards[idx]) cards[idx].style.boxShadow = '0 0 0 3px rgba(99,102,241,.25)';
-  }
-
-  function tick() {
-    switch(step) {
-      case 0: clearCards(); break;
-      case 1: hoverCard(0); break;
-      case 2: hoverCard(1); break;
-      case 3: hoverCard(2); break;
-      case 4: hoverCard(0); break;
-      case 5:
-        clearCards();
-        if (cards[0]) { cards[0].classList.add('selected'); cards[0].style.boxShadow = '0 0 0 3px rgba(99,102,241,.4)'; }
-        break;
-      case 6: break; // pause
-      case 7: clearCards(); break;
-    }
-    step = (step + 1) % totalSteps;
-  }
-
-  tick();
-  step3AnimTimer = setInterval(tick, 700);
-}
-
-function stopStep3Anim() {
-  if (step3AnimTimer) {
-    clearInterval(step3AnimTimer);
-    step3AnimTimer = null;
-  }
-  ['s3-tpl-1','s3-tpl-2','s3-tpl-3'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.classList.remove('selected'); el.style.boxShadow = ''; }
-  });
-}
-
 // Start/stop animation based on which step/substep is visible
 const origShowStep = showStep;
 showStep = function(n) {
   stopPopupAnim();
   stopStep2Anim();
-  stopStep3Anim();
   origShowStep(n);
   if (n === 1) startPopupAnim();
   if (n === 2) startStep2Anim();
-  if (n === 3) startStep3Anim();
 };
 
 const origShowSubStep = showSubStep;
 showSubStep = function(step, sub) {
   stopPopupAnim();
   stopStep2Anim();
-  stopStep3Anim();
   origShowSubStep(step, sub);
   if (step === 1 && sub === 'a') startPopupAnim();
-  if (step === 3 && sub === 'a') startStep3Anim();
 };
 
 // Start on load

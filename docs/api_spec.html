@@ -2703,12 +2703,11 @@ sequenceDiagram
       </div>
     </div>
 
-    <!-- ステップ3: 行事新規作成 -->
+    <!-- ステップ3: 行事情報を編集 -->
     <div class="flow-accordion">
       <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">3</span>
-        <span style="font-weight:700; color:var(--gray-900);">行事を新規作成する</span>
-        <span style="font-size:.7rem; font-weight:600; padding:2px 8px; border-radius:4px; background:var(--blue-bg); color:var(--blue);">任意 - スキップ可</span>
+        <span style="font-weight:700; color:var(--gray-900);">行事情報を編集する</span>
         <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / Bubble DB保存（API呼ばない）</span>
         <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#fef3c7; color:#b45309; font-weight:600;">Bubble: 行事データ</span>
         <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
@@ -2719,46 +2718,39 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text">行事テンプレートを選択して行事を作成できる（テンプレートの情報がデフォルト値として入る）。</div>
-            </div>
-          </li>
-          <li class="step-item">
-            <span class="step-dot user"></span>
-            <div class="step-content">
-              <div class="step-who">ユーザー</div>
-              <div class="step-text"><strong>テンプレートを選択しないで</strong>行事を作成することも可能。この場合、すべて手入力。</div>
+              <div class="step-text">行事一覧から行事を選択し、<strong>行事情報を編集</strong>する。<br>
+                編集可能なフィールド: <strong>行事名</strong>・<strong>開催期間</strong>・<strong>行事詳細</strong>・<strong>プログラム</strong>・<strong>備考</strong>・<strong>連絡先名</strong>・<strong>連絡先詳細</strong></div>
             </div>
           </li>
           <li class="step-item">
             <span class="step-dot frontend"></span>
             <div class="step-content">
               <div class="step-who">Bubble</div>
-              <div class="step-text">行事データを<strong>Bubble DBに保存</strong>。Brother APIは呼ばない。</div>
+              <div class="step-text">行事フィールド（行事名・開催期間・行事詳細・プログラム・備考）のデフォルト値は<strong>行事テンプレート</strong>から取得。<br>
+                連絡先フィールド（連絡先名・連絡先詳細）のデフォルト値は<strong>企業情報</strong>から取得。</div>
+              <div class="step-note">ユーザーが自由に編集可能。編集結果はBubble DBに保存される</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">すべて<strong>Bubble DBに保存</strong>。Brother APIは呼ばない。</div>
+              <div class="step-note">STEP4のAI生成時に、ここで保存した行事データをAPIリクエストに含める</div>
             </div>
           </li>
         </ul>
-
-        <!-- 未解決ポイント -->
-        <div style="margin-top:16px; padding:12px 16px; background:var(--red-bg); border-radius:8px;">
-          <p style="font-size:.85rem; font-weight:600; color:var(--red); margin-bottom:4px;">これどうするの？</p>
-          <p style="font-size:.8rem; color:var(--gray-700); line-height:1.8; margin:0;">
-            テンプレートなしで行事を作成した場合、<strong>ソースイメージグループ（背景画像）が紐づいていない</strong>。<br>
-            この状態で「生成」ボタンを押したらどうなる？<code>sourceImageId</code> がないので生成できないはず。<br><br>
-            → <strong>要確認</strong>
-          </p>
-        </div>
-
       </div>
     </div>
 
-    <!-- ステップ4: 原稿生成 -->
+    <!-- ステップ4: デザイン評価 → 原稿生成 -->
     <div class="flow-accordion">
       <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">4</span>
-        <span style="font-weight:700; color:var(--gray-900);">原稿を生成する</span>
-        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / POST /generated-images → GET /generated-images/{generatedImageId} でポーリング</span>
+        <span style="font-weight:700; color:var(--gray-900);">デザインを評価して生成する</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / 3種デザイン評価 → POST /generated-images × 7サイズ → GET /generated-images/{generatedImageId} でポーリング</span>
         <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#eff6ff; color:#3b82f6; font-weight:600;">Generated Image DB</span>
-        <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#fef3c7; color:#b45309; font-weight:600;">Bubble: 生成画像</span>
+        <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#fef3c7; color:#b45309; font-weight:600;">Bubble: 生成画像 / 評価</span>
         <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
       <div class="flow-accordion-body">
@@ -2767,21 +2759,36 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text">行事一覧から行事を選択する。<strong>初期表示では原稿は何も表示されない</strong>（未生成状態）。</div>
+              <div class="step-text">行事一覧から行事を選択する。行事詳細画面で<strong>3種類のデザインサムネイル</strong>が表示される（STEP1で登録したソースイメージグループの代表画像）。</div>
             </div>
           </li>
           <li class="step-item">
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text">右上の<strong>「生成」ボタン</strong>を押下する。</div>
+              <div class="step-text"><strong>3種類すべてのデザインに五段階評価</strong>をつける。</div>
+              <div class="step-note">評価データはBubble DBに保存（Brother APIは呼ばない）</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot frontend"></span>
+            <div class="step-content">
+              <div class="step-who">Bubble</div>
+              <div class="step-text">3種類すべてを評価すると<strong>「この評価で決定して全サイズを生成」ボタンが活性化</strong>される。</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text"><strong>「この評価で決定して全サイズを生成」ボタン</strong>を押下する。</div>
             </div>
           </li>
           <li class="step-item">
             <span class="step-dot frontend"></span>
             <div class="step-content">
               <div class="step-who">Bubble → Brother API</div>
-              <div class="step-text"><code>POST /generated-images</code> で<strong>行事情報をAPIに渡して原稿を生成</strong>する。<br>Bubble DBに保存済みの行事データ（行事名・期間・プログラム等）を展開してリクエストに含める。</div>
+              <div class="step-text"><code>POST /generated-images</code> で<strong>行事情報をAPIに渡して原稿を生成</strong>する。<br>Bubble DBに保存済みの行事データ（行事名・期間・プログラム等）を展開してリクエストに含める。<strong>7サイズ分を並列にPOST</strong>する。</div>
             </div>
           </li>
           <li class="step-item">
@@ -2829,6 +2836,8 @@ sequenceDiagram
                 <span class="field-chip">details</span>
                 <span class="field-chip">program</span>
                 <span class="field-chip">notes</span>
+                <span class="field-chip">contactName</span>
+                <span class="field-chip">contactDetails</span>
               </div>
               <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">sourceImageIdを直接指定。STEP1で取得済みのBubble DB.ソースイメージグループ画像から取得</p>
             </div>
@@ -2921,8 +2930,8 @@ sequenceDiagram
     <div class="flow-accordion">
       <div class="flow-accordion-header" onclick="this.parentElement.classList.toggle('open')">
         <span class="phase-num">5</span>
-        <span style="font-weight:700; color:var(--gray-900);">評価・ダウンロードする</span>
-        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / 評価はBubble DB / DLはfileKeyからURL取得</span>
+        <span style="font-weight:700; color:var(--gray-900);">ダウンロード・再評価</span>
+        <span style="font-size:.75rem; color:var(--gray-500);">ユーザー / DLはfileKeyからURL取得 / 再評価はBubble DBのみ</span>
         <span style="font-size:.7rem; padding:2px 8px; border-radius:4px; background:#fef3c7; color:#b45309; font-weight:600;">Bubble: 生成画像 / 評価</span>
         <svg class="flow-accordion-toggle" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4.427 5.427a.75.75 0 011.06-.073L8 7.586l2.513-2.232a.75.75 0 01.987 1.132l-3 2.667a.75.75 0 01-.987 0l-3-2.667a.75.75 0 01-.086-1.06z"/></svg>
       </div>
@@ -2932,29 +2941,37 @@ sequenceDiagram
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text"><strong>3種類のソースイメージグループ</strong>それぞれに<strong>五段階評価</strong>をつける。</div>
-              <div class="step-note">例: A3のデザイン2をDLしたい場合、A3のデザイン1,2,3すべてを評価する必要がある</div>
+              <div class="step-text">生成完了後、<strong>7サイズ分の生成結果</strong>がダウンロードボタン付きで一覧表示される。</div>
+              <div class="step-note">評価はSTEP4で完了済みのため、ダウンロードに評価の前提条件はない</div>
+            </div>
+          </li>
+          <li class="step-item">
+            <span class="step-dot user"></span>
+            <div class="step-content">
+              <div class="step-who">ユーザー</div>
+              <div class="step-text">任意のサイズの<strong>ダウンロードボタン</strong>を押して画像をダウンロードする。</div>
             </div>
           </li>
           <li class="step-item">
             <span class="step-dot frontend"></span>
             <div class="step-content">
-              <div class="step-who">Bubble</div>
-              <div class="step-text">評価データは<strong>Bubble DBに保存</strong>する。Brother APIは呼ばない。</div>
+              <div class="step-who">Bubble → Brother API</div>
+              <div class="step-text"><code>GET /files/{fileKey}/url</code> で<strong>署名付き一時URLを取得</strong>し、ダウンロードを実行する。</div>
             </div>
           </li>
           <li class="step-item">
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text">3種類すべて評価すると<strong>「この原稿をダウンロード」ボタンが活性化</strong>される。</div>
+              <div class="step-text">必要に応じて<strong>モーダルからデザインの再評価</strong>を行うことができる。</div>
+              <div class="step-note">再評価はBubble DB上の評価データを更新するのみ。生成済み画像には影響しない</div>
             </div>
           </li>
           <li class="step-item">
             <span class="step-dot user"></span>
             <div class="step-content">
               <div class="step-who">ユーザー</div>
-              <div class="step-text">「この原稿をダウンロード」を押して<strong>画像をダウンロード</strong>する。</div>
+              <div class="step-text">別のデザインで再生成したい場合は、<strong>STEP6（再生成）</strong>へ進む。</div>
             </div>
           </li>
         </ul>
@@ -2965,9 +2982,9 @@ sequenceDiagram
           <table class="field-table">
             <thead><tr><th>タイミング</th><th>やること</th><th>API</th></tr></thead>
             <tbody>
-              <tr><td><strong>初回生成時（STEP4）</strong></td><td>POSTで生成開始 → GETポーリングで完了後に fileKey + thumbnailUrl を取得し、Bubble DBに保存</td><td>POST /generated-images → GET /generated-images/{id}</td></tr>
               <tr><td><strong>一覧表示時（毎回）</strong></td><td>Bubble DBの thumbnailUrl で直接表示（APIコール不要）</td><td style="color:var(--green); font-weight:600;">APIは呼ばない</td></tr>
-              <tr><td><strong>ダウンロード時</strong></td><td>Bubble DBの fileKey で一時DL用URLを取得</td><td style="color:var(--green); font-weight:600;">GET /files/{fileKey}/url</td></tr>
+              <tr><td><strong>ダウンロード時</strong></td><td>Bubble DBの fileKey で一時DL用URLを取得。評価の前提条件なし</td><td style="color:var(--green); font-weight:600;">GET /files/{fileKey}/url</td></tr>
+              <tr><td><strong>再評価時</strong></td><td>モーダルで評価を更新。Bubble DBのみで完結</td><td style="color:var(--green); font-weight:600;">APIは呼ばない（Bubble DBのみ）</td></tr>
               <tr><td><strong>行事情報を変更した時</strong></td><td>再生成が必要 → STEP6へ</td><td>POST /generated-images/{generatedImageId}/regenerate（STEP6で詳述）</td></tr>
             </tbody>
           </table>
@@ -3082,6 +3099,8 @@ sequenceDiagram
                 <span class="field-chip">details</span>
                 <span class="field-chip">program</span>
                 <span class="field-chip">notes</span>
+                <span class="field-chip">contactName</span>
+                <span class="field-chip">contactDetails</span>
               </div>
               <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">テンプレート・サイズは元の生成結果から引き継ぐため指定不要</p>
             </div>
@@ -3417,9 +3436,9 @@ sequenceDiagram
               <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP0</span> Brotherがソースイメージグループ・元原稿画像を登録</div>
               <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP1</span> 管理者がテンプレートを選択・業界を紐付け</div>
               <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP2</span> 管理者が行事テンプレートを作成しソースイメージグループを紐付け</div>
-              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP3</span> ユーザーが行事を新規作成（テンプレートから or 手入力）</div>
-              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP4</span> <strong>AI生成</strong>（API送信 → ポーリング → 結果保存）</div>
-              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP5</span> ユーザーが生成結果を確認・ダウンロード</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP3</span> ユーザーが行事情報を編集（連絡先名・連絡先詳細を含む）</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP4</span> <strong>デザインを評価して生成</strong>（3種評価 → 全サイズ生成 → ポーリング → 結果保存）</div>
+              <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP5</span> ダウンロード・再評価</div>
               <div style="display:flex; align-items:center; gap:8px;"><span style="background:var(--primary); color:#fff; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:4px; min-width:52px; text-align:center;">STEP6</span> 必要に応じて再生成</div>
             </div>
           </div>
@@ -3613,7 +3632,7 @@ sequenceDiagram
             <div style="padding:0 8px; color:#94a3b8; font-size:20px;">→</div>
             <div style="padding:14px 18px; background:#f0fdf4;">
               <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">確定設計</div>
-              <div style="color:#16a34a; font-weight:600;"><code>sourceImageId</code> + 行事情報（eventName, period, details, program, notes）</div>
+              <div style="color:#16a34a; font-weight:600;"><code>sourceImageId</code> + 行事情報（eventName, period, details, program, notes, contactName, contactDetails）</div>
             </div>
           </div>
         </div>
@@ -3732,7 +3751,7 @@ sequenceDiagram
             <tr>
               <td>1</td>
               <td><strong>リクエスト構造の拡張は対応可能か</strong></td>
-              <td>現行の <code>originalText</code> / <code>replaceText</code> → <code>eventName</code>, <code>period</code>, <code>details</code>, <code>program</code>, <code>notes</code> の複数フィールド対応。確定設計の構造をこちらから提案する形で良いか</td>
+              <td>現行の <code>originalText</code> / <code>replaceText</code> → <code>eventName</code>, <code>period</code>, <code>details</code>, <code>program</code>, <code>notes</code>, <code>contactName</code>, <code>contactDetails</code> の複数フィールド対応。確定設計の構造をこちらから提案する形で良いか</td>
               <td>STEP4</td>
             </tr>
             <tr>
@@ -3862,6 +3881,8 @@ sequenceDiagram
           <tr><td><span class="field-name">eventDetails</span></td><td>詳細</td><td></td></tr>
           <tr><td><span class="field-name">eventProgram</span></td><td>プログラム</td><td></td></tr>
           <tr><td><span class="field-name">notes</span></td><td>備考</td><td></td></tr>
+          <tr><td><span class="field-name">contactName</span></td><td>連絡先名</td><td></td></tr>
+          <tr><td><span class="field-name">contactDetails</span></td><td>連絡先詳細</td><td></td></tr>
           <tr><td><span class="field-name">createdAt</span></td><td>作成日時</td><td></td></tr>
           <tr><td><span class="field-name">updatedAt</span></td><td>更新日時</td><td></td></tr>
           <tr><td><span class="field-name">deletedAt</span><span class="field-optional">任意</span></td><td>削除日時</td><td></td></tr>
@@ -3989,6 +4010,8 @@ sequenceDiagram
             <tr><td>プログラム</td><td></td></tr>
             <tr><td>詳細</td><td></tr>
             <tr><td>注釈</td><td></tr>
+            <tr><td>連絡先名</td><td></td></tr>
+            <tr><td>連絡先詳細</td><td></td></tr>
           </tbody>
         </table>
       </div>
@@ -4103,6 +4126,8 @@ erDiagram
         string eventDetails
         string eventProgram
         string notes
+        string contactName
+        string contactDetails
         datetime createdAt
         datetime updatedAt
         datetime deletedAt
@@ -4304,6 +4329,8 @@ erDiagram
                   <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">eventDetails</div>
                   <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">eventProgram</div>
                   <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">notes</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">contactName</div>
+                  <div style="background:#2a2a3e; border:1px solid #4a4a60; border-radius:4px; padding:2px 8px; font-size:.75rem; color:#e2e8f0; font-family:monospace;">contactDetails</div>
                 </div>
               </div>
             </div>
@@ -4432,7 +4459,7 @@ erDiagram
       <ul style="font-size:.85rem; color:var(--gray-700); margin:0; padding-left:16px; line-height:2;">
         <li><strong>Source Image Group DB 新設</strong> — ブラザー側でデザインのグルーピングを管理。Bubbleはdesign TemplateId + sourceImageIdを保持</li>
         <li><strong>sourceImageId直接指定</strong> — 生成リクエストでsourceImageIdを直接指定。STEP1で取得済みのため、Brother側の内部解決が不要でシンプル</li>
-        <li><strong>行事情報はBubble側で管理</strong> — Brother側Generated Image DBには行事データを持たない。生成・再生成時にBubbleからリクエストパラメータとして都度送信</li>
+        <li><strong>行事情報はBubble側で管理</strong> — Brother側Generated Image DBには行事データを持たない。生成・再生成時にBubbleからリクエストパラメータとして都度送信（eventName, period, details, program, notes, contactName, contactDetails）</li>
         <li><strong>fileKey + thumbnailUrl の使い分け</strong> — サムネイルは <code>thumbnailUrl</code>（公開URL・期限なし）で直接表示。DL用フルサイズ画像は <code>fileKey</code>（永続識別子）を保存し、DL時に <code>GET /files/{fileKey}/url</code> で一時URLを取得</li>
         <li><strong>Common Print DB 新設</strong> — 共通印刷物を行事用Source Imageと分離</li>
       </ul>
@@ -4565,6 +4592,8 @@ erDiagram
               <span class="field-chip">details</span>
               <span class="field-chip">program</span>
               <span class="field-chip">notes</span>
+              <span class="field-chip">contactName</span>
+              <span class="field-chip">contactDetails</span>
             </div>
             <p style="font-size:.8rem; color:var(--green); font-weight:600; margin-top:8px;">sourceImageIdを直接指定。STEP1で取得済みのBubble DB.ソースイメージグループ画像から取得</p>
           </div>
@@ -4590,7 +4619,9 @@ erDiagram
   <span class="json-key">"period"</span>: <span class="json-string">"2026年4月20日（日）〜4月22日（火）"</span>,  <span class="json-comment">// Bubble DB.行事データ.期間</span>
   <span class="json-key">"details"</span>: <span class="json-string">"境内にて神事・奉納行事を執り行います"</span>,  <span class="json-comment">// Bubble DB.行事データ.詳細</span>
   <span class="json-key">"program"</span>: <span class="json-string">"10:00 神事 / 11:00 奉納舞 / 13:00 餅まき"</span>,  <span class="json-comment">// Bubble DB.行事データ.プログラム</span>
-  <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は社務所にて執り行います"</span>  <span class="json-comment">// Bubble DB.行事データ.備考</span>
+  <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は社務所にて執り行います"</span>,  <span class="json-comment">// Bubble DB.行事データ.備考</span>
+  <span class="json-key">"contactName"</span>: <span class="json-string">"○○神社"</span>,  <span class="json-comment">// Bubble DB.行事データ.連絡先名</span>
+  <span class="json-key">"contactDetails"</span>: <span class="json-string">"〒000-0000 ○○市○○町1-2-3\nTEL: 000-000-0000\nmail@example.com"</span>  <span class="json-comment">// Bubble DB.行事データ.連絡先詳細</span>
 }</div>
             <div class="json-block" style="margin-top:8px;"><span class="json-label">Response</span>
 {
@@ -4671,6 +4702,8 @@ erDiagram
               <span class="field-chip">details</span>
               <span class="field-chip">program</span>
               <span class="field-chip">notes</span>
+              <span class="field-chip">contactName</span>
+              <span class="field-chip">contactDetails</span>
             </div>
           </div>
           <div class="detail-section">
@@ -4694,7 +4727,9 @@ erDiagram
   <span class="json-key">"period"</span>: <span class="json-string">"2026年4月20日（日）〜4月23日（水）"</span>,  <span class="json-comment">// Bubble DB.行事データ.期間</span>
   <span class="json-key">"details"</span>: <span class="json-string">"境内にて神事・奉納行事を執り行います"</span>,  <span class="json-comment">// Bubble DB.行事データ.詳細</span>
   <span class="json-key">"program"</span>: <span class="json-string">"10:00 神事 / 11:00 奉納舞 / 13:00 餅まき / 15:00 閉会"</span>,  <span class="json-comment">// Bubble DB.行事データ.プログラム</span>
-  <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は社務所にて執り行います"</span>  <span class="json-comment">// Bubble DB.行事データ.備考</span>
+  <span class="json-key">"notes"</span>: <span class="json-string">"雨天時は社務所にて執り行います"</span>,  <span class="json-comment">// Bubble DB.行事データ.備考</span>
+  <span class="json-key">"contactName"</span>: <span class="json-string">"○○神社"</span>,  <span class="json-comment">// Bubble DB.行事データ.連絡先名</span>
+  <span class="json-key">"contactDetails"</span>: <span class="json-string">"〒000-0000 ○○市○○町1-2-3\nTEL: 000-000-0000\nmail@example.com"</span>  <span class="json-comment">// Bubble DB.行事データ.連絡先詳細</span>
 }</div>
             <div class="json-block" style="margin-top:8px;"><span class="json-label">Response</span>
 {
