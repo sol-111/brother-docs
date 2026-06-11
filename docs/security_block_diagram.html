@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>セキュリティチェック用ブロック図 - 業界別行事デザイン自動生成サービス（POC）</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#dbeafe', primaryTextColor: '#1e3a5f', primaryBorderColor: '#3b82f6', lineColor: '#64748b', secondaryColor: '#f0fdf4', tertiaryColor: '#fef3c7', fontSize: '14px' }, flowchart: { htmlLabels: true, curve: 'stepBefore', diagramPadding: 12, nodeSpacing: 30, rankSpacing: 50 }, sequence: { mirrorActors: false, messageAlign: 'center' } });</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Helvetica Neue', 'Hiragino Sans', 'Meiryo', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.8; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 28px 60px; }
+
+  /* Header */
+  .header { margin-bottom: 44px; }
+  .header h1 { font-size: 1.7rem; color: #0f172a; margin-bottom: 6px; }
+  .header .meta { color: #64748b; font-size: 0.88rem; }
+  .header .meta span { margin-right: 20px; }
+  .header .badge { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 0.78rem; font-weight: 600; padding: 2px 10px; border-radius: 4px; margin-left: 8px; }
+
+  /* Section */
+  h2 { font-size: 1.3rem; color: #1e40af; margin: 52px 0 18px; padding: 8px 0 8px 16px; border-left: 4px solid #3b82f6; background: #f0f7ff; border-radius: 0 6px 6px 0; }
+  h3 { font-size: 1.0rem; color: #334155; margin: 30px 0 10px; }
+
+  /* Diagram wrapper */
+  .diagram-card { background: #fff; border-radius: 10px; padding: 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin: 16px 0 28px; overflow-x: auto; }
+  .diagram-card .mermaid { display: flex; justify-content: center; }
+  .diagram-card .caption { font-size: 0.8rem; color: #94a3b8; text-align: center; margin-top: 12px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 0.88rem; }
+  thead th { background: #1e40af; color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 0.84rem; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #f8fafc; }
+  code { background: #f1f5f9; padding: 1px 6px; border-radius: 3px; font-size: 0.82rem; color: #475569; }
+
+  /* Tags */
+  .tag { display: inline-block; padding: 1px 9px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+  .tag-ok { background: #dcfce7; color: #166534; }
+  .tag-pending { background: #fef9c3; color: #854d0e; }
+  .tag-required { background: #fee2e2; color: #991b1b; }
+  .tag-none { background: #e2e8f0; color: #475569; }
+
+  /* Notes */
+  .notes { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; font-size: 0.88rem; }
+  .notes li { margin: 4px 0 4px 18px; }
+
+  .footer { color: #94a3b8; font-size: 0.75rem; text-align: right; margin-top: 48px; padding-top: 16px; border-top: 1px solid #e2e8f0; }
+
+  @media print {
+    body { background: #fff; font-size: 11pt; }
+    .container { padding: 16px; max-width: 100%; }
+    .diagram-card, table { box-shadow: none; border: 1px solid #cbd5e1; break-inside: avoid; }
+    h2 { break-after: avoid; }
+    .mermaid svg { max-width: 100% !important; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ============================== Header ============================== -->
+<div class="header">
+  <h1>セキュリティチェック用ブロック図</h1>
+  <div class="meta">
+    <span>業界別行事デザイン自動生成サービス（POC）</span>
+    <span>作成日: 2026年5月28日</span>
+    <span>作成: アイビス</span>
+    <span class="badge">v1.0</span>
+  </div>
+</div>
+
+<!-- ============================== 1. システム構成図 ============================== -->
+<h2>1. システム構成図</h2>
+
+<div class="diagram-card">
+  <svg viewBox="0 0 1000 1350" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:960px; height:auto;" role="img" aria-label="システム全体構成図">
+    <style>
+      .zl   { font-size: 13.5px; font-weight: 700; }
+      .nt   { font-size: 14px;   font-weight: 700; text-anchor: middle; }
+      .ns   { font-size: 12.5px; text-anchor: middle; }
+      .edge { fill: none; stroke: #64748b; stroke-width: 2; stroke-linecap: round; }
+      .elabel { font-size: 13px; font-weight: 600; fill: #475569; text-anchor: middle;
+                paint-order: stroke; stroke: #fff; stroke-width: 5px; stroke-linejoin: round; }
+    </style>
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+      </marker>
+      <filter id="ds" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#0f172a" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <!-- ======== ゾーン ======== -->
+    <rect x="330" y="16"  width="340" height="116" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="500" y="40" class="zl" fill="#475569" text-anchor="middle">👤 ユーザー端末</text>
+
+    <rect x="300" y="210" width="680" height="310" rx="14" fill="#f0f7ff" stroke="#b6d3f2" stroke-width="1.5"/>
+    <text x="320" y="238" class="zl" fill="#1e40af">🟢 Bubble（PaaS）</text>
+
+    <rect x="10" y="300" width="230" height="170" rx="14" fill="#fefce8" stroke="#e8d99b" stroke-width="1.5"/>
+    <text x="125" y="330" class="zl" fill="#854d0e" text-anchor="middle">📧 メール送信</text>
+
+    <rect x="20" y="590" width="960" height="740" rx="14" fill="#fff9ee" stroke="#f0d9a7" stroke-width="1.5"/>
+    <text x="44" y="618" class="zl" fill="#8a5a00">🔴 Brother（BIL）環境</text>
+
+    <rect x="60" y="900" width="760" height="215" rx="12" fill="#ffffff" fill-opacity="0.55" stroke="#dcc89a" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="440" y="930" class="zl" fill="#8a6d1f" text-anchor="middle">データベース</text>
+
+    <!-- ======== 接続線 ======== -->
+    <path class="edge" d="M 500 118 V 250" marker-end="url(#arr)"/>
+    <text x="500" y="192" class="elabel">HTTPS（TLS 1.2+）</text>
+
+    <path class="edge" d="M 655 310 H 698" marker-start="url(#arr)" marker-end="url(#arr)"/>
+    <path class="edge" d="M 500 348 V 428" marker-end="url(#arr)"/>
+    <path class="edge" d="M 300 395 H 226" marker-end="url(#arr)"/>
+
+    <path class="edge" d="M 500 480 V 620" marker-end="url(#arr)"/>
+    <text x="500" y="556" class="elabel">HTTPS（TLS 1.2+）</text>
+
+    <path class="edge" d="M 655 670 H 698" marker-end="url(#arr)"/>
+    <path class="edge" d="M 868 718 V 788" marker-end="url(#arr)"/>
+    <path class="edge" d="M 745 718 V 949" marker-end="url(#arr)"/>
+
+    <path class="edge" d="M 540 718 V 949" marker-start="url(#arr)" marker-end="url(#arr)"/>
+    <path class="edge" d="M 400 718 V 844 Q 400 852 392 852 H 178 Q 170 852 170 860 V 949" marker-start="url(#arr)" marker-end="url(#arr)"/>
+    <path class="edge" d="M 460 718 V 872 Q 460 880 452 880 H 363 Q 355 880 355 888 V 949" marker-start="url(#arr)" marker-end="url(#arr)"/>
+    <path class="edge" d="M 620 718 V 844 Q 620 852 628 852 H 682 Q 690 852 690 860 V 949" marker-start="url(#arr)" marker-end="url(#arr)"/>
+
+    <path class="edge" d="M 345 694 H 48 Q 40 694 40 702 V 1227 Q 40 1235 48 1235 H 388" marker-start="url(#arr)" marker-end="url(#arr)"/>
+    <path class="edge" d="M 868 854 V 1227 Q 868 1235 860 1235 H 652" marker-end="url(#arr)"/>
+
+    <!-- ======== ユーザー端末 ======== -->
+    <rect x="355" y="54" width="290" height="64" rx="10" fill="#f1f5f9" stroke="#475569" stroke-width="2" filter="url(#ds)"/>
+    <text x="500" y="82"  class="nt" fill="#1e293b">Webブラウザ（PC）</text>
+    <text x="500" y="104" class="ns" fill="#1e293b">最大20名（POC）</text>
+
+    <!-- ======== Bubble ======== -->
+    <rect x="345" y="252" width="310" height="96" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" filter="url(#ds)"/>
+    <text x="500" y="283" class="nt" fill="#3b0764">Frontend（SPA）</text>
+    <text x="500" y="307" class="ns" fill="#3b0764">ユーザー認証 / 行事管理</text>
+    <text x="500" y="328" class="ns" fill="#3b0764">デザイン生成・評価 / 管理者画面</text>
+
+    <g filter="url(#ds)">
+      <path d="M 700 271 V 359 A 125 16 0 0 0 950 359 V 271" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+      <ellipse cx="825" cy="271" rx="125" ry="16" fill="#e7f0fd" stroke="#2563eb" stroke-width="2"/>
+    </g>
+    <text x="825" y="312" class="nt" fill="#1e3a5f">Bubble DB</text>
+    <text x="825" y="335" class="ns" fill="#1e3a5f">ユーザー情報 / 行事情報</text>
+    <text x="825" y="356" class="ns" fill="#1e3a5f">行事テンプレート / 評価・ログ</text>
+
+    <rect x="410" y="430" width="180" height="50" rx="10" fill="#e2e8f0" stroke="#64748b" stroke-width="2" filter="url(#ds)"/>
+    <text x="500" y="461" class="nt" fill="#334155" style="font-size:13.5px">API Connector</text>
+
+    <!-- ======== メール送信 ======== -->
+    <rect x="26" y="345" width="198" height="100" rx="10" fill="#fefce8" stroke="#ca8a04" stroke-width="2" filter="url(#ds)"/>
+    <text x="125" y="377" class="nt" fill="#713f12" style="font-size:13.5px">Bubble内蔵メール</text>
+    <text x="125" y="399" class="ns" fill="#713f12" style="font-size:12px">POC: 1日20件制限</text>
+    <text x="125" y="420" class="ns" fill="#713f12" style="font-size:12px">本番: SendGrid連携予定</text>
+
+    <!-- ======== Brother（BIL） ======== -->
+    <rect x="345" y="622" width="310" height="96" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2" filter="url(#ds)"/>
+    <text x="500" y="653" class="nt" fill="#14532d">Backend API</text>
+    <text x="500" y="677" class="ns" fill="#14532d">RESTful / 認証・認可</text>
+    <text x="500" y="698" class="ns" fill="#14532d">リクエスト検証</text>
+
+    <rect x="700" y="622" width="270" height="96" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2" filter="url(#ds)"/>
+    <text x="835" y="653" class="nt" fill="#78350f">Generation Worker</text>
+    <text x="835" y="677" class="ns" fill="#78350f">非同期処理</text>
+    <text x="835" y="698" class="ns" fill="#78350f" style="font-size:11px">PROCESSING→COMPLETED→FAILED</text>
+
+    <rect x="765" y="790" width="205" height="64" rx="10" fill="#fce7f3" stroke="#db2777" stroke-width="2" filter="url(#ds)"/>
+    <text x="867" y="816" class="nt" fill="#831843">🤖 Generative AI</text>
+    <text x="867" y="839" class="ns" fill="#831843" style="font-size:12px">画像生成エンジン</text>
+
+    <!-- データベース群 -->
+    <g filter="url(#ds)">
+      <path d="M 85 965 V 1075 A 85 15 0 0 0 255 1075 V 965" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+      <ellipse cx="170" cy="965" rx="85" ry="15" fill="#e7f0fd" stroke="#2563eb" stroke-width="2"/>
+    </g>
+    <text x="170" y="1016" class="nt" fill="#1e3a5f" style="font-size:12.5px">Common Print DB</text>
+    <text x="170" y="1040" class="ns" fill="#1e3a5f" style="font-size:11.5px">共通印刷物</text>
+
+    <g filter="url(#ds)">
+      <path d="M 270 965 V 1075 A 85 15 0 0 0 440 1075 V 965" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+      <ellipse cx="355" cy="965" rx="85" ry="15" fill="#e7f0fd" stroke="#2563eb" stroke-width="2"/>
+    </g>
+    <text x="355" y="1016" class="nt" fill="#1e3a5f" style="font-size:12px">Source Image Group DB</text>
+    <text x="355" y="1040" class="ns" fill="#1e3a5f" style="font-size:11.5px">ソースイメージグループ</text>
+
+    <g filter="url(#ds)">
+      <path d="M 455 965 V 1075 A 85 15 0 0 0 625 1075 V 965" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+      <ellipse cx="540" cy="965" rx="85" ry="15" fill="#e7f0fd" stroke="#2563eb" stroke-width="2"/>
+    </g>
+    <text x="540" y="1016" class="nt" fill="#1e3a5f" style="font-size:12.5px">Source Image DB</text>
+    <text x="540" y="1040" class="ns" fill="#1e3a5f" style="font-size:11px">元原稿画像（Read Only）</text>
+
+    <g filter="url(#ds)">
+      <path d="M 640 965 V 1075 A 85 15 0 0 0 810 1075 V 965" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+      <ellipse cx="725" cy="965" rx="85" ry="15" fill="#e7f0fd" stroke="#2563eb" stroke-width="2"/>
+    </g>
+    <text x="725" y="1016" class="nt" fill="#1e3a5f" style="font-size:12.5px">Generated Image DB</text>
+    <text x="725" y="1040" class="ns" fill="#1e3a5f" style="font-size:11.5px">生成画像（CRUD）</text>
+
+    <!-- File Storage -->
+    <g filter="url(#ds)">
+      <path d="M 390 1186 V 1284 A 130 16 0 0 0 650 1284 V 1186" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+      <ellipse cx="520" cy="1186" rx="130" ry="16" fill="#fffbf5" stroke="#ea580c" stroke-width="2"/>
+    </g>
+    <text x="520" y="1226" class="nt" fill="#7c2d12">File Storage</text>
+    <text x="520" y="1250" class="ns" fill="#7c2d12" style="font-size:12px">画像ファイル保管</text>
+    <text x="520" y="1271" class="ns" fill="#7c2d12" style="font-size:12px">署名付きURL発行</text>
+  </svg>
+  <div class="caption">図1: システム全体構成 — 全通信経路はHTTPS（TLS 1.2以上）で暗号化</div>
+</div>
+
+<!-- ============================== 2. データフロー ============================== -->
+<h2>2. データフロー</h2>
+
+<h3>2.1 デザイン生成フロー</h3>
+<div class="diagram-card">
+  <pre class="mermaid">
+sequenceDiagram
+    actor User as ユーザー
+    participant FE as Bubble Frontend
+    participant API as Brother Backend API
+    participant SIDB as Source Image DB
+    participant GIDB as Generated Image DB
+    participant Worker as Generation Worker
+    participant AI as Generative AI
+    participant FS as File Storage
+
+    User->>FE: 「生成」ボタン押下
+    FE->>API: POST /generated-images<br/>{ sourceImageId, eventName, ... }
+    Note over FE,API: HTTPS（TLS 1.2+）
+
+    API->>SIDB: sourceImageId 存在確認
+    SIDB-->>API: OK
+
+    API->>GIDB: 生成レコード作成<br/>status = PENDING
+    GIDB-->>API: generatedImageId
+
+    API->>Worker: 非同期生成処理を開始
+    API-->>FE: generatedImageId, status=PENDING
+    FE-->>User: 「生成中」を表示
+
+    Worker->>GIDB: status = PROCESSING
+    Worker->>AI: 画像生成依頼
+    AI-->>Worker: 生成画像データ
+
+    Worker->>FS: 生成画像を保存
+    FS-->>Worker: fileKey
+
+    Worker->>GIDB: status = COMPLETED<br/>fileKey 更新
+
+    User->>FE: 生成結果を確認（ポーリング）
+    FE->>API: GET /generated-images/{id}
+    API->>GIDB: ステータス取得
+    GIDB-->>API: status=COMPLETED, fileKey
+    API->>FS: 表示用URL生成
+    FS-->>API: 署名付き一時URL
+    API-->>FE: status=COMPLETED, imageUrl
+    FE-->>User: 生成画像を表示
+  </pre>
+  <div class="caption">図2: デザイン生成フロー — 非同期生成 + ポーリングによるステータス確認</div>
+</div>
+
+<h3>2.2 ダウンロードフロー</h3>
+<div class="diagram-card">
+  <pre class="mermaid">
+sequenceDiagram
+    actor User as ユーザー
+    participant FE as Bubble Frontend
+    participant API as Brother Backend API
+    participant FS as File Storage
+
+    User->>FE: ダウンロードボタン押下
+    FE->>API: GET /files/url/{fileKey}
+    Note over FE,API: HTTPS（TLS 1.2+）
+    API->>FS: 署名付き一時URL発行
+    FS-->>API: 一時URL（有効期限付き）
+    API-->>FE: downloadUrl
+    FE-->>User: PPTXファイルダウンロード
+  </pre>
+  <div class="caption">図3: ダウンロードフロー — 署名付き一時URLによるセキュアなファイル取得</div>
+</div>
+
+<h3>2.3 認証フロー</h3>
+<div class="diagram-card">
+  <pre class="mermaid">
+sequenceDiagram
+    actor User as ユーザー
+    participant FE as Bubble Frontend
+    participant BDB as Bubble DB
+    participant MS as メール送信
+
+    Note over User,MS: 【初回登録】
+    User->>FE: アカウント登録<br/>（メール + パスワード）
+    FE->>BDB: ユーザー情報保存
+    FE->>MS: 認証メール送信
+    MS-->>User: 認証リンク付きメール
+    User->>FE: メールリンクをクリック
+    FE->>BDB: メール認証完了
+
+    Note over User,MS: 【ログイン】
+    User->>FE: メール + パスワード入力
+    FE->>BDB: 認証情報照合
+    BDB-->>FE: 認証OK
+    FE-->>User: セッション発行・ログイン完了
+  </pre>
+  <div class="caption">図4: 認証フロー — メールアドレス認証 + パスワード認証</div>
+</div>
+
+<!-- ============================== 3. セキュリティ対策 ============================== -->
+<h2>3. セキュリティ対策一覧</h2>
+
+<h3>3.1 認証・認可</h3>
+<table>
+  <thead><tr><th>項目</th><th>内容</th><th>ステータス</th></tr></thead>
+  <tbody>
+    <tr><td>認証方式</td><td>メールアドレス + パスワード</td><td><span class="tag tag-ok">確定</span></td></tr>
+    <tr><td>パスワード要件</td><td>英数8文字以上（記号不要）</td><td><span class="tag tag-ok">確定</span></td></tr>
+    <tr><td>メール認証</td><td>アカウント作成時に実施。認証後にサービス利用開始</td><td><span class="tag tag-ok">確定</span></td></tr>
+    <tr><td>セッション管理</td><td>Bubble 標準のセッション管理機能を使用</td><td><span class="tag tag-ok">確定</span></td></tr>
+    <tr><td>アカウント単位</td><td>企業単位で1アカウント</td><td><span class="tag tag-ok">確定</span></td></tr>
+    <tr><td>Bubble → Brother API 認証</td><td>ファイルDL・生成・再生成APIが認証対象（参照系GET APIは認証なし）。POC環境では無認証呼び出しを一時許可中で、API Gateway Authorizer 有効化により認証必須へ切替予定</td><td><span class="tag tag-ok">確定</span></td></tr>
+  </tbody>
+</table>
+
+<h3>3.2 通信セキュリティ</h3>
+<table>
+  <thead><tr><th>通信経路</th><th>プロトコル</th><th>備考</th></tr></thead>
+  <tbody>
+    <tr><td>ユーザー ↔ Bubble</td><td>HTTPS（TLS 1.2以上）</td><td>Bubble PaaS 標準</td></tr>
+    <tr><td>Bubble ↔ Brother API</td><td>HTTPS（TLS 1.2以上）</td><td>API Connector 経由</td></tr>
+    <tr><td>ファイルダウンロード</td><td>HTTPS</td><td>署名付き一時URL（有効期限あり）</td></tr>
+  </tbody>
+</table>
+
+<h3>3.3 データ保護</h3>
+<table>
+  <thead><tr><th>データ種別</th><th>保管場所</th><th>アクセス制御</th><th>備考</th></tr></thead>
+  <tbody>
+    <tr><td>ユーザー情報</td><td>Bubble DB</td><td>認証済みユーザーのみ</td><td>Bubble PaaS セキュリティポリシー準拠</td></tr>
+    <tr><td>行事情報</td><td>Bubble DB</td><td>自アカウントのみ</td><td>—</td></tr>
+    <tr><td>元原稿画像</td><td>Brother File Storage</td><td>Read Only</td><td>Brother側で事前登録</td></tr>
+    <tr><td>生成画像</td><td>Brother File Storage</td><td>生成ユーザーのみ</td><td>一時保管。長期保存は今後検討</td></tr>
+    <tr><td>サムネイル画像</td><td>Brother File Storage</td><td>公開URL（期限なし）</td><td>Bubble DB に保存して再利用</td></tr>
+    <tr><td>DL用画像</td><td>Brother File Storage</td><td>署名付き一時URL</td><td>有効期限付きで発行</td></tr>
+    <tr><td>操作ログ</td><td>Bubble DB</td><td>管理者のみCSV出力可</td><td>ダウンロード・評価ごとに記録</td></tr>
+  </tbody>
+</table>
+
+<h3>3.4 アクセス制御</h3>
+<table>
+  <thead><tr><th>対象</th><th>一般ユーザー</th><th>管理者</th></tr></thead>
+  <tbody>
+    <tr><td>行事の作成・編集・削除</td><td>自アカウントのみ</td><td>全アカウント</td></tr>
+    <tr><td>デザイン生成・ダウンロード</td><td>自アカウントのみ</td><td>全アカウント</td></tr>
+    <tr><td>Source Image DB</td><td>Read Only（一覧・詳細取得）</td><td>Read Only</td></tr>
+    <tr><td>Generated Image DB</td><td>自ユーザーのデータのみ</td><td>全データ</td></tr>
+    <tr><td>操作ログCSV出力</td><td>不可</td><td>可</td></tr>
+    <tr><td>テンプレート管理</td><td>不可</td><td>可</td></tr>
+    <tr><td>イベント終了後のデータ</td><td colspan="2">該当デザインのダウンロード・閲覧不可</td></tr>
+  </tbody>
+</table>
+
+<!-- ============================== 4. 運用環境 ============================== -->
+<h2>4. 運用環境</h2>
+
+<table>
+  <thead><tr><th>項目</th><th>POC（テスト環境）</th><th>本番環境（将来）</th></tr></thead>
+  <tbody>
+    <tr><td>ドメイン</td><td>Bubble発行ランダムURL</td><td>独自ドメイン取得予定</td></tr>
+    <tr><td>検索エンジン</td><td>非表示設定</td><td>要検討</td></tr>
+    <tr><td>メール送信上限</td><td>1日20件（Bubble制限）</td><td>SendGrid連携で上限解除</td></tr>
+    <tr><td>想定ユーザー数</td><td>最大20名程度</td><td>要検討</td></tr>
+    <tr><td>デプロイ</td><td>即時反映</td><td>デプロイ作業が必要</td></tr>
+  </tbody>
+</table>
+
+<h3>外部サービス依存</h3>
+<table>
+  <thead><tr><th>サービス</th><th>用途</th><th>セキュリティ対応</th></tr></thead>
+  <tbody>
+    <tr><td>Bubble</td><td>フロントエンド / DB / 認証</td><td>SOC 2準拠、データ暗号化保存、定期バックアップ</td></tr>
+    <tr><td>Brother API（BIL）</td><td>画像生成 / ファイル管理</td><td>BIL社内環境で運用</td></tr>
+    <tr><td>SendGrid（検討中）</td><td>メール送信</td><td>POCではBubble内蔵メール使用</td></tr>
+  </tbody>
+</table>
+
+<!-- ============================== 5. API セキュリティ ============================== -->
+<h2>5. APIエンドポイント別セキュリティ</h2>
+
+<table>
+  <thead><tr><th>エンドポイント</th><th>メソッド</th><th>認証</th><th>入力検証</th><th>備考</th></tr></thead>
+  <tbody>
+    <tr><td><code>/source-image-groups</code></td><td>GET</td><td><span class="tag tag-none">なし</span></td><td>—</td><td>ソースイメージグループ一覧取得</td></tr>
+    <tr><td><code>/source-image-groups/{id}/source-images</code></td><td>GET</td><td><span class="tag tag-none">なし</span></td><td>ID形式検証</td><td>グループ内の元原稿一覧（サイズ別）</td></tr>
+    <tr><td><code>/generated-images</code></td><td>POST</td><td><span class="tag tag-required">あり※</span></td><td>sourceImageId存在確認<br>サイズ別許可フィールド検証</td><td>非同期生成。即時にgeneratedImageId返却</td></tr>
+    <tr><td><code>/generated-images/{id}</code></td><td>GET</td><td><span class="tag tag-required">あり※</span></td><td>ID形式検証</td><td>ポーリングによるステータス確認</td></tr>
+    <tr><td><code>/generated-images/{id}/regenerate</code></td><td>POST</td><td><span class="tag tag-required">あり※</span></td><td>ID形式検証</td><td>再生成。新規IDを発行</td></tr>
+    <tr><td><code>/files/url/{fileKey}</code></td><td>GET</td><td><span class="tag tag-required">あり※</span></td><td>fileKey形式検証</td><td>署名付き一時URL発行</td></tr>
+    <tr><td><code>/common-print-groups</code></td><td>GET</td><td><span class="tag tag-none">なし</span></td><td>—</td><td>共通印刷物グループ一覧</td></tr>
+    <tr><td><code>/common-print-groups/{id}/prints</code></td><td>GET</td><td><span class="tag tag-none">なし</span></td><td>ID形式検証</td><td>グループ内印刷物一覧</td></tr>
+  </tbody>
+</table>
+
+<ul class="notes">
+  <li>※ 認証対象はファイルDL・生成・再生成APIの3系統。参照系GET API（元原稿・共通印刷物）は認証なし</li>
+  <li>※ POC環境では現在、無認証呼び出しを一時許可中（AllowUnauthenticatedGeneratedApi=true）。API Gateway Authorizer の有効化により認証必須へ切替予定</li>
+</ul>
+
+<!-- ============================== 6. 備考 ============================== -->
+<h2>6. 未決定事項・備考</h2>
+
+<ul class="notes">
+  <li>本資料はPOC段階のセキュリティ構成を示すものです</li>
+  <li>Brother API の認証必須化（API Gateway Authorizer 有効化）の実施時期はBIL側と調整中</li>
+  <li>アカウント削除時のデータ・個人情報の扱いは法務・知財部門と調整中</li>
+  <li>生成画像の長期保存・恒久保存の方針は今後検討</li>
+  <li>本番運用時はPOC結果を踏まえセキュリティ要件を見直す予定</li>
+</ul>
+
+<div class="footer">
+  業界別行事デザイン自動生成サービス（POC） セキュリティチェック用ブロック図 v1.0 | 2026年5月28日作成
+</div>
+
+</div>
+</body>
+</html>
