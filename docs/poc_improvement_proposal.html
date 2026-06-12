@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POC改善のご提案</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.8;
+        }
+
+        /* ========== NAV ========== */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .nav-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            height: 56px;
+            gap: 12px;
+        }
+        .nav-brand { font-size: 15px; font-weight: 700; color: #1a202c; white-space: nowrap; }
+        .nav-back { font-size: 13px; color: #667eea; text-decoration: none; font-weight: 600; margin-left: auto; }
+        .nav-back:hover { text-decoration: underline; }
+
+        /* ========== LAYOUT ========== */
+        .page { padding: 96px 20px 40px; }
+        .container { max-width: 960px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 48px; }
+        .header h1 { font-size: 24px; font-weight: 700; color: #1a202c; margin-bottom: 8px; }
+        .header .subtitle { font-size: 14px; color: #718096; }
+        .footer-note { text-align: center; font-size: 12px; color: #a0aec0; margin-top: 48px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+
+        /* ========== CARDS ========== */
+        .question-card { background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 32px; overflow: hidden; }
+        .question-header { padding: 24px 32px; display: flex; align-items: center; gap: 16px; }
+        .question-number { background: rgba(255,255,255,0.25); color: #fff; font-size: 14px; font-weight: 700; padding: 6px 14px; border-radius: 20px; white-space: nowrap; }
+        .question-title { color: #fff; font-size: 18px; font-weight: 600; }
+        .question-body { padding: 32px; }
+
+        .qh-bg     { background: linear-gradient(135deg, #4299e1, #3182ce); }
+        .qh-issue  { background: linear-gradient(135deg, #ed8936, #dd6b20); }
+        .qh-p1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .qh-p2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .qh-p3 { background: linear-gradient(135deg, #38b2ac, #2c7a7b); }
+        .qh-p4 { background: linear-gradient(135deg, #9f7aea, #6b46c1); }
+        .qh-p5 { background: linear-gradient(135deg, #48bb78, #38a169); }
+        .qh-p6 { background: linear-gradient(135deg, #ed64a6, #d53f8c); }
+        .qh-matrix { background: linear-gradient(135deg, #718096, #4a5568); }
+
+        .ask-box { background: #ebf4ff; border-left: 4px solid #4299e1; border-radius: 0 8px 8px 0; padding: 20px 24px; margin-bottom: 28px; }
+        .ask-box .label { font-size: 12px; font-weight: 700; color: #2b6cb0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .ask-box p { font-size: 15px; color: #2d3748; }
+
+        .explanation { margin-bottom: 24px; }
+        .explanation h3 { font-size: 15px; font-weight: 700; color: #4a5568; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .explanation h3 .icon { font-size: 18px; }
+        .explanation p { font-size: 14px; color: #4a5568; margin-bottom: 8px; padding-left: 4px; }
+        .explanation ul { font-size: 14px; color: #4a5568; margin: 8px 0 8px 24px; }
+        .explanation ul li { margin-bottom: 6px; }
+
+        .note-box { background: #f0fff4; border: 1px solid #48bb78; border-radius: 8px; padding: 16px 20px; margin-top: 24px; font-size: 13px; color: #276749; display: flex; align-items: flex-start; gap: 10px; }
+        .note-box .note-icon { font-size: 18px; flex-shrink: 0; }
+
+        .condition-note { background: #fefcbf; border: 1px solid #ecc94b; border-radius: 8px; padding: 16px 20px; margin: 24px 0 0; font-size: 13px; color: #744210; display: flex; align-items: flex-start; gap: 10px; }
+        .condition-note .note-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+        /* ========== TABLES ========== */
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 16px 0; font-size: 13px; }
+        .data-table thead th { background: #edf2f7; padding: 12px 14px; text-align: left; font-weight: 600; color: #4a5568; border-bottom: 2px solid #cbd5e0; }
+        .data-table thead th:first-child { border-radius: 8px 0 0 0; }
+        .data-table thead th:last-child { border-radius: 0 8px 0 0; }
+        .data-table tbody td { padding: 12px 14px; border-bottom: 1px solid #edf2f7; vertical-align: top; }
+        .data-table tbody tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+        .data-table tbody tr:last-child td:last-child { border-radius: 0 0 8px 0; }
+        .data-table tbody tr:hover { background: #f7fafc; }
+
+        .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; white-space: nowrap; }
+        .tag-high   { background: #fed7d7; color: #9b2c2c; }
+        .tag-mid    { background: #fefcbf; color: #975a16; }
+        .tag-low    { background: #e2e8f0; color: #4a5568; }
+        .tag-effect-high { background: #c6f6d5; color: #276749; }
+        .tag-effect-mid  { background: #bee3f8; color: #2b6cb0; }
+        .tag-cost-s { background: #c6f6d5; color: #276749; }
+        .tag-cost-m { background: #fefcbf; color: #975a16; }
+        .tag-cost-l { background: #fed7d7; color: #9b2c2c; }
+
+        /* ========== KPI CARDS ========== */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+        .kpi-card { background: #fafbfc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 20px; }
+        .kpi-card .kpi-name { font-size: 14px; font-weight: 700; color: #2d3748; margin-bottom: 6px; }
+        .kpi-card .kpi-src { font-size: 11px; font-weight: 700; color: #718096; background: #edf2f7; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; }
+        .kpi-card .kpi-desc { font-size: 12px; color: #4a5568; line-height: 1.7; }
+
+        /* ========== FLOW ========== */
+        .loop-flow { display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
+        .loop-step { background: #ebf8ff; border: 2px solid #4299e1; border-radius: 12px; padding: 14px 18px; text-align: center; min-width: 140px; }
+        .loop-step .ls-title { font-weight: 700; font-size: 13px; color: #2c5282; }
+        .loop-step .ls-desc { font-size: 11px; color: #4a5568; margin-top: 4px; }
+        .loop-arrow { font-size: 22px; color: #a0aec0; }
+
+        /* ========== CONCLUSION ========== */
+        .conclusion-card { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 16px; padding: 36px; margin: 40px 0; color: #fff; }
+        .conclusion-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+        .conclusion-card p { font-size: 14px; line-height: 1.9; margin-bottom: 12px; opacity: 0.95; }
+        .conclusion-list { list-style: none; padding: 0; margin: 16px 0; }
+        .conclusion-list li { font-size: 14px; padding: 10px 16px; background: rgba(255,255,255,0.15); border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .conclusion-list li .check { flex-shrink: 0; width: 24px; height: 24px; background: rgba(255,255,255,0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+
+        @media (max-width: 640px) {
+            .question-body { padding: 20px; }
+            .loop-flow { flex-direction: column; }
+            .loop-arrow { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <span class="nav-brand">POC改善のご提案</span>
+        <a class="nav-back" href="index.html">&#8592; 確認資料TOPへ戻る</a>
+    </div>
+</nav>
+
+<div class="page">
+<div class="container">
+
+    <div class="header">
+        <h1>POCの検証価値を最大化するためのご提案</h1>
+        <p class="subtitle">2026/06/11 &#8212; 株式会社アイビス → ブラザー工業 BIL 御中</p>
+    </div>
+
+    <!-- ===== 背景 ===== -->
+    <div class="question-card">
+        <div class="question-header qh-bg">
+            <span class="question-number">背景</span>
+            <span class="question-title">現在地の整理</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">このご提案の趣旨</div>
+                <p>本プロジェクトは「業界別行事デザイン自動生成サービス」の<strong>POC（検証フェーズ）</strong>です。リリース（7/20週目標）がゴールではなく、<strong>「本サービス化すべきか」を判断できる材料を揃えること</strong>がゴールであるという認識のもと、検証価値を高めるための改善案をご提案します。</p>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#128205;</span> 現在の状況（6/11時点）</h3>
+                <ul>
+                    <li><strong>開発:</strong> 主要画面のフロント・バック実装はテスト段階。受け入れテストを画面単位で順次開始済み</li>
+                    <li><strong>API連携:</strong> 取得系API（5本）は疎通確認・修正完了。生成系API（3本）は6/10に初回疎通成功、課題7件を共有済み（再生成時の文言混在など）</li>
+                    <li><strong>スコープ調整:</strong> 新規行事追加機能・年間行事表印刷機能は今回ドロップ済み</li>
+                    <li><strong>スケジュール:</strong> 7月末契約・7/20週リリース目標。疎通確認が順調なら最大3週間程度の短縮余地あり（6/3定例）</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 課題認識 ===== -->
+    <div class="question-card">
+        <div class="question-header qh-issue">
+            <span class="question-number">課題認識</span>
+            <span class="question-title">「リリースして終わり」になりかねない3つのギャップ</span>
+        </div>
+        <div class="question-body">
+            <div class="explanation">
+                <h3><span class="icon">&#9888;&#65039;</span> ギャップ1：POCの「成功基準」が明文化されていない</h3>
+                <p>評価機能（五段階）・操作ログ（DL/評価）の仕組みは実装済みですが、「どの数値がどうなったらPOC成功と判断するか」の基準が現状の資料・議事録には定義されていません。リリース後に振り返る軸がないと、本サービス化の判断が感覚的になります。</p>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#9888;&#65039;</span> ギャップ2：集まるデータを「次に活かす」設計がない</h3>
+                <p>五段階評価・再生成履歴（親子関係）・ダウンロードログという貴重な検証データが集まる設計になっていますが、それを<strong>生成AIの品質改善や本サービスの仕様判断にフィードバックする運用</strong>が決まっていません。</p>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#9888;&#65039;</span> ギャップ3：実ユーザー（お寺等）による検証計画が未定</h3>
+                <p>受け入れテストはブラザー様側で実施の役割分担（6/3定例）ですが、POCの本来の問いである「<strong>実際の業界ユーザーが使えるか・価値を感じるか</strong>」を確かめる場の設計はこれからです。</p>
+            </div>
+            <div class="condition-note">
+                <span class="note-icon">&#128161;</span>
+                <span>以下のご提案は、いずれも<strong>現行スコープ・契約（〜7月末・総額300万円）の中で実施可能な小さい施策</strong>と、<strong>POC評価期間（8月以降）に向けた仕込み</strong>に分けて整理しています。</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 提案1 ===== -->
+    <div class="question-card">
+        <div class="question-header qh-p1">
+            <span class="question-number">提案 1</span>
+            <span class="question-title">POC成功基準（KPI）の定義 &#8212; 実装済みログを評価軸に変える</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">ご提案内容</div>
+                <p>既に実装済みの<strong>評価ログ・ダウンロードログ</strong>から取れる指標をベースに、リリース前にPOCの成功基準を1枚で合意しておくことをご提案します。<strong>追加開発はほぼ不要</strong>で、定例1回の議論で決められます。</p>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#128202;</span> 現行ログから測定できるKPI候補</h3>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-name">デザイン平均評価</div>
+                    <div class="kpi-src">評価ログ</div>
+                    <div class="kpi-desc">五段階評価の平均。サイズ別・業界別に集計し「AI生成品質がユーザー期待に届いているか」を測る</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-name">再生成率</div>
+                    <div class="kpi-src">生成履歴（親子関係）</div>
+                    <div class="kpi-desc">初回生成に対する再生成の比率。高すぎれば「一発で使えるデザインが出ていない」シグナル</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-name">ダウンロード到達率</div>
+                    <div class="kpi-src">DLログ</div>
+                    <div class="kpi-desc">生成された原稿のうち実際にDLされた割合。「生成したが使われなかった」デザインの可視化</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-name">継続利用</div>
+                    <div class="kpi-src">操作ログ（月単位）</div>
+                    <div class="kpi-desc">月をまたいで行事作成・DLが発生しているか。リマインドメール経由の再訪も測定候補</div>
+                </div>
+            </div>
+            <div class="note-box">
+                <span class="note-icon">&#9989;</span>
+                <span><strong>必要なアクション:</strong> 定例会1回で「指標と目標値（例：平均評価3.5以上、DL到達率60%以上）」を合意 → 受け入れ資料に1枚追加。開発工数はゼロ〜微小です。</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 提案2 ===== -->
+    <div class="question-card">
+        <div class="question-header qh-p2">
+            <span class="question-number">提案 2</span>
+            <span class="question-title">生成品質の改善ループ &#8212; 評価・再生成データをAIチームへ還流する</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">ご提案内容</div>
+                <p>評価ログと再生成履歴を<strong>月次でAIチーム（柳様・奥野様）に共有する運用</strong>を決めておくことをご提案します。POC期間中に生成品質を一段上げられる、最も費用対効果の高い打ち手と考えています。</p>
+            </div>
+            <div class="loop-flow">
+                <div class="loop-step"><div class="ls-title">ユーザー評価</div><div class="ls-desc">五段階・全デザイン</div></div>
+                <span class="loop-arrow">&#8594;</span>
+                <div class="loop-step"><div class="ls-title">低評価・再生成の抽出</div><div class="ls-desc">評価ログ + 親子関係</div></div>
+                <span class="loop-arrow">&#8594;</span>
+                <div class="loop-step"><div class="ls-title">AIチームへ共有</div><div class="ls-desc">月次CSV + 傾向メモ</div></div>
+                <span class="loop-arrow">&#8594;</span>
+                <div class="loop-step"><div class="ls-title">生成ロジック改善</div><div class="ls-desc">プロンプト・テンプレ調整</div></div>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#128269;</span> 直近の実例：このループはすでに機能し始めています</h3>
+                <p>6/10のAPI疎通確認で「再生成時にリクエストにない文言が混在する」事象（重要度:高）を検知・共有できました。リリース後も同じ流れで<strong>ユーザー評価起点の品質改善</strong>を回せる体制にしておくのが本提案です。</p>
+            </div>
+            <div class="condition-note">
+                <span class="note-icon">&#128161;</span>
+                <span><strong>オプション（小規模開発）:</strong> 低評価（1〜2）を付けた際に任意の一言コメント欄を追加すると、「なぜ低評価か」の定性データが取れ、AIチームの改善精度が大きく上がります。評価ポップアップへの入力欄1つの追加で実現可能です。</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 提案3 ===== -->
+    <div class="question-card">
+        <div class="question-header qh-p3">
+            <span class="question-number">提案 3</span>
+            <span class="question-title">実ユーザーパイロット &#8212; お寺等2〜3件でのモニター利用</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">ご提案内容</div>
+                <p>リリース後のPOC評価期間に、業界一覧の第一候補である<strong>お寺（浄土真宗・浄土宗・曹洞宗等）から2〜3件のモニターユーザー</strong>に実際に使っていただく場を設計することをご提案します。</p>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#128221;</span> 検証したい問い（例）</h3>
+                <ul>
+                    <li>行事登録 → 生成 → DLまで、<strong>説明なしで完走できるか</strong>（タスク達成率）</li>
+                    <li>生成されたデザインを<strong>実際の行事案内に使いたいと思うか</strong>（5段階評価＋インタビュー）</li>
+                    <li>生成待ち時間（ポーリング最大2〜5分）は許容範囲か</li>
+                    <li>PPTX編集 → 印刷という後工程が業界の実務に合っているか</li>
+                </ul>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#129309;</span> 役割分担イメージ</h3>
+                <p><strong>ブラザー様:</strong> モニター候補のアテンド（業界とのリレーション）／<strong>アイビス:</strong> 検証シナリオ・アンケート設計、結果の集計レポート作成。検証設計は弊社で巻き取れます。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 提案4 ===== -->
+    <div class="question-card">
+        <div class="question-header qh-p4">
+            <span class="question-number">提案 4</span>
+            <span class="question-title">POC評価レポートの定型化 &#8212; ログCSVを「意思決定資料」に変える</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">ご提案内容</div>
+                <p>管理画面のログCSV（月単位DL）を元に、<strong>月次のPOC評価レポートのフォーマット</strong>をあらかじめ定義しておくことをご提案します。提案1のKPIをこのレポートで毎月追う形にします。</p>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#128196;</span> レポート構成案（A4一枚）</h3>
+                <ul>
+                    <li><strong>利用サマリ:</strong> アクティブ企業数・行事作成数・生成回数・DL数</li>
+                    <li><strong>品質サマリ:</strong> 平均評価（サイズ別）・再生成率・低評価デザインの傾向</li>
+                    <li><strong>気づき・課題:</strong> ユーザーからの問い合わせ・モニターの声</li>
+                    <li><strong>判断事項:</strong> 本サービス化に向けて今月決めるべきこと</li>
+                </ul>
+            </div>
+            <div class="note-box">
+                <span class="note-icon">&#9989;</span>
+                <span>CSVの集計はスプレッドシートのテンプレート化で十分対応可能です。まずは手運用で始め、本サービス化の際にダッシュボード化を検討する二段構えを推奨します。</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 提案5 ===== -->
+    <div class="question-card">
+        <div class="question-header qh-p5">
+            <span class="question-number">提案 5</span>
+            <span class="question-title">生成待ち時間のUX改善 &#8212; POCの第一印象を守る</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">ご提案内容</div>
+                <p>原稿生成は6サイズの非同期呼び出し＋ポーリング（最大2〜5分）であり、<strong>POCで最もユーザー離脱・低評価につながりやすい瞬間</strong>です。リリース前に「待ち時間の見せ方」と「失敗時の導線」を整備することをご提案します。</p>
+            </div>
+            <div class="explanation">
+                <h3><span class="icon">&#128295;</span> 具体施策（実装中のものを含めた優先順位の確認）</h3>
+                <ul>
+                    <li><strong>進捗の可視化:</strong> サイズごとの生成状況（生成中 / 完了 / 失敗）を一覧表示。全体が終わるまで真っ白な待機にしない</li>
+                    <li><strong>部分的成功の許容:</strong> 6サイズ中1サイズが失敗しても、完了分は先に閲覧・DLできる挙動を保証</li>
+                    <li><strong>失敗時の再試行導線:</strong> FAILED・タイムアウト時に「もう一度生成」ボタンを明示（429エラーは時間をおいた再実行を案内）</li>
+                    <li><strong>待ち時間の予告:</strong> 「生成には数分かかります」の事前表示で体感を改善</li>
+                </ul>
+            </div>
+            <div class="condition-note">
+                <span class="note-icon">&#9888;&#65039;</span>
+                <span>本項目は単体テスト・結合テスト（ST-01の生成系ケース）と密接に関わるため、<strong>テスト消化と並行して仕様確定したい項目</strong>です。次回定例での認識合わせを希望します。</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 提案6 ===== -->
+    <div class="question-card">
+        <div class="question-header qh-p6">
+            <span class="question-number">提案 6</span>
+            <span class="question-title">本サービス化への移行チェックリスト &#8212; POC終了後に慌てないために</span>
+        </div>
+        <div class="question-body">
+            <div class="ask-box">
+                <div class="label">ご提案内容</div>
+                <p>POC評価の結果「本サービス化する」となった場合に必要となる項目を、いまのうちにチェックリストとして合意しておくことをご提案します。多くはこれまでの定例で個別に話題に出ているものの整理です。</p>
+            </div>
+            <table class="data-table">
+                <thead><tr><th>項目</th><th>現状（POC）</th><th>本サービス化時</th><th>主担当</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>API認証</strong></td><td>無認証（検証用）→ トークン方式へ移行中（6/3定例）</td><td>トークン認証必須化・キー管理運用の確立</td><td>BIL</td></tr>
+                    <tr><td><strong>ドメイン</strong></td><td>bubbleapps.io + Basic認証</td><td>独自ドメイン取得・SEO/ブラザー名露出の最終方針</td><td>全体</td></tr>
+                    <tr><td><strong>セキュリティ</strong></td><td>ブロック図提出済み・パスワードポリシー暫定</td><td>社内セキュリティ審査の正式通過</td><td>BIL</td></tr>
+                    <tr><td><strong>未登録サイズ</strong></td><td>長尺横・ハガキ・封筒(長形3号)のソース画像未登録</td><td>7サイズ分のソースイメージ整備</td><td>BIL</td></tr>
+                    <tr><td><strong>ドロップ機能</strong></td><td>新規行事追加・年間行事表印刷は対象外</td><td>POCの利用データを根拠に再優先順位付け</td><td>全体</td></tr>
+                    <tr><td><strong>保守・運用</strong></td><td>保守契約は別途案内予定（4/27定例）</td><td>保守契約締結・監視/障害対応フローの確立</td><td>アイビス</td></tr>
+                    <tr><td><strong>アカウント削除</strong></td><td>POC中は未実装（データ保持・分析優先）</td><td>削除機能＋個人情報の取り扱い（法務確認）</td><td>全体</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== 優先度マトリクス ===== -->
+    <div class="question-card">
+        <div class="question-header qh-matrix">
+            <span class="question-number">まとめ</span>
+            <span class="question-title">優先度と実施タイミングの整理</span>
+        </div>
+        <div class="question-body">
+            <table class="data-table">
+                <thead><tr><th>提案</th><th>効果</th><th>追加工数</th><th>実施時期</th><th>必要なこと</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. POC成功基準（KPI）の定義</strong></td>
+                        <td><span class="tag tag-effect-high">大</span></td>
+                        <td><span class="tag tag-cost-s">ほぼゼロ</span></td>
+                        <td>リリース前（6月中）</td>
+                        <td>定例1回での合意</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. 生成品質の改善ループ</strong></td>
+                        <td><span class="tag tag-effect-high">大</span></td>
+                        <td><span class="tag tag-cost-s">小</span>（コメント欄は別途）</td>
+                        <td>リリース前に運用決め</td>
+                        <td>AIチームとの共有形式の合意</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. 生成待ちUX改善</strong></td>
+                        <td><span class="tag tag-effect-high">大</span></td>
+                        <td><span class="tag tag-cost-m">中</span>（一部実装済み）</td>
+                        <td>リリース前（テストと並行）</td>
+                        <td>次回定例で仕様確定</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. 月次評価レポート定型化</strong></td>
+                        <td><span class="tag tag-effect-mid">中</span></td>
+                        <td><span class="tag tag-cost-s">小</span>（手運用スタート）</td>
+                        <td>リリース直後から</td>
+                        <td>フォーマット案を弊社から提示</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. 実ユーザーパイロット</strong></td>
+                        <td><span class="tag tag-effect-high">大</span></td>
+                        <td><span class="tag tag-cost-m">中</span>（検証設計）</td>
+                        <td>POC評価期間（8月〜）</td>
+                        <td>モニター候補のアテンド（BIL様）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6. 本サービス化チェックリスト</strong></td>
+                        <td><span class="tag tag-effect-mid">中</span></td>
+                        <td><span class="tag tag-cost-s">ほぼゼロ</span></td>
+                        <td>POC評価期間と並行</td>
+                        <td>本資料の表をたたき台に更新</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== 結論 ===== -->
+    <div class="conclusion-card">
+        <h2>&#128640; 次のアクション（ご提案）</h2>
+        <p>まずは追加コストがほぼ発生しない3点から、次回定例でご相談させてください。</p>
+        <ul class="conclusion-list">
+            <li><span class="check">1</span>次回定例で <strong>POC成功基準（KPI候補と目標値）</strong> を30分で議論・合意する</li>
+            <li><span class="check">2</span>評価・再生成データの <strong>AIチームへの月次共有フォーマット</strong> を決める</li>
+            <li><span class="check">3</span><strong>生成待ちUX（進捗表示・失敗時導線）</strong> の最終仕様をテスト消化と並行で確定する</li>
+        </ul>
+        <p>実ユーザーパイロット（提案3）・移行チェックリスト（提案6）は、リリース後のPOC評価期間の進め方として、7月の定例でスケジュール込みでご相談できればと考えています。</p>
+    </div>
+
+    <div class="footer-note">株式会社アイビス &#8212; 2026/06/11 作成 ／ ご不明点がございましたらお気軽にご連絡ください</div>
+</div>
+</div>
+
+</body>
+</html>
