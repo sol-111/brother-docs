@@ -12,9 +12,9 @@
 
 | # | 前回の事象 | 判定 | 備考 |
 |---|---|---|---|
-| 1 | 再生成時にリクエストにない文言が出力される | ✅ 解消 | 前回と同一ペイロードの再生成で「盂蘭盆会法要」「堀田太郎師」等の混入なし。※ただし旧sig3ソース使用時はテンプレ文言残存（事象3と同根） |
+| 1 | 再生成時にリクエストにない文言が出力される | ✅ 解消 | 前回と同一ペイロードの再生成で「盂蘭盆会法要」「堀田太郎師」等の混入なし |
 | 2 | contactName / contactDetails が未実装 | ✅ 実装済み | 初回生成・再生成とも全サイズで受理され、出力画像にも描画される。※長尺縦はcontactNameのみ描画（要確認C） |
-| 3 | A3の生成結果が長尺縦と同じレイアウト | ⚠️ 部分解消 | 新規追加のurabonグループのA3は正常（896×1195）。**sig3のA3ソース（src-b9bfb2fc）は未修正**（ソース画像自体が512×1551の縦長のまま） |
+| 3 | A3の生成結果が長尺縦と同じレイアウト | ✅ 解消 | SourceImage登録不備が原因（Bubble側回答で確定）。不備ソースは旧グループごと削除済み（追記2参照）。urabonグループのA3は正常（896×1195） |
 | 4 | dev環境に3サイズしか未登録 | ✅ 解消 | urabon1/2/3の3グループが追加され、各7サイズ登録（A3/A4/A4便箋/ハガキ/封筒(長形3号)/長尺横/長尺縦） |
 | 5 | フィールド名が仕様書と異なる | 変更なし（運用対応） | 実装はリリースガイドのフィールド名（eventPeriod等）のまま。**加えてサイズ別入力制約が撤廃された模様**（要確認E） |
 | 6 | POSTレスポンスのstatusが `done` | ✅ 修正 | `RUNNING` が返却されるようになった（仕様書準拠に変更）。リリースガイドの記載（`done`）の方が古くなった点に注意 |
@@ -25,11 +25,9 @@
 | # | 事象 | 重要度 |
 |---|---|---|
 | A | AI側クォータ制限（429）が頻発。本検証17ジョブ中4件が `AI_REQUEST_FAILED:429` でFAILED。同一リクエストの再投入で成功するため一過性だが、Bubble側のリトライ導線とdev環境クォータの引き上げ要否を要検討 | 高 |
-| B | sig1のA4テンプレで、リクエストにない固定文言「檀信徒の皆様はもちろん、どなた様もご家族そろって気軽にお寺へお参りください。」が初回・再生成とも出力される（urabonグループでは発生せず）。旧テンプレの固定文言か要確認 | 中 |
-| C | サイズにより描画される項目が異なる: 長尺縦は `contactDetails`（TEL）が非描画、長尺横は `eventPeriod` が非描画。サイズ別の描画項目一覧の提示を依頼したい | 中 |
-| D | 封筒(長形3号)の出力で eventName が「ブラザー夏祭り 夏祭り盆踊り会」と一部重複して描画された | 低 |
-| E | 前回400だった「長尺縦への eventDetails / eventProgram / notes 送信」が受理されるようになった（サイズ別入力制約の撤廃？）。意図した変更か、Bubble側の入力出し分け実装に影響するため要確認 | 中 |
-| F | 旧グループ（sig1/sig3）と新グループ（urabon1/2/3）が併存している。Bubble側で使用すべきグループ／sig系の扱い（削除予定か）を要確認 | 中 |
+| C | サイズにより描画される項目が異なる: 長尺縦は `contactDetails`（TEL）が非描画、長尺横は `eventPeriod` が非描画。サイズ別の描画項目一覧の提示を依頼したい → **解消: 宮田さまメール（7/6）で最新のサイズ別描画項目マトリクスを受領。挙動は仕様どおり（`../../01_functional/サイズ別描画項目マトリクス.md`）** | 中 |
+| D | 封筒(長形3号)の出力で eventName が「ブラザー夏祭り 夏祭り盆踊り会」と一部重複して描画された → **Bubble側回答（7/6）: 検討中** | 低 |
+| E | 前回400だった「長尺縦への eventDetails / eventProgram / notes 送信」が受理されるようになった（サイズ別入力制約の撤廃？）。意図した変更か、Bubble側の入力出し分け実装に影響するため要確認 → **解消: マトリクス注記により、N/A項目はクライアント側で送信しない責務に整理（API側400は行わない）** | 中 |
 
 ---
 
@@ -168,7 +166,7 @@ curl -s https://u7ib5ltbdd.execute-api.ap-northeast-1.amazonaws.com/Prod/source-
 - POST /generated-images および POST /generated-images/{id}/regenerate の両方で `contactName` / `contactDetails` を送信し、全サイズで 400 にならず受理された。
 - 出力画像にも描画される（A4/A3(urabon1)/ハガキ/封筒/長尺横: contactName+contactDetails 描画。長尺縦: contactName のみ描画 → 確認事項C）。
 
-### 事象3: A3が長尺縦レイアウト → ⚠️ 部分解消（sig3は未修正）
+### 事象3: A3が長尺縦レイアウト → ✅ 解消（不備ソースは削除済み・追記2参照）
 
 | ソース | 生成画像実寸 | 判定 |
 |---|---|---|
@@ -177,7 +175,7 @@ curl -s https://u7ib5ltbdd.execute-api.ap-northeast-1.amazonaws.com/Prod/source-
 | urabon1 src-125cddcf（A3）初回 gen-ac8ff65d | 896×1195px（A3縦相当） | OK |
 | urabon1 src-125cddcf（A3）再生成 gen-fa32c8b2 | 896×1195px（A3縦相当） | OK |
 
-sig3のA3はソース画像そのものが縦長（サムネイル512×1551px）のままのため、生成結果も縦長になる。urabon側は正常のため、**sig3のソース差し替え（もしくはsig3自体の廃止方針）をブラザー側に確認**する。
+sig3のA3はソース画像そのものが縦長（サムネイル512×1551px）のままのため、生成結果も縦長になる（検証時点の記録。その後Bubble側回答で登録不備と確定し、旧グループごと削除済み）。
 
 ### 事象4: サイズ登録 → ✅ 解消
 
@@ -279,7 +277,7 @@ GET /generated-images/{id} の処理中statusは `RUNNING` を返却（仕様書
 
 | ファイル | 実寸 | 目視確認結果 |
 |---|---|---|
-| 01_初回生成_印刷物/初回_A4.png | 864×1248 | リクエスト文言・連絡先とも正しく描画。※リクエストにない固定文言「檀信徒の皆様はもちろん、…お寺へお参りください。」あり（確認事項B） |
+| 01_初回生成_印刷物/初回_A4.png | 864×1248 | リクエスト文言・連絡先とも正しく描画。※リクエストにない固定文言「檀信徒の皆様はもちろん、…お寺へお参りください。」あり（ソースは削除済みの旧グループのため対応不要。文言混入の問題は確認事項Gで管理） |
 | 01_初回生成_印刷物/初回_A3.png（sig3） | 592×1794 | NG: 縦長レイアウトのまま。「盂蘭盆会法要」「○○寺」「令和八年8○月○○日」などテンプレ文言が残存し、リクエスト文言と混在 |
 | 01_初回生成_印刷物/初回_長尺縦.png（sig3） | 592×1794 | NG: 「ブラザー 盂蘭盆踊会 法要」のようにテンプレ文言と混在。日付も「令和八年年○月○○日」と崩れ。contactNameのみ描画 |
 | 01_初回生成_印刷物/初回_長尺縦_制約外フィールド.png | 592×1794 | 参考: 「盂蘭盆テスト」とテンプレ文言に合成。eventDetails等の描画なし |
@@ -287,7 +285,7 @@ GET /generated-images/{id} の処理中statusは `RUNNING` を返却（仕様書
 | 01_初回生成_印刷物/初回_ハガキ.png（urabon1） | 832×1280 | OK: eventName・eventPeriod・連絡先とも正しく描画。余計な文言なし |
 | 01_初回生成_印刷物/初回_封筒長形3号.png（urabon1） | 736×1440 | 概ねOK: 連絡先描画OK。eventNameが「ブラザー夏祭り 夏祭り盆踊り会」と一部重複（確認事項D） |
 | 01_初回生成_印刷物/初回_A3_urabon1.png | 896×1195 | OK: 全項目正しく描画。余計な文言なし。A3縦の比率 |
-| 02_再生成_印刷物/再生成_A4.png | 864×1248 | OK: 再生成文言に全て更新。前回の「堀田太郎師」等の混入なし。※初回と同じ固定文言（確認事項B）あり |
+| 02_再生成_印刷物/再生成_A4.png | 864×1248 | OK: 再生成文言に全て更新。前回の「堀田太郎師」等の混入なし。※初回と同じ固定文言あり |
 | 02_再生成_印刷物/再生成_A3.png（sig3） | 592×1794 | NG: 初回と同様、テンプレ文言残存＋縦長レイアウト（事象3由来） |
 | 02_再生成_印刷物/再生成_A3_urabon1.png | 896×1195 | OK: 全項目正しく描画。余計な文言なし |
 | 02_再生成_印刷物/再生成_長尺縦.png（sig3） | 592×1794 | OK: 「ブラザー 記念夏祭り工場見学会 / 2026年8月23日〜24日 / ブラザー工業 総務部 山田」のみ。**前回issueの文言混入は解消** |
@@ -425,7 +423,7 @@ GET /generated-images/{id} の処理中statusは `RUNNING` を返却（仕様書
 
 ---
 
-## 追記（2026-07-08）: API Key認証への切替と追加テスト
+## 追記1（2026-07-08）: API Key認証への切替と追加テスト
 
 ### API Key認証への切替
 
@@ -479,7 +477,7 @@ API Keyあり: GET /source-image-groups → HTTP 200
 | 01_初回生成_印刷物/初回_ハガキ_全項目.png | 832×1280 | **NG（確認事項G）**: 全7項目は描画されたが、リクエストにない文言「兄弟舎主宰 堀田 太郎 師 演題:「つながる命、感謝の心」」がプログラム欄の直後に混入。前回issue（事象1）でA4再生成時に混入したものと同一内容の文言が、**urabon1ソースの初回生成**で再発 |
 | 01_初回生成_印刷物/初回_封筒長形3号_期間連絡先詳細.png | 736×1440 | **NG（確認事項H）**: マトリクスで表面○の開催期間・連絡先名・連絡先詳細がいずれも非描画。さらにeventNameが「ブラザー夏祭り会」と描画され「盆踊り」が欠落。描画されたのはこの欠落したeventNameのみ |
 
-- **確認事項G（重要度: 高）**: 「盂蘭盆会法要」「堀田太郎師」系のテンプレ文言混入は、旧sig系だけでなく**urabon1のハガキ初回生成でも発生**する。事象1は「再生成固有」ではなく生成全般で稀発する精度問題（既報の確認事項B/Dと同根）とみられる。発生条件の特定・抑止をブラザー側に依頼したい。
+- **確認事項G（重要度: 高）**: 「盂蘭盆会法要」「堀田太郎師」系のテンプレ文言混入は、**urabon1のハガキ初回生成でも発生**する。事象1は「再生成固有」ではなく生成全般で稀発する精度問題（確認事項Dと同じくBubble側回答で検討中の枠）とみられる。発生条件の特定・抑止をブラザー側に依頼したい。
 - **確認事項H（重要度: 中）**: 封筒(長形3号)がマトリクスの表面○（開催期間・連絡先名・連絡先詳細）を描画しない。ソーステンプレート側に該当項目のプレースホルダがない可能性。マトリクスとソース画像の整合確認を依頼したい。
 
 ### エビデンス: ファイルダウンロードURL取得レスポンス全文（追加分）
@@ -505,13 +503,97 @@ API Keyあり: GET /source-image-groups → HTTP 200
 
 ---
 
-## ブラザー側への返信案（要点）
+## 追記2（2026-07-08）: sig1/sig3削除とソースイメージグループ入れ替えの確認
 
-1. contactName / contactDetails の追加、およびPOST/GETのstatus仕様書準拠化（RUNNING）を確認。前回の再生成時文言混入も解消を確認した。ありがとうございます。
-2. 以下を追加で確認・対応いただきたい:
-   - sig3のA3ソース（src-b9bfb2fc）が縦長のまま（事象3が未解消）。urabon側は正常のため、sig1/sig3の扱い（修正 or 廃止）をご教示いただきたい。
-   - サイズ別入力制約（前回400）が撤廃されている。意図した変更か確認したい（Bubble側フォームの出し分けに影響）。
-   - サイズごとに描画される項目の一覧（長尺縦でcontactDetails非描画、長尺横でeventPeriod非描画のため）。
-   - 「A4便箋」サイズの追加は仕様書未記載のため、正式仕様をご共有いただきたい。
-   - AI側429が頻発（17ジョブ中4件）。devクォータの引き上げ可否をご検討いただきたい。
-   - sig1 A4テンプレの固定文言「檀信徒の皆様は…」、封筒でのeventName一部重複についてご確認いただきたい。
+宮田さまメール（7/6）「旧グループ（sig1/sig3）は削除していきます」のとおり、7/8時点のGET /source-image-groups で**sig1/sig3が削除済み**であることを確認した。事象3の不備ソース（src-b9bfb2fc、実画像1123×3402）もこれにより消滅。
+
+現在のグループは行事4種 × デザインタイプ3件の計12グループ:
+
+| 行事 | グループ |
+|---|---|
+| 盂蘭盆 | urabon1 / urabon2 / urabon3 |
+| 十夜 | jyuya1 / jyuya2 / jyuya3 |
+| 報恩講 | houonnkou1 / houonnkou2 / houonnkou3 |
+| 秋彼岸 | akihigan1 / akihigan2 / akihigan3 |
+
+- 仕様（`../../01_functional/サイズ別描画項目マトリクス.md`）の「1つの行事に含まれるデザインタイプは最小1件、最大3件」と整合する構成。
+- サイズ登録はjyuya1 / houonnkou1 / akihigan1でサンプル確認し、いずれも7サイズ（A3 / A4 / A4便箋 / ハガキ / 封筒(長形3号) / 長尺横 / 長尺縦）が登録済み。
+
+### GET /source-image-groups レスポンス（2026-07-08、x-api-key付与）
+
+```json
+{
+  "items": [
+    {
+      "sourceImageGroupId": "jyuya1",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/jyuya1/src-a0a8ec9b-73a9-4332-8271-136fe6ff0987/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "houonnkou2",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/houonnkou2/src-a357f698-1369-47bc-94e2-3932de690f08/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "houonnkou3",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/houonnkou3/src-1adc83e7-ed22-4355-aafa-bb9c3aa6d42c/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "jyuya3",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/jyuya3/src-b5b276af-931b-4070-b40f-515096b4a95b/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "akihigan2",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/akihigan2/src-7e6b02c2-0c90-49ec-a107-7fe0e2b839c8/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "houonnkou1",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/houonnkou1/src-c6b00009-6616-404e-9529-3a083ceb6b19/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "akihigan1",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/akihigan1/src-3116f181-1db0-4fdb-bec5-7ccc1ffdb14e/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "akihigan3",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/akihigan3/src-14fcb3dd-770b-458a-8b63-1eed962774e4/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "urabon3",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/urabon3/src-2ac977ea-b2bf-4011-8612-8683ee555792/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "urabon1",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/urabon1/src-272cbd66-267f-4b5c-bd36-20747213c44f/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "jyuya2",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/jyuya2/src-7d7865a3-4da8-4543-b57b-4121f4c9a7e1/thumbnail.png",
+      "status": "active"
+    },
+    {
+      "sourceImageGroupId": "urabon2",
+      "thumbnailUrl": "https://d3p6nztoczy84t.cloudfront.net/source-images/urabon2/src-cd2a6c4a-9f11-40a7-8722-40276e6b57a1/thumbnail.png",
+      "status": "active"
+    }
+  ]
+}
+```
+
+### 残課題（7/8時点）
+
+| # | 事象 | 状態 |
+|---|---|---|
+| A | 429クォータ制限 | ブラザー側検討中 |
+| G | リクエストにない文言混入（urabon1ハガキ初回生成で再発） | ブラザー側検討中（生成精度の枠） |
+| H | 封筒(長形3号)がマトリクス表面○の項目（開催期間・連絡先名・連絡先詳細）を描画しない | ご確認依頼（追記1参照） |
+| - | 新グループ（jyuya / houonnkou / akihigan）での生成疎通 | 未実施（必要に応じて実施） |
+
