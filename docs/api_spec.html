@@ -722,6 +722,9 @@
   <div class="nav-item" data-tab="common">共通印刷物</div>
   <a href="flow_mock.html" target="_blank" class="nav-item" style="color:var(--primary); text-decoration:none; display:flex; align-items:center; gap:4px;">原稿登録〜ダウンロードモック &#8599;</a>
   <a href="flow_mock_common.html" target="_blank" class="nav-item" style="color:var(--green); text-decoration:none; display:flex; align-items:center; gap:4px;">共通印刷物モック &#8599;</a>
+
+  <div class="sidebar-category">API認証方式</div>
+  <div class="nav-item" data-tab="auth-whitelist">WAF IP WhiteList</div>
 </nav>
 
 <div class="main-content">
@@ -4902,6 +4905,166 @@ erDiagram
 
 <!-- ==================== 論点 ==================== -->
 <!-- 論点タブは削除済み。設計概要タブに統合 -->
+
+<!-- ==================== WAF IP WhiteList回答 ==================== -->
+<div class="section" id="auth-whitelist">
+  <div class="container">
+    <h2 class="section-title">WAF IP WhiteList運用に関する回答</h2>
+    <p class="section-desc">Bubble側送信元IPについて（API Key設定 / WAF IP WhiteList 連携ガイド 4章への回答）｜2026-07-08 株式会社アイビス</p>
+
+    <!-- 要約 -->
+    <div class="card" style="border-left:4px solid var(--amber);">
+      <div class="card-header"><h3>1. 要約</h3></div>
+      <div class="card-body">
+        <p style="font-size:14px; line-height:1.9;">Bubbleの通常プランでは<strong>固定の送信元IP（またはCIDR）の提供は困難です</strong>。<br>
+        現状のままではWAFのIP WhiteList運用に必要なIP一覧の提供が難しいため、本ページにて調査結果と代替となる構成のご提案を共有いたします。</p>
+      </div>
+    </div>
+
+    <!-- ご依頼事項への回答 -->
+    <div class="card">
+      <div class="card-header"><h3>2. ご依頼事項への回答</h3></div>
+      <div class="card-body">
+        <div class="detail-label" style="font-size:13px; font-weight:700; color:var(--primary); margin-bottom:8px;">2.1 呼び出し方式の確認</div>
+        <ul style="font-size:14px; line-height:1.9; padding-left:1.4em; margin-bottom:24px;">
+          <li>API呼び出しはBubbleの<strong>API Connector（サーバーサイド）経由</strong>で行います</li>
+          <li>ブラウザからの直接呼び出しは行いません</li>
+        </ul>
+
+        <div class="detail-label" style="font-size:13px; font-weight:700; color:var(--primary); margin-bottom:8px;">2.2 送信元IPの取得 → 固定送信元IPのご提供は困難</div>
+        <ul style="font-size:14px; line-height:1.9; padding-left:1.4em; margin-bottom:16px;">
+          <li>Bubbleの通常プラン（Free / Starter / Growth / Team）では、外向きAPIリクエストの送信元はAWS上の<strong>動的なIPプール</strong>から割り当てられるため、予告なく変動します</li>
+          <li>Bubbleが公式に静的IPを提供するのは <strong>Dedicated instance（専用インスタンス、参考価格 $3,000/月〜）</strong> のみです</li>
+        </ul>
+
+        <!-- 現状の経路図 -->
+        <div style="background:var(--gray-50,#f9fafb); border:1px solid #e5e7eb; border-radius:12px; padding:20px; margin-bottom:16px;">
+          <div style="font-size:12px; font-weight:700; color:#6b7280; margin-bottom:12px;">現状の通信経路</div>
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; font-size:13px;">
+            <span style="background:var(--primary-bg); color:var(--primary); border:1.5px solid var(--primary-light); border-radius:8px; padding:8px 14px; font-weight:600;">Bubble<br><span style="font-size:11px; font-weight:400;">送信元IP: 動的（変動）</span></span>
+            <span style="color:#9ca3af; font-weight:700;">→</span>
+            <span style="background:var(--red-bg); color:var(--red); border:1.5px dashed var(--red); border-radius:8px; padding:8px 14px; font-weight:600;">WAF IP WhiteList<br><span style="font-size:11px; font-weight:400;">登録すべきIPを確定できない</span></span>
+            <span style="color:#9ca3af; font-weight:700;">→</span>
+            <span style="background:#fff; color:#374151; border:1.5px solid #d1d5db; border-radius:8px; padding:8px 14px; font-weight:600;">貴社API<br><span style="font-size:11px; font-weight:400;">API Gateway</span></span>
+          </div>
+        </div>
+
+        <p style="font-size:12px; color:#6b7280;">参考情報:
+          <a href="https://manual.bubble.io/help-guides/bubble-for-enterprise/hosting-and-infrastructure/dedicated-instance" target="_blank" style="color:var(--primary);">Bubble公式: Dedicated instance</a>（"A dedicated instance provides your apps with a static IP"）／
+          <a href="https://forum.bubble.io/t/how-to-get-bubbles-ip-s-to-whitelist/255684" target="_blank" style="color:var(--primary);">Bubbleフォーラム: How to get Bubble's IP(s) to whitelist</a>（静的IPの取得手段はDedicatedのみとの回答）
+        </p>
+      </div>
+    </div>
+
+    <!-- 代替構成のご提案 -->
+    <div class="card">
+      <div class="card-header"><h3>3. 代替構成のご提案</h3></div>
+      <div class="card-body">
+        <p style="font-size:14px; line-height:1.9; margin-bottom:20px;">IP WhiteListの目的（意図しない第三者からのAPI呼び出しの防止）を、送信元IPに依存しない方法で実現する案として、以下をご検討いただけますと幸いです。</p>
+
+        <table class="field-table" style="margin-bottom:28px;">
+          <thead>
+            <tr><th></th><th>案1: API Key＋標準機能</th><th>案2: 固定IPプロキシ</th><th>案3: 中継サーバー（BFF）</th></tr>
+          </thead>
+          <tbody>
+            <tr><td style="font-weight:600;">IP WhiteList</td><td>適用しない</td><td>適用可能</td><td>中継→貴社API間で適用可能</td></tr>
+            <tr><td style="font-weight:600;">追加費用（目安）</td><td>なし</td><td>$19/月〜</td><td>$35〜40/月＋構築費</td></tr>
+            <tr><td style="font-weight:600;">導入時期</td><td>即時（現行構成のまま）</td><td>数日</td><td>要設計・構築（本番向け）</td></tr>
+            <tr><td style="font-weight:600;">通信経路</td><td>Bubble→貴社API（直接）</td><td><strong>第三者プロキシを経由</strong></td><td>Bubble→中継→貴社API</td></tr>
+            <tr><td style="font-weight:600;">API Keyの配置</td><td>Bubble側</td><td>Bubble側</td><td>中継サーバー側（Bubbleに置かない）</td></tr>
+          </tbody>
+        </table>
+
+        <!-- 案1 -->
+        <div style="border:1px solid #e5e7eb; border-left:4px solid var(--green); border-radius:12px; padding:20px; margin-bottom:20px;">
+          <div style="font-size:15px; font-weight:700; margin-bottom:4px;">案1: API Key認証＋WAF/API Gatewayの標準機能で運用 <span style="background:var(--green-bg); color:var(--green); font-size:11px; font-weight:700; border-radius:6px; padding:2px 8px; vertical-align:middle;">PoC期間の推奨案</span></div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:12px; margin:12px 0 16px;">
+            <span style="background:var(--primary-bg); color:var(--primary); border-radius:6px; padding:6px 12px; font-weight:600;">Bubble</span>
+            <span style="color:#9ca3af;">→ API Key →</span>
+            <span style="background:#fff; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 12px; font-weight:600;">貴社API<br><span style="font-weight:400; font-size:11px;">地理制限＋レートリミット</span></span>
+          </div>
+          <table class="field-table">
+            <thead><tr><th>対策</th><th>内容</th></tr></thead>
+            <tbody>
+              <tr><td>API Key認証</td><td>現行どおり（ガイド1〜3章）</td></tr>
+              <tr><td>レートリミット / 使用量プラン</td><td>API Gatewayの標準機能。万一のキー漏洩時も大量呼び出しを制限可能</td></tr>
+              <tr><td>WAF地理制限</td><td>日本国内IPのみ許可。固定IP不要で海外からのアクセスを一括遮断</td></tr>
+              <tr><td>API Keyの定期ローテーション</td><td>キー漏洩時の影響期間を限定。ローテーション手順・頻度は別途ご相談</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 案2 -->
+        <div style="border:1px solid #e5e7eb; border-left:4px solid var(--amber); border-radius:12px; padding:20px; margin-bottom:20px;">
+          <div style="font-size:15px; font-weight:700; margin-bottom:4px;">案2: 固定IPプロキシの導入</div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:12px; margin:12px 0 16px;">
+            <span style="background:var(--primary-bg); color:var(--primary); border-radius:6px; padding:6px 12px; font-weight:600;">Bubble</span>
+            <span style="color:#9ca3af;">→</span>
+            <span style="background:var(--amber-bg); color:var(--amber); border:1.5px solid var(--amber); border-radius:6px; padding:6px 12px; font-weight:600;">固定IPプロキシ<br><span style="font-weight:400; font-size:11px;">QuotaGuard等（第三者）／固定IP</span></span>
+            <span style="color:#9ca3af;">→</span>
+            <span style="background:#fff; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 12px; font-weight:600;">貴社API<br><span style="font-weight:400; font-size:11px;">WAF WhiteList適用可</span></span>
+          </div>
+          <p style="font-size:14px; line-height:1.9;">QuotaGuard等の静的IPプロキシサービス（参考価格 $19/月〜）をBubbleのAPI Connectorに設定し、送信元を固定IP化する方式です。APIリクエスト（API Keyを含む）が外部事業者のプロキシサーバーを経由するため、貴社セキュリティ基準での評価が必要です。</p>
+        </div>
+
+        <!-- 案3 -->
+        <div style="border:1px solid #e5e7eb; border-left:4px solid var(--primary); border-radius:12px; padding:20px; margin-bottom:8px;">
+          <div style="font-size:15px; font-weight:700; margin-bottom:4px;">案3: 中継サーバー（BFF）方式 <span style="background:var(--primary-bg); color:var(--primary); font-size:11px; font-weight:700; border-radius:6px; padding:2px 8px; vertical-align:middle;">本番向け</span></div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:12px; margin:12px 0 16px;">
+            <span style="background:var(--primary-bg); color:var(--primary); border-radius:6px; padding:6px 12px; font-weight:600;">Bubble</span>
+            <span style="color:#9ca3af;">→ JWT認証 →</span>
+            <span style="background:var(--primary-bg); color:var(--primary); border:1.5px solid var(--primary-light); border-radius:6px; padding:6px 12px; font-weight:600;">中継サーバー（BFF）<br><span style="font-weight:400; font-size:11px;">VPC内Lambda等＋NAT GW＋Elastic IP／API Key保持</span></span>
+            <span style="color:#9ca3af;">→ 固定IP →</span>
+            <span style="background:#fff; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 12px; font-weight:600;">貴社API<br><span style="font-weight:400; font-size:11px;">WAF WhiteList適用可</span></span>
+          </div>
+          <p style="font-size:14px; line-height:1.9; margin-bottom:8px;">将来のJWT移行（ガイド6章）とあわせた本番向けの構成案です。弊社または貴社のAWS上に中継サーバーを構築し、送信元を固定IP化します。API Keyは中継サーバー側で保持するため、Bubble側にキーを配置しない構成が可能です。</p>
+          <p style="font-size:13px; line-height:1.8; color:#6b7280;">補足: 貴社API GatewayにJWT Authorizerを実装いただける場合、中継サーバーを介さずユーザー単位認証を実現する構成も考えられます。本番設計の際にあわせてご相談させてください。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- メリット・デメリット一覧 -->
+    <div class="card">
+      <div class="card-header"><h3>4. 各案のメリット・デメリット一覧</h3></div>
+      <div class="card-body">
+        <table class="field-table">
+          <thead>
+            <tr><th style="width:22%;">案</th><th style="width:39%;">メリット</th><th style="width:39%;">デメリット</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;">案1<br><span style="font-weight:400; font-size:12px;">API Key＋標準機能</span><br><span style="background:var(--green-bg); color:var(--green); font-size:11px; font-weight:700; border-radius:6px; padding:1px 6px;">PoC推奨</span></td>
+              <td>・追加費用・追加構築なしで即時運用可能（貴社側のWAF/API Gateway設定のみ）<br>・通信経路に第三者が入らない</td>
+              <td>・送信元IPによる制限は行わないため、API Key漏洩時は地理制限・レートリミットの範囲でしか防げない（ローテーションで影響期間を限定）</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">案2<br><span style="font-weight:400; font-size:12px;">固定IPプロキシ</span></td>
+              <td>・インフラ構築なし・設定のみで固定IPを実現でき、IP WhiteListをそのまま適用可能<br>・導入が最も早い（数日程度）</td>
+              <td>・API Keyを含む通信が外部事業者のプロキシを経由（HTTPSのまま転送されるが、経路に第三者が介在）<br>・プロキシ事業者の障害がAPI連携全体の障害になる<br>・転送量に応じた従量課金</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">案3<br><span style="font-weight:400; font-size:12px;">中継サーバー（BFF）</span><br><span style="background:var(--primary-bg); color:var(--primary); font-size:11px; font-weight:700; border-radius:6px; padding:1px 6px;">本番向け</span></td>
+              <td>・API Keyを中継側で保持でき、Bubbleにキーを置かない<br>・IP WhiteListとユーザー単位認証（JWT）を両立でき、本番のセキュリティ要件に最も適合<br>・通信経路がすべて自社・貴社管理下に収まる</td>
+              <td>・設計・構築の工数と期間が必要（PoC期間中の導入には不向き）<br>・インフラ費用（NAT Gateway等で$35〜40/月程度）と運用・保守体制が必要</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- お願い事項 -->
+    <div class="card">
+      <div class="card-header"><h3>5. お願い事項</h3></div>
+      <div class="card-body">
+        <ul style="font-size:14px; line-height:1.9; padding-left:1.4em;">
+          <li>上記を踏まえ、PoC期間中のWAF IP WhiteList適用可否についてご判断・ご教示ください</li>
+          <li>弊社からの疎通確認（開発・検証作業）は弊社オフィスから直接APIを呼び出しています。WhiteListを有効化される場合は、<strong>弊社の固定IPの登録についても別途ご相談させてください</strong>（適用日時の事前共有をお願いいたします）</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 </div><!-- /.main-content -->
 </div><!-- /.layout -->
