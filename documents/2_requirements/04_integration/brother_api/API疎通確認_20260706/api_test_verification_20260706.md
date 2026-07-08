@@ -425,6 +425,86 @@ GET /generated-images/{id} の処理中statusは `RUNNING` を返却（仕様書
 
 ---
 
+## 追記（2026-07-08）: API Key認証への切替と追加テスト
+
+### API Key認証への切替
+
+2026-07-08時点で、全エンドポイントがAPI Key認証必須に変更されていることを確認（API Keyなしは `403 ForbiddenException`）。認証方式は `API認証方式/bubble_api_key_and_waf_ip_whitelist_guide.md` 参照（`x-api-key` ヘッダーで送信）。
+
+```
+API Keyなし: GET /source-image-groups → HTTP 403 {"message":"Forbidden"}
+API Keyあり: GET /source-image-groups → HTTP 200
+```
+
+### 追加テスト: 描画項目マトリクスの「○」網羅確認
+
+`01_functional/サイズ別描画項目マトリクス.md`（仕様_行事テンプレート_共通印刷.xlsx「行事について」シート）の受領を受け、前回未確認だった組み合わせを検証。
+
+| No | 種別 | サイズ（グループ） | sourceImageId | generatedImageId | 結果 |
+|---|---|---|---|---|---|
+| 18 | 初回 | ハガキ・全7項目（urabon1） | src-385b23c9-5b69-4bc1-9615-7964f9db4b64 | gen-5e0461c8-fb23-4885-a296-aa2ba6b4337b | COMPLETED（文言混入NG） |
+| 19 | 初回 | 封筒 長形3号・期間+連絡先詳細あり（urabon1） | src-cf4d527e-a233-4f51-84c7-10a223e1ce0a | gen-e852340b-d983-4d0d-b0c8-3b4dfc63f438 | COMPLETED（描画不足NG） |
+
+リクエスト（No.18 ハガキ、全7項目）:
+
+```json
+{
+  "sourceImageId": "src-385b23c9-5b69-4bc1-9615-7964f9db4b64",
+  "eventName": "ブラザー夏祭り盆踊り会",
+  "eventPeriod": "2026年8月23日",
+  "eventDetails": "境内にて夏祭りを開催いたします",
+  "eventProgram": "10:00 開会 / 12:00 盆踊り / 15:00 閉会",
+  "notes": "雨天時は中止となります",
+  "contactName": "ブラザー工業 総務部 山田",
+  "contactDetails": "TEL 052-123-4567（平日9:00〜17:00）"
+}
+```
+
+リクエスト（No.19 封筒、マトリクスで表面○の項目のみ）:
+
+```json
+{
+  "sourceImageId": "src-cf4d527e-a233-4f51-84c7-10a223e1ce0a",
+  "eventName": "ブラザー夏祭り盆踊り会",
+  "eventPeriod": "2026年8月23日",
+  "contactName": "ブラザー工業 総務部 山田",
+  "contactDetails": "TEL 052-123-4567（平日9:00〜17:00）"
+}
+```
+
+### 結果と新規事象
+
+| ファイル | 実寸 | 目視確認結果 |
+|---|---|---|
+| 01_初回生成_印刷物/初回_ハガキ_全項目.png | 832×1280 | **NG（確認事項G）**: 全7項目は描画されたが、リクエストにない文言「兄弟舎主宰 堀田 太郎 師 演題:「つながる命、感謝の心」」がプログラム欄の直後に混入。前回issue（事象1）でA4再生成時に混入したものと同一内容の文言が、**urabon1ソースの初回生成**で再発 |
+| 01_初回生成_印刷物/初回_封筒長形3号_期間連絡先詳細.png | 736×1440 | **NG（確認事項H）**: マトリクスで表面○の開催期間・連絡先名・連絡先詳細がいずれも非描画。さらにeventNameが「ブラザー夏祭り会」と描画され「盆踊り」が欠落。描画されたのはこの欠落したeventNameのみ |
+
+- **確認事項G（重要度: 高）**: 「盂蘭盆会法要」「堀田太郎師」系のテンプレ文言混入は、旧sig系だけでなく**urabon1のハガキ初回生成でも発生**する。事象1は「再生成固有」ではなく生成全般で稀発する精度問題（既報の確認事項B/Dと同根）とみられる。発生条件の特定・抑止をブラザー側に依頼したい。
+- **確認事項H（重要度: 中）**: 封筒(長形3号)がマトリクスの表面○（開催期間・連絡先名・連絡先詳細）を描画しない。ソーステンプレート側に該当項目のプレースホルダがない可能性。マトリクスとソース画像の整合確認を依頼したい。
+
+### エビデンス: ファイルダウンロードURL取得レスポンス全文（追加分）
+
+#### gen-5e0461c8（初回 ハガキ 全項目）
+
+```json
+{"url":"https://brother-backend-dev-yokinini-imagebucket-gghw7nev1auv.s3.ap-northeast-1.amazonaws.com/generated-images/bubble-test-user/gen-5e0461c8-fb23-4885-a296-aa2ba6b4337b/output.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAU3ARUFJ3JTHEQ2JL%2F20260707%2Fap-northeast-1%2Fs3%2Faws4_request&X-Amz-Date=20260707T235345Z&X-Amz-Expires=600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELD%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDmFwLW5vcnRoZWFzdC0xIkYwRAIgDPbvKZDG0mQ8aOvesRXjjMtpUa82%2FMDxz0QEVYQkI5MCIH9T3JdZZ9x%2BMLuNFaO9GuTpwG5CF1mu7qmjFNy%2FkBWeKvcECHkQABoMMzMyODk2OTM4NjE0IgyN5WE0OBu5NQZSrscq1ARgsYFehF89mlR0SzrYUzsNZa4dCreT8RxE6%2FiMMe%2FAt8LXPvB5Q2I3MzO6TYmXcpGT6JTk0Re973Ka0ZVUq73nRAtNZwkIycNdH6zj1E4ggopdUSqNc0ShgPxwn0oHR5BUPt75HXDmpOz00c3abUnpydNDuwWjyd4VVbFaSXqLhr0iK7%2BSOg0sSfHoG7S%2Baoucq0pdyl5tOognVu9SyJWEFinWLkbdHRwXPHJARRTHQoALIA3XsbeWohb4uVsArpSi81mGDnltA4QZcZWvUlHi1u2Q%2BPpqCPIgcfWU7J0t2XYDf41ACr6K%2Fz1QhQSjFu5kvga3te6bMzo6NBeu%2B876GV%2B7B4Qaf5Q7Fqn89OpoRPp35H9dcv35CD068Wyulk4UEBedYJKfxITk1Fh8IMnmOYAfu7%2BgA8A9Qvf3RInPENw%2FYqfxlNG04b02rq8mGEgxcNfMpJc6NUC2%2F5%2Fz5LCap%2BGRdnHOgS1a%2BlcRr4XLbyQXxxXcBR%2Fkn0FaF%2FbBkIXibkeqgHAqXtWxG5qyZhf9CUuky3%2FFhA%2B2jzi9zR0oFPVtv2gByF78KynBNIvtDj9SZMlSSLz0i9PqtXvmZgEHqZxTy1SSvIlBWk0uBfGa42Jm90qotT6Y4wUlpGwVx0klb40y6QsP%2FnXcPGs6HDWxHPkmfuNeQn2WlaGdVa7exIpShzl8REmjwWHW%2BctvJFPs8TxTQnfam5cK22LUPDKraj0LX3Q2yfpFwVCn%2BenTDU08QSeAEu9ZXPResNSRnFTsEKijz%2B0BI%2FylnuiOMp9Vp7MSKTCIo7bSBjqkAWbMYe7m94fLNqbxoyo%2Fgaj%2BHpWF%2Bdhp8DvbYzhXIi2azOebaYMkHLZ854sxAFauuf7NI50da5qjpJeHvJYFaJtEUUvhqporSrxsxusJSz0E6aTwfUtINRqltW%2BQmGRup5kTF2PbkxuvI4w3MQghotNhKuZKWkXZIuUkTB22WndXgmy6A29ducjElRt1X1LVxkLRLdyctZI%2BIWK4YvSTx4%2BT2pfO&X-Amz-Signature=fc9f429f131e04817cf28069d759f612cd8d766aa6a2de7ed4f483e3f5c96b95&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject","expiresAt":"2026-07-08T00:03:45.597Z"}
+```
+
+#### gen-e852340b（初回 封筒 長形3号 期間+連絡先詳細）
+
+```json
+{"url":"https://brother-backend-dev-yokinini-imagebucket-gghw7nev1auv.s3.ap-northeast-1.amazonaws.com/generated-images/bubble-test-user/gen-e852340b-d983-4d0d-b0c8-3b4dfc63f438/output.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAU3ARUFJ3JTHEQ2JL%2F20260707%2Fap-northeast-1%2Fs3%2Faws4_request&X-Amz-Date=20260707T235346Z&X-Amz-Expires=600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELD%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDmFwLW5vcnRoZWFzdC0xIkYwRAIgDPbvKZDG0mQ8aOvesRXjjMtpUa82%2FMDxz0QEVYQkI5MCIH9T3JdZZ9x%2BMLuNFaO9GuTpwG5CF1mu7qmjFNy%2FkBWeKvcECHkQABoMMzMyODk2OTM4NjE0IgyN5WE0OBu5NQZSrscq1ARgsYFehF89mlR0SzrYUzsNZa4dCreT8RxE6%2FiMMe%2FAt8LXPvB5Q2I3MzO6TYmXcpGT6JTk0Re973Ka0ZVUq73nRAtNZwkIycNdH6zj1E4ggopdUSqNc0ShgPxwn0oHR5BUPt75HXDmpOz00c3abUnpydNDuwWjyd4VVbFaSXqLhr0iK7%2BSOg0sSfHoG7S%2Baoucq0pdyl5tOognVu9SyJWEFinWLkbdHRwXPHJARRTHQoALIA3XsbeWohb4uVsArpSi81mGDnltA4QZcZWvUlHi1u2Q%2BPpqCPIgcfWU7J0t2XYDf41ACr6K%2Fz1QhQSjFu5kvga3te6bMzo6NBeu%2B876GV%2B7B4Qaf5Q7Fqn89OpoRPp35H9dcv35CD068Wyulk4UEBedYJKfxITk1Fh8IMnmOYAfu7%2BgA8A9Qvf3RInPENw%2FYqfxlNG04b02rq8mGEgxcNfMpJc6NUC2%2F5%2Fz5LCap%2BGRdnHOgS1a%2BlcRr4XLbyQXxxXcBR%2Fkn0FaF%2FbBkIXibkeqgHAqXtWxG5qyZhf9CUuky3%2FFhA%2B2jzi9zR0oFPVtv2gByF78KynBNIvtDj9SZMlSSLz0i9PqtXvmZgEHqZxTy1SSvIlBWk0uBfGa42Jm90qotT6Y4wUlpGwVx0klb40y6QsP%2FnXcPGs6HDWxHPkmfuNeQn2WlaGdVa7exIpShzl8REmjwWHW%2BctvJFPs8TxTQnfam5cK22LUPDKraj0LX3Q2yfpFwVCn%2BenTDU08QSeAEu9ZXPResNSRnFTsEKijz%2B0BI%2FylnuiOMp9Vp7MSKTCIo7bSBjqkAWbMYe7m94fLNqbxoyo%2Fgaj%2BHpWF%2Bdhp8DvbYzhXIi2azOebaYMkHLZ854sxAFauuf7NI50da5qjpJeHvJYFaJtEUUvhqporSrxsxusJSz0E6aTwfUtINRqltW%2BQmGRup5kTF2PbkxuvI4w3MQghotNhKuZKWkXZIuUkTB22WndXgmy6A29ducjElRt1X1LVxkLRLdyctZI%2BIWK4YvSTx4%2BT2pfO&X-Amz-Signature=f34785e82864a7cc71fd55ac7c867cc1cf0a1e22748df70a511640cc4fbe66ba&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject","expiresAt":"2026-07-08T00:03:46.210Z"}
+```
+
+#### 生成画像サムネイル（CloudFront・恒久URL、追加分）
+
+| ジョブ | thumbnailUrl |
+|---|---|
+| gen-5e0461c8（初回ハガキ全項目） | https://d3p6nztoczy84t.cloudfront.net/generated-images/bubble-test-user/gen-5e0461c8-fb23-4885-a296-aa2ba6b4337b/thumbnail.png |
+| gen-e852340b（初回封筒 期間+連絡先詳細） | https://d3p6nztoczy84t.cloudfront.net/generated-images/bubble-test-user/gen-e852340b-d983-4d0d-b0c8-3b4dfc63f438/thumbnail.png |
+
+---
+
 ## ブラザー側への返信案（要点）
 
 1. contactName / contactDetails の追加、およびPOST/GETのstatus仕様書準拠化（RUNNING）を確認。前回の再生成時文言混入も解消を確認した。ありがとうございます。
