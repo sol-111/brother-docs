@@ -4981,17 +4981,17 @@ erDiagram
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:12px; margin:12px 0 16px;">
             <span style="background:var(--primary-bg); color:var(--primary); border-radius:6px; padding:6px 12px; font-weight:600;">Bubble</span>
             <span style="color:#9ca3af;">→ API Key →</span>
-            <span style="background:#fff; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 12px; font-weight:600;">貴社API<br><span style="font-weight:400; font-size:11px;">地理制限＋レートリミット</span></span>
+            <span style="background:#fff; border:1.5px solid #d1d5db; border-radius:6px; padding:6px 12px; font-weight:600;">貴社API<br><span style="font-weight:400; font-size:11px;">レートリミット＋使用量プラン</span></span>
           </div>
           <table class="field-table">
             <thead><tr><th>対策</th><th>内容</th></tr></thead>
             <tbody>
               <tr><td>API Key認証</td><td>現行どおり（ガイド1〜3章）</td></tr>
               <tr><td>レートリミット / 使用量プラン</td><td>API Gatewayの標準機能。万一のキー漏洩時も大量呼び出しを制限可能</td></tr>
-              <tr><td>WAF地理制限</td><td>日本国内IPのみ許可。固定IP不要で海外からのアクセスを一括遮断</td></tr>
               <tr><td>API Keyの定期ローテーション</td><td>キー漏洩時の影響期間を限定。ローテーション手順・頻度は別途ご相談</td></tr>
             </tbody>
           </table>
+          <p style="font-size:12px; color:#6b7280; margin-top:10px;">※WAFの地理制限（日本国内IPのみ許可）は、Bubbleの共用環境が米国リージョンでホスティングされており、Bubbleサーバー経由のAPI呼び出し自体が遮断されてしまうため適用できません。</p>
         </div>
 
         <!-- 案2 -->
@@ -5035,7 +5035,7 @@ erDiagram
             <tr>
               <td style="font-weight:600;">案1<br><span style="font-weight:400; font-size:12px;">API Key＋標準機能</span><br><span style="background:var(--green-bg); color:var(--green); font-size:11px; font-weight:700; border-radius:6px; padding:1px 6px;">PoC推奨</span></td>
               <td>・追加費用・追加構築なしで即時運用可能（貴社側のWAF/API Gateway設定のみ）<br>・通信経路に第三者が入らない</td>
-              <td>・送信元IPによる制限は行わないため、API Key漏洩時は地理制限・レートリミットの範囲でしか防げない（ローテーションで影響期間を限定）</td>
+              <td>・送信元IPによる制限は行わないため、API Key漏洩時はレートリミットの範囲でしか防げない（ローテーションで影響期間を限定）<br>・地理制限もBubble共用環境（米国ホスティング）のため適用不可</td>
             </tr>
             <tr>
               <td style="font-weight:600;">案2<br><span style="font-weight:400; font-size:12px;">固定IPプロキシ</span></td>
