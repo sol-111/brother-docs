@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>429エラーハンドリング実装仕様（Bubble側）</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1a1a2e; --muted: #5a6072;
+    --border: #d8dce6; --card: #f5f7fb; --accent: #2255cc;
+    --head-bg: #1c2437; --head-fg: #ffffff;
+    --lane-bg: #fafbfd;
+    --c-user-bg: #e3f2e3; --c-app-bg: #e1edf9; --c-sys-bg: #ece7f6;
+    --c-warn-bg: #fdf1e0; --c-warn-border: #d97b18;
+    --col-ng-bg: #fbeaea; --col-ng-head: #8e2a2a; --col-ng-border: #d98080;
+    --status-bg: #fdf6dc;
+    --ok: #1a7f4b; --ng: #c0392b;
+    --code-bg: #f0f2f8;
+    --pill-border: #b8bfd0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14161f; --fg: #e8eaf2; --muted: #9aa1b5;
+      --border: #363b4d; --card: #1d2030; --accent: #7aa2ff;
+      --head-bg: #0e1524; --head-fg: #e8eaf2;
+      --lane-bg: #181b28;
+      --c-user-bg: #1e3320; --c-app-bg: #1c2c40; --c-sys-bg: #2a2438;
+      --c-warn-bg: #392c15; --c-warn-border: #c98b3a;
+      --col-ng-bg: #331d1d; --col-ng-head: #6e2222; --col-ng-border: #7c4040;
+      --status-bg: #33301a;
+      --ok: #4fc98a; --ng: #ef7b6d;
+      --code-bg: #232739;
+      --pill-border: #565e75;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
+    background: var(--bg); color: var(--fg);
+    line-height: 1.7; margin: 0; padding: 2rem 1rem 5rem;
+  }
+  main { max-width: 76rem; margin: 0 auto; }
+  h1 { font-size: 1.45rem; border-bottom: 3px solid var(--accent); padding-bottom: .5rem; }
+  h2 { font-size: 1.15rem; margin-top: 2.6em; border-left: 5px solid var(--accent); padding-left: .6em; }
+  .meta { color: var(--muted); font-size: .86rem; margin-bottom: 1.6rem; }
+
+  /* ===== swimlane ===== */
+  .swimwrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  table.swim { border-collapse: collapse; min-width: 72rem; width: 100%; font-size: .86rem; }
+  table.swim th, table.swim td { border: 1px solid var(--border); padding: .7em .7em; vertical-align: top; }
+  table.swim thead th {
+    background: var(--head-bg); color: var(--head-fg);
+    text-align: center; font-size: .92rem; padding: .8em .6em;
+  }
+  table.swim thead th small { display: block; font-weight: 400; font-size: .75rem; opacity: .75; margin-top: .15em; }
+  table.swim thead th.ng-col { background: var(--col-ng-head); }
+  th.lane {
+    background: var(--lane-bg); text-align: center; vertical-align: middle;
+    font-size: .9rem; white-space: nowrap; padding: 0 1em; min-width: 6.5em;
+  }
+  td.ng-col { background: var(--col-ng-bg); }
+  td.empty { text-align: center; color: var(--muted); vertical-align: middle; }
+
+  .card { border-radius: 8px; padding: .6em .8em; margin: 0 0 .7em; }
+  .card:last-child { margin-bottom: 0; }
+  .card b.t { display: block; margin-bottom: .15em; font-size: .9rem; }
+  .card .sub { color: var(--muted); font-size: .8rem; margin-top: .3em; }
+  .c-user { background: var(--c-user-bg); }
+  .c-app  { background: var(--c-app-bg); }
+  .c-sys  { background: var(--c-sys-bg); }
+  .c-warn { background: var(--c-warn-bg); border: 2px dashed var(--c-warn-border); }
+  .num {
+    display: inline-block; width: 1.5em; height: 1.5em; line-height: 1.4em;
+    border: 1.5px solid currentColor; border-radius: 50%;
+    text-align: center; font-size: .82em; font-weight: 700; margin-right: .35em;
+  }
+  .tag {
+    display: inline-block; font-size: .72rem; font-weight: 700; line-height: 1.5;
+    border-radius: 4px; padding: .02em .5em; margin-left: .35em; vertical-align: .1em;
+    background: var(--c-warn-border); color: #fff;
+  }
+  .tag.q { background: transparent; color: var(--c-warn-border); border: 1.5px solid var(--c-warn-border); }
+  .pill {
+    display: inline-block; border: 1.5px solid var(--pill-border); border-radius: 999px;
+    padding: .05em .8em; font-size: .8rem; font-weight: 600; background: var(--bg);
+  }
+  .pill.ng { border-color: var(--ng); color: var(--ng); }
+  .pill.ok { border-color: var(--ok); color: var(--ok); }
+  tr.status td { background: var(--status-bg); text-align: center; vertical-align: middle; }
+  th.status-lane { background: var(--status-bg); }
+  .scrollnote { text-align: right; color: var(--muted); font-size: .78rem; margin: .4em .2em 0; }
+
+  /* ===== 下部リファレンス ===== */
+  table.ref { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: .9rem; }
+  table.ref th, table.ref td { border: 1px solid var(--border); padding: .5em .7em; text-align: left; vertical-align: top; }
+  table.ref th { background: var(--card); white-space: nowrap; }
+  .scroll { overflow-x: auto; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; background: var(--code-bg); border-radius: 4px; padding: .1em .35em; font-size: .86em; }
+  .msg { background: var(--card); border: 1px dashed var(--border); border-radius: 6px; padding: .65em 1em; margin: .5em 0; font-size: .95rem; }
+  .note { background: var(--c-warn-bg); border: 1px solid var(--c-warn-border); border-radius: 6px; padding: .8em 1em; margin: 1em 0; font-size: .9rem; }
+  ul, ol { padding-left: 1.4em; }
+  li { margin: .25em 0; }
+  .checklist li { list-style: none; margin: .45em 0; }
+  .checklist { padding-left: .3em; }
+  input[type="checkbox"] { transform: scale(1.15); margin-right: .5em; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>429エラーハンドリング実装仕様（Bubble側）</h1>
+<p class="meta">
+  作成: 株式会社アイビス ／ 2026-07-22 ・
+  対象: Spark（Bubbleアプリ）の生成・再生成・原稿DL ・
+  前提: API Connector（サーバーサイド実行・API Key private）移行済み ・
+  関連: <code>429_UsagePlanクォータ制限_20260722.md</code>
+  <br>
+  <span class="tag">仮</span> = アイビス側で仮決めした値（実装担当の判断で変更可）
+  ／ <span class="tag q">回答待ち</span> = ブラザー側の回答により確定する箇所（§6）
+</p>
+
+<h2>1. 全体フロー（スイムレーン）</h2>
+<p>列は「正常時」と「3種類の429それぞれが起きた場合」。<strong>429はボディの文字列で機械的に判別</strong>し、列ごとの処理に分岐する。</p>
+
+<div class="swimwrap">
+<table class="swim">
+  <thead>
+    <tr>
+      <th class="lane" style="background:var(--head-bg);color:var(--head-fg)">時系列 →</th>
+      <th>🔘 操作〜API呼び出し<br><small>生成・再生成・DLボタン</small></th>
+      <th>✅ 正常の場合</th>
+      <th>🔁 ①レート超過 429<br><small>ボディ: "Too Many Requests"</small></th>
+      <th>🤖 ③AI側 429<br><small>200受理後、ジョブがFAILED</small></th>
+      <th class="ng-col">🚫 ②クォータ枯渇 429<br><small>ボディ: "Limit Exceeded"</small></th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- ユーザー lane -->
+    <tr>
+      <th class="lane">ユーザー<br><small style="color:var(--muted)">お寺担当者</small></th>
+      <td>
+        <div class="card c-user"><b class="t"><span class="num">1</span>ボタン押下</b>
+          生成／再生成 → インジケーター表示<br>DL → 取得中表示
+        </div>
+      </td>
+      <td>
+        <div class="card c-user"><b class="t"><span class="num">6</span>完了</b>
+          生成: 完了したサイズから順次表示<br>
+          DL: ファイル保存ダイアログ
+          <div class="sub">全サイズ完了まで最大3分程度かかる旨をインジケーター横に表示推奨</div>
+        </div>
+      </td>
+      <td>
+        <div class="card c-user"><b class="t">何も見せない</b>
+          体感は「少し待たされるだけ」。エラー表示・トースト等は出さない
+        </div>
+      </td>
+      <td>
+        <div class="card c-user"><b class="t">リトライ上限までは何も見せない</b></div>
+        <div class="card c-warn"><b class="t">上限超過時のみ表示</b>
+          「生成が混み合っています。しばらく待ってから、もう一度お試しください。」
+        </div>
+      </td>
+      <td class="ng-col">
+        <div class="card c-warn"><b class="t">バナー＋ボタン無効化</b>
+          「現在アクセスが集中しているため、デザインの生成・ダウンロードを一時停止しています。時間をおいてお試しください。」
+          <span class="tag q">回答待ち</span>
+          <div class="sub">リセット時刻の回答後は「本日の上限に達しました。明日以降に〜」へ差し替え（§4）。具体的な「◯分後」はリセット時刻が判明するまで表示しない</div>
+        </div>
+        <div class="card c-user"><b class="t">閲覧はそのまま使える</b>
+          行事一覧・作成済みデザイン・サムネイルはAPI非依存のため通常動作
+        </div>
+      </td>
+    </tr>
+    <!-- Bubble lane -->
+    <tr>
+      <th class="lane">Bubble<br>アプリ</th>
+      <td>
+        <div class="card c-app"><b class="t"><span class="num">2</span>API Connector実行</b>
+          生成/再生成: POST（6サイズ分）<br>
+          DL: GET /files/url/{fileKey}
+        </div>
+      </td>
+      <td>
+        <div class="card c-app"><b class="t"><span class="num">4</span>ポーリング（生成系のみ）</b>
+          10秒間隔で GET /generated-images/{id}
+          <div class="sub">停止条件（§3・必須）: 全件COMPLETED/FAILED、または18回(3分)でタイムアウト。Backend workflowでの再帰実装は禁止</div>
+        </div>
+        <div class="card c-app"><b class="t"><span class="num">5</span>DL: URLを即開く</b>
+          返却された url を Open an external website で開く
+          <div class="sub">署名付きURL期限600秒。保存・使い回し禁止</div>
+        </div>
+      </td>
+      <td>
+        <div class="card c-app"><b class="t"><span class="num">7</span>同一リクエストを再送</b>
+          5秒待って1回だけ <span class="tag">仮</span>
+          <div class="sub">再送も429なら②と同じ扱い（制限中モードへ）</div>
+        </div>
+      </td>
+      <td>
+        <div class="card c-app"><b class="t"><span class="num">8</span>自動で再生成POST</b>
+          30秒間隔・最大2回 <span class="tag">仮</span>
+          <div class="sub">判定: status=FAILED かつ errorMessage に "AI_REQUEST_FAILED:429" を含む。3回連続失敗で上限超過表示へ</div>
+        </div>
+      </td>
+      <td class="ng-col">
+        <div class="card c-app"><b class="t"><span class="num">9</span>制限中モードへ移行</b>
+          <b>リトライ禁止</b>。<code>api_restricted = yes</code> を設定
+          <div class="sub">生成・再生成・DLボタンはConditionでdisabled。ポーリング中に検知した場合はポーリングも即停止</div>
+        </div>
+        <div class="card c-app"><b class="t"><span class="num">10</span>解除判定</b>
+          ページロード時に <code>api_restricted = yes</code> の場合のみ、GET /source-image-groups を1回試行 → 200なら解除
+          <div class="sub">定期的な自動再試行は実装しない（クォータをさらに消費するため）</div>
+        </div>
+      </td>
+    </tr>
+    <!-- API lane -->
+    <tr>
+      <th class="lane">ブラザー<br>API</th>
+      <td>
+        <div class="card c-sys"><b class="t"><span class="num">3</span>受理</b>
+          生成/再生成: 200（status: RUNNING）<br>
+          DL: 200（url + expiresAt）
+        </div>
+      </td>
+      <td>
+        <div class="card c-sys"><b class="t">生成完了</b>
+          ポーリング応答が status: COMPLETED（1件あたり10〜60秒）
+        </div>
+      </td>
+      <td>
+        <div class="card c-sys"><b class="t">HTTP 429</b>
+          <code>Too Many Requests</code>
+          <div class="sub">API Gatewayの秒間流量制限。数秒で回復する</div>
+        </div>
+      </td>
+      <td>
+        <div class="card c-sys"><b class="t">POSTは200 → ジョブFAILED</b>
+          <code>AI_REQUEST_FAILED:429:Resource has been exhausted...</code>
+          <div class="sub">AI側の分間クォータ。1分程度で回復する想定</div>
+        </div>
+      </td>
+      <td class="ng-col">
+        <div class="card c-sys"><b class="t">HTTP 429（全API）</b>
+          <code>{"message":"Limit Exceeded"}</code>
+          <div class="sub">Usage Planの期間クォータ枯渇。リセットまで全リクエストが拒否され続ける（2026-07-22に実際に発生）</div>
+        </div>
+      </td>
+    </tr>
+    <!-- status lane -->
+    <tr class="status">
+      <th class="lane status-lane">アプリ状態</th>
+      <td><span class="pill">通常</span></td>
+      <td><span class="pill">通常</span></td>
+      <td><span class="pill">通常</span><div class="sub" style="color:var(--muted);font-size:.78rem">（内部リトライ中）</div></td>
+      <td><span class="pill">通常</span><div class="sub" style="color:var(--muted);font-size:.78rem">（自動再生成中）</div></td>
+      <td class="ng-col"><span class="pill ng">制限中モード</span><div class="sub" style="color:var(--muted);font-size:.78rem">api_restricted = yes</div></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p class="scrollnote">※ 画面が狭い場合は表を横にスクロールできます</p>
+
+<h2>2. リトライ仕様まとめ</h2>
+<div class="scroll">
+<table class="ref">
+  <tr><th>トリガー（判別文字列）</th><th>リトライ</th><th>間隔</th><th>上限</th><th>上限到達時</th></tr>
+  <tr><td>① 429 + <code>Too Many Requests</code></td><td>する（同一リクエスト再送）</td><td>5秒 <span class="tag">仮</span></td><td>1回 <span class="tag">仮</span></td><td>制限中モードへ</td></tr>
+  <tr><td>② 429 + <code>Limit Exceeded</code></td><td style="color:var(--ng);font-weight:700">しない</td><td>—</td><td>—</td><td>即・制限中モードへ</td></tr>
+  <tr><td>③ FAILED + <code>AI_REQUEST_FAILED:429</code></td><td>する（再生成POST）</td><td>30秒 <span class="tag">仮</span></td><td>2回 <span class="tag">仮</span></td><td>「混み合っています」表示</td></tr>
+  <tr><td>その他（403 / 5xx / タイムアウト）</td><td style="color:var(--ng);font-weight:700">しない</td><td>—</td><td>—</td><td>汎用エラー表示（§4）</td></tr>
+</table>
+</div>
+<div class="note">
+<strong>実装ポイント:</strong> ①②はAPI Connector呼び出し自体の失敗（ワークフローのエラーハンドリング＝
+<code>An unhandled error occurs</code> イベント等で <code>Current Workflow Error's message</code> の文字列を判定）。
+③は正常応答（200）の中身で判定する。レイヤーが違う点に注意。
+</div>
+
+<h2>3. ポーリングのガード（クォータ消費対策・必須）</h2>
+<p>今回のクォータ枯渇の最有力原因はポーリングの回りっぱなし。以下を必須要件とする。</p>
+<ul>
+  <li>間隔10秒、<strong>最大18回（3分）でタイムアウト停止</strong>（正常時の生成は10〜60秒／件）</li>
+  <li>全件 <code>COMPLETED</code> / <code>FAILED</code> で停止</li>
+  <li>ページ内イベント（<code>Do every X seconds</code>）で実装し、<strong>Backend workflowの再帰スケジュール禁止</strong>（離脱後も回り続けクォータを消費するため）</li>
+  <li>ポーリング中に②を検知したら即停止 → 制限中モードへ</li>
+</ul>
+
+<h2>4. ユーザー向け文言一覧</h2>
+<table class="ref">
+  <tr><th>場面</th><th>文言</th></tr>
+  <tr>
+    <td>② 制限中モードのバナー（暫定）</td>
+    <td><div class="msg">現在アクセスが集中しているため、デザインの生成・ダウンロードを一時停止しています。お手数ですが、時間をおいてお試しください。</div>
+    リセットタイミング判明後（例: 日次・毎日0時）:
+    <div class="msg">本日のデザイン生成回数の上限に達しました。明日以降に再度お試しください。</div></td>
+  </tr>
+  <tr><td>③ 自動リトライ上限超過</td><td><div class="msg">生成が混み合っています。しばらく待ってから、もう一度お試しください。</div></td></tr>
+  <tr><td>その他エラー（403 / 5xx / タイムアウト）</td><td><div class="msg">エラーが発生しました。時間をおいて再度お試しいただくか、解消しない場合は管理者にお問い合わせください。</div></td></tr>
+</table>
+
+<h2>5. テスト観点</h2>
+<p>②はブラザー側にクォータを一時的に極小値へ変更してもらうのが確実。①③は通常再現が難しいため、API ConnectorのURLを固定429を返すモックに一時差し替えて確認する方法を推奨。</p>
+<ul class="checklist">
+  <li><input type="checkbox"> ②発生時: 生成・再生成・DLボタンが無効化され、バナーが表示される</li>
+  <li><input type="checkbox"> ②発生時: 行事一覧・作成済みデザイン閲覧・サムネイルは正常動作する</li>
+  <li><input type="checkbox"> ②発生時: リトライによる追加リクエストが発生しない（Bubbleログで確認）</li>
+  <li><input type="checkbox"> ②解除後: ページロードで制限中モードが解除されボタンが復活する</li>
+  <li><input type="checkbox"> ①発生時: ユーザーに見えない形で1回再送され、成功すれば通常フローに戻る</li>
+  <li><input type="checkbox"> ③発生時: 再生成が最大2回自動実行され、3回連続失敗で文言表示</li>
+  <li><input type="checkbox"> ポーリング: 全件完了で停止／3分でタイムアウト停止／ページ離脱後にリクエストが継続しない（ログ確認）</li>
+  <li><input type="checkbox"> DL: URL取得後すぐに署名付きURLが開かれる（600秒期限内）</li>
+</ul>
+
+<h2>6. 未確定事項（ブラザー側回答待ち）</h2>
+<div class="scroll">
+<table class="ref">
+  <tr><th>#</th><th>項目</th><th>本仕様への影響</th></tr>
+  <tr><td>1</td><td>Usage PlanのQuota上限値・期間・リセットタイミング</td><td>§4のバナー文言を確定版へ差し替え</td></tr>
+  <tr><td>2</td><td>Rate/Burstの設定値</td><td>①の発生頻度想定。高頻度ならリトライ間隔・回数を調整</td></tr>
+  <tr><td>3</td><td>DL APIへのfilenameパラメータ追加（Content-Disposition対応）</td><td>対応前はDLが「ブラウザにインライン表示」となる（スイムレーン⑤は対応後の想定）</td></tr>
+</table>
+</div>
+
+</main>
+</body>
+</html>
