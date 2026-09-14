@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>切り替え設計 — テンプレDL版から画像生成版へ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* HTML資料デザインシステム CSSテンプレート — 誌面エディトリアル版（2026-08-21全面改定）
+   見た目の正本: 同フォルダの gallery.html（全部品の見本。本CSSをlink参照しており自動で追随）
+   ※Webフォント必須: <head>にShippori Mincho+Noto Sans JPのlinkを入れる（snippets.html冒頭参照）
+   ※カラートークンは例としてRINCLE値。案件ごとに --accent 系をブランドから導出して差し替える
+     （原色をそのまま使わず、彩度を落とした「焦がしトーン」にするのがこの様式の鍵。RINCLE: #F95320 → #B8532F） */
+
+:root{
+  --paper:#FBF9F5;          /* 紙: ページ背景 */
+  --ink:#26221E;            /* 墨: 見出し・強い罫線 */
+  --text:#57504A;           /* 本文 */
+  --sub:#8B8279;            /* 弱い文字・注記 */
+  --accent:#0068B7;         /* 焦がしブランド色（差し色） */
+  --accent-deep:#004E8C;    /* ホバー等の濃い側 */
+  --accent-soft:#DCEBF7;    /* 淡いブランド面（選択・ホバー） */
+  --accent-faint:#EEF5FB;   /* さらに淡い面（行ホバー・現在地） */
+  --line:#DCD3C8;           /* 罫線（強） */
+  --line-soft:#E5DDD2;      /* 罫線（弱） */
+  --surface:#FFFFFF;        /* 白面 */
+  --ok:#3E6B4F;   --ok-soft:#EDF4EE;   --ok-line:#C6DCCB;   --ok-text:#2C5138;
+  --danger:#A8323E; --danger-soft:#F9EDEE; --danger-line:#E8C9CD; --danger-text:#7E2630;
+  --info:#3B5B84;  --info-soft:#EEF2F7;  --info-line:#CBD7E5;  --info-text:#2E4869;
+  --gold:#C99A2E;  --gold-text:#8F5A0A;  --gold-soft:#F7EFDF;  --gold-line:#EAD9AE;
+  --code-bg:#221B16;
+  --serif:'Shippori Mincho',serif;
+  --sans:'Noto Sans JP',-apple-system,BlinkMacSystemFont,'Hiragino Sans',Meiryo,sans-serif; /* body の font-family と同じ並び。明朝の中でゴシックに戻す時に使う（単位・注記） */
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,'Hiragino Sans',Meiryo,sans-serif;background:var(--paper);color:var(--text);line-height:2;-webkit-font-smoothing:antialiased;font-feature-settings:'palt' 1}
+table{font-variant-numeric:tabular-nums}
+strong{color:var(--ink)}
+a{color:var(--accent);text-underline-offset:4px}
+a:hover{color:var(--accent-deep)}
+
+/* ---------- ヒーロー（全幅・罫線で締める） ---------- */
+.hero{background:var(--paper);border-bottom:1px solid var(--line);padding:56px 40px 92px}
+.hero-inner{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:0}
+.hero-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--ink);padding-bottom:14px}
+.hero-brand{display:flex;align-items:center;gap:12px}
+.hero-logo{width:30px;height:30px;border-radius:8px}
+.hero-kicker{font-size:12px;letter-spacing:.22em;color:#6E675F}
+.hero-no{font-family:var(--serif);font-size:13px;letter-spacing:.18em;color:var(--accent)}
+.hero h1{font-family:var(--serif);font-size:52px;font-weight:600;line-height:1.4;color:var(--ink);letter-spacing:.02em;margin-top:52px}
+.hero p.lead{font-size:15px;line-height:2.1;color:var(--text);margin-top:20px}
+.hero .hero-meta{font-size:12px;color:var(--sub);margin-top:14px}
+
+/* ---------- 章ナビ（ヒーロー下・全ページ必須） ---------- */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);margin:-64px auto 48px;position:relative;z-index:2;max-width:1080px;background:var(--surface);border:1px solid var(--line);border-top:2px solid var(--accent);border-radius:4px;overflow:hidden}
+.flow a{display:flex;flex-direction:column;gap:5px;text-decoration:none;color:inherit;padding:20px 22px;border-left:1px solid var(--line-soft);transition:background .15s}
+.flow a:nth-child(4n+1){border-left:none}
+.flow a:nth-child(n+5){border-top:1px solid var(--line-soft)}
+.flow a:hover{background:var(--accent-faint)}
+.flow a.cur{background:var(--accent-faint)}
+.flow .fnum{font-family:var(--serif);font-size:20px;color:var(--text)}
+.flow a.cur .fnum{color:var(--accent)}
+.flow .ft{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.5}
+.flow .fd{font-size:11px;color:var(--sub);line-height:1.6}
+
+/* 章ナビの最終行に空きマスがある時（項目数が4の倍数でない時）も罫線を通す:
+   残り幅いっぱいの埋めマスを::afterで作る。2段以上ある時だけ上罫線もつける */
+.flow:has(> a:nth-child(4n+1):last-child)::after,
+.flow-tabs:has(> .tab-btn:nth-child(4n+1):last-child)::after{content:"";grid-column:span 3/-1;border-left:1px solid var(--line-soft)}
+.flow:has(> a:nth-child(4n+2):last-child)::after,
+.flow-tabs:has(> .tab-btn:nth-child(4n+2):last-child)::after{content:"";grid-column:span 2/-1;border-left:1px solid var(--line-soft)}
+.flow:has(> a:nth-child(4n+3):last-child)::after,
+.flow-tabs:has(> .tab-btn:nth-child(4n+3):last-child)::after{content:"";grid-column:span 1/-1;border-left:1px solid var(--line-soft)}
+.flow:has(> a:nth-child(5))::after,
+.flow-tabs:has(> .tab-btn:nth-child(5))::after{border-top:1px solid var(--line-soft)}
+
+/* 章ナビ型タブ（見た目は.flowと同一・クリックでパネル切替） */
+.flow-tabs{display:grid;grid-template-columns:repeat(4,1fr);margin:-64px auto 48px;position:relative;z-index:2;max-width:1080px;background:var(--surface);border:1px solid var(--line);border-top:2px solid var(--accent);border-radius:4px;overflow:hidden}
+.tab-btn{display:flex;flex-direction:column;gap:5px;text-align:left;background:var(--surface);border:none;border-left:1px solid var(--line-soft);padding:20px 22px;cursor:pointer;font-family:inherit;color:inherit;transition:background .15s}
+.tab-btn:nth-child(4n+1){border-left:none}
+.tab-btn:nth-child(n+5){border-top:1px solid var(--line-soft)}
+.tab-btn:hover{background:var(--accent-faint)}
+.tab-btn .fnum{font-family:var(--serif);font-size:20px;color:var(--text)}
+.tab-btn .ft{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.5}
+.tab-btn .fd{font-size:11px;color:var(--sub);line-height:1.6}
+.tab-btn.active{background:var(--accent-faint)}
+.tab-btn.active .fnum{color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.container{max-width:1080px;margin:0 auto;padding:36px 28px 80px}
+/* 章ナビの直後は、ナビの下余白48pxとコンテナの上余白36pxが足し算になって空白が広すぎるため詰める */
+.flow + .container, .flow-tabs + .container{padding-top:0}
+
+/* ---------- 結論は「01章」として置く（2026-09-04改定）
+   そのページの答えは、章の外の箱でなく最初の章そのものにする。
+   章ナビの1番目に「1 結論」、本文の最初の .section（id="conclusion"）の h2 を「結論」にし、
+   薄い大数字01+明朝見出しという章の文法で見せる。
+   専用の箱（旧 aside.conclusion / .conclusion-box）とアラートの流用は廃止した。
+   中身は答えの性格で選ぶ: 数字が答え=.stat-row / 判断を求める資料=table.qa（問い→答え）/
+   一言で足りる=本文1段落。補足（あわせて読む資料・この資料の読み方・進み具合）は
+   その章の中の ul.notes に※で1〜2行だけ添える ---------- */
+table.qa td.label{width:32%} /* 問い→答えの表: 左=問い（td.label.wrapで折り返す）・右=答え（1文目を<strong>で言い切る） */
+
+/* ---------- セクション（薄い大番号+明朝見出し） ---------- */
+.section{margin-bottom:0;padding:56px 0 40px;scroll-margin-top:20px}
+.container > .section:nth-of-type(odd),
+.tab-panel > .section:nth-of-type(odd){background:var(--surface);box-shadow:0 0 0 100vmax var(--surface);clip-path:inset(0 -100vmax)}
+.section > p{margin:22px 0}
+.section-header{display:flex;align-items:flex-end;gap:24px;margin-bottom:40px}
+.section-num{font-family:var(--serif);font-size:88px;line-height:.9;font-weight:700;color:rgba(38,34,30,.08);flex-shrink:0}
+.section-header .sh-body{display:flex;flex-direction:column;gap:6px;padding-bottom:6px}
+.section-header h2{font-family:var(--serif);font-size:30px;font-weight:600;color:var(--ink);line-height:1.5}
+.section-header .sh-sub{font-size:12.5px;letter-spacing:.08em;color:var(--accent)}
+h3{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink);margin:44px 0 18px}
+h4{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink);margin:26px 0 12px;line-height:1.6}
+
+/* ---------- カード（白面+罫線。影は浮遊部品のみ） ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:24px 26px;margin:28px 0}
+.card.sel{border-color:var(--accent)}
+.kicker{font-size:10.5px;letter-spacing:.16em;color:var(--accent);font-weight:700}
+
+/* ---------- 用語解説 ---------- */
+/* 用語が2〜3個セットの時は.term-rowで横並び（termは中でflex:1） */
+.term-row{display:flex;gap:24px;flex-wrap:wrap}
+.term-row .term{flex:1;min-width:280px}
+.term{border-left:2px solid var(--accent);background:var(--surface);border-top:1px solid var(--line-soft);border-right:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:18px 24px;margin:28px 0;display:flex;flex-direction:column;gap:6px}
+.term .term-name{font-family:var(--serif);font-size:16px;color:var(--ink)}
+.term .term-tag{font-size:11px;color:var(--sub)}
+.term .t-body{font-size:13.5px;line-height:2;color:var(--text)}
+
+/* ---------- アラート（色が意味を運ぶ。この3色以外を作らない — 2026-09-04決定）
+   緑 .alert-green  = 結論・決定（ページの答え・決まったこと）
+   藍 .alert-blue   = 読み方・補足（図の読み方ボックスもこれ）
+   紅 .alert-red    = リスク・注意（これから起こりうる悪いこと）
+   琥珀（--gold）のalertは作らない — 琥珀は「お金」の役割色で、意味が二重になる。
+   「課題・やり残し」は ul.notes の※ か .compare-box.bad に置く ---------- */
+.alert{display:flex;gap:12px;background:var(--surface);border:1px solid var(--line-soft);border-left-width:2px;padding:15px 18px;margin:28px 0;font-size:13.5px;line-height:1.9}
+.alert .a-icon{flex-shrink:0;margin-top:4px;width:17px;height:17px}
+.alert-blue{border-left-color:var(--info);color:var(--info-text)}
+.alert-green{border-left-color:var(--ok);color:var(--ok-text)}
+.alert-red{border-left-color:var(--danger);color:var(--danger-text)}
+
+/* ---------- ×○対比 ---------- */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:28px 0}
+.compare-box{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:20px 22px;display:flex;flex-direction:column;gap:8px} /* 素でも枠あり（変種は色を変えるだけ） */
+.compare-box.bad{border-color:var(--danger-line)}
+.compare-box.good{border-color:var(--ok-line)}
+.compare-box.asis .cb-head{color:var(--sub)}
+.compare-box.tobe{border-color:var(--accent)}
+.compare-box.tobe .cb-head{color:var(--accent)}
+.cb-head{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700}
+.compare-box.bad .cb-head{color:var(--danger-text)}
+.compare-box.good .cb-head{color:var(--ok-text)}
+.cb-mark{width:22px;height:22px;border-radius:50%;background:var(--sub);color:var(--paper);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700} /* 既定背景=誤って中立面に置かれても白文字が消えない保険 */
+.bad .cb-mark{background:var(--danger)}
+.good .cb-mark{background:var(--ok)}
+.compare-box p{font-size:12.5px;line-height:1.9;color:var(--text)}
+
+/* ---------- 選択肢と採否（.options / .option: 検討した案を横に並べ、採ったものを立たせ、捨てたものを沈める。
+   「決定の記録」の部品で、2択の良し悪しは .compare-box、3案以上の採否はこちら）。
+   3状態: 素=中立 / .chosen=採用（焦がしの枠）/ .dim=不採用（文字と罫線をグレーに落として沈める）。
+   沈めるのに opacity は使わない — 面ごと薄くなって紙の白が濁る（tr.muted と同じ思想）。
+   中身は 記号丸 .num-chip → 明朝の見出し h4 → 1〜2文 → 結論バッジ .badge の順。
+   結論バッジは既存の語彙で表す: 採用=.badge.good / 対抗案=.badge.plain / 不採用=.badge.muted（新しい色を作らない）。
+   記号丸に案ごとの色は付けない — 藍・緑は図解の役割色（ユーザー・店舗）で意味が二重になる。
+   採否は「枠」と「バッジ」の2つが示す。列数は案の数だけ自動で並び、狭い幅では1列に折り返す ---------- */
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:28px 0 8px}
+.option{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.option h4{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink);line-height:1.6;margin:0}
+.option p{font-size:12.5px;color:var(--text);line-height:1.9;flex:1;margin:0}
+.option .badge{align-self:flex-start}
+.option.chosen{border-color:var(--accent)}
+.option.dim{border-color:var(--line-soft)}
+.option.dim h4,.option.dim p{color:var(--sub)}
+.option.dim .num-chip{border-color:var(--line);color:var(--sub)}
+
+/* ---------- 小見出し分節（.sub-item: 章の中のテーマを「焦がしキッカー+明朝見出し」の2段で分ける。
+   章見出し（section-header）と同じ文法のミニ版。キッカー（.kick）は省略可。
+   箱にはしない — 白面カードだと用語解説と紛れ、箱が並んでうるさくなる（2026-08-26決定・案A採用） ---------- */
+.sub-item{margin:56px 0 0} /* テーマ境界はテーマ内の間隔（24〜28px）より明確に大きく */
+.sub-item .kick{font-size:10.5px;font-weight:700;letter-spacing:.2em;color:var(--accent);margin-bottom:6px}
+.sub-item h4{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink);line-height:1.6;margin:0 0 14px}
+.sub-item p{font-size:13.5px;margin-bottom:8px}
+.sub-item h4 + * ~ h4{margin-top:22px} /* 1つの .sub-item に h4 が続く時、2つ目以降は上に余白を持たせる（見出しが前の段落に貼り付くため） */
+
+/* ---------- 表（上罫は墨2px・項目名は明朝） ---------- */
+.table-wrap{overflow-x:auto;margin:28px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead th{border-bottom:2px solid var(--ink);padding:0 16px 12px 0;text-align:left;font-size:11px;letter-spacing:.18em;font-weight:500;color:var(--sub);white-space:nowrap}
+td{padding:18px 16px 18px 0;border-bottom:1px solid var(--line-soft);vertical-align:baseline}
+tbody tr:hover td{background:var(--accent-faint)}
+td.label{font-family:var(--serif);font-size:17px;color:var(--ink);white-space:nowrap}
+td.num{font-family:var(--serif);font-size:15px;color:var(--accent);text-align:right;white-space:nowrap}
+th.num{text-align:right} /* 数値列は見出しも右揃えにして値と縦を揃える */
+/* 2段ヘッダー（列グループ）: 1行目に th[rowspan]（グループ外の列）と th.th-grp[colspan]（グループ名）、
+   2行目にグループ内の列見出し。グループ名とサブ見出しの間は弱い罫・本文との境は通常どおり墨2px */
+thead th[rowspan]{vertical-align:bottom}
+thead th.th-grp{text-align:center;color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:8px}
+thead tr+tr th{padding-top:10px}
+/* 停止中・対象外の行を沈める（例: 動いていない案件の行） */
+tbody tr.muted td{color:var(--sub)}
+tbody tr.muted td.label,tbody tr.muted td.num{color:var(--sub)}
+td.label.wrap{white-space:normal;font-size:15px;line-height:1.8} /* 長い項目名は折り返す（既定のtd.labelはnowrap） */
+td.label.ind{padding-left:22px;font-size:14.5px;color:var(--text)} /* 直前の行の変種をぶら下げる（「うち延長料金」「同（60分）」等）。
+   字下げは全角空白を項目名に直書きせず、必ずこのクラスで持つ — 空白を文字で入れると検索・コピーに混ざり、
+   折り返した時に2行目の字下げが消える（2026-09-01にSEOレポートの全角空白方式から統一） */
+td .label-sub{font-size:11px;color:var(--sub);margin-left:6px;font-weight:400} /* 主ラベルの後ろに原語・補足を薄く添える（例: 他サイト経由 <span class="label-sub">Referral</span>） */
+td .td-sub{display:block;font-family:var(--sans);font-size:11.5px;font-weight:400;color:var(--sub);line-height:1.8;white-space:normal;margin-top:2px} /* 項目名の下の1行補足。例示や条件を注記に逃がさず行内で完結させる（2行を超えるなら.termへ） */
+th.std,td.std{background:var(--accent-faint)} /* 選択肢が横に並ぶ表の推奨・標準列を薄い面で示す。面を着せるのは1列だけ */
+td.num.cnt{color:var(--ink)} /* 金額でない数（回数等）は墨 — 差し色は「答えの金額」の列だけに残す */
+td.num.calc{color:var(--sub);font-size:13px} /* 計算の途中経過（内訳の式）は脇役のグレー */
+/* ---------- 前月比較表（.table-mom: 当月=主役の墨・前月=脇役のグレー・前月比=意味色・グループ見出し行） ---------- */
+.table-mom td{padding:12px 16px 12px 0}
+.table-mom td.label{font-size:15px}
+.table-mom td.num{color:var(--ink)}
+.table-mom td.prev{color:var(--sub)}
+.table-mom td.up{color:var(--ok)}
+.table-mom td.down{color:var(--danger)}
+.table-mom tr.tgroup td{padding:26px 0 8px;border-bottom:1px solid var(--line);font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.16em;color:var(--accent)}
+.table-mom tbody tr:first-child.tgroup td{padding-top:8px}
+.table-mom tr.tgroup:hover td{background:none}
+.pri{display:flex;align-items:center;gap:14px}
+.pri .bar{height:7px;border-radius:99px;background:var(--accent);flex-shrink:0}
+.pri .pv{font-family:var(--serif);font-size:14px;color:var(--ink)}
+
+/* ---------- バッジ・タグ ---------- */
+.badge{display:inline-block;padding:4px 12px;border-radius:3px;font-size:12px;font-weight:700;white-space:nowrap}
+.badge.ink{background:var(--ink);color:var(--paper)}
+.badge.brand{background:var(--accent);color:var(--paper)}
+.badge.good{background:var(--ok-soft);border:1px solid var(--ok-line);color:var(--ok-text)}
+.badge.bad{background:var(--danger-soft);border:1px solid var(--danger-line);color:var(--danger-text)}
+/* 3段階の格付けの「中」。高=.badge.brand（焦がしベタ）/ 中=.badge.mid（白面・焦がし1px輪郭）/ 低=.badge.plain（罫線のみ）。
+   .badge.ink（黒ベタ）を「中」に流用しない — 黒ベタは焦がしベタより重く見え、格付けの順序が逆に読める（2026-09-14） */
+.badge.mid{background:var(--surface);border:1px solid var(--accent);color:var(--accent)}
+.badge.plain{border:1px solid var(--line);color:var(--text)}
+.badge.muted{border:1px solid var(--line-soft);color:var(--sub);font-weight:400} /* 効力を失ったもの（旧設計）を沈める */
+/* 変更点バッジの語彙は4語で固定（2026-09-04決定。英字のCHANGED/NEW等は使わない）:
+   「決定済み」=.badge.good（緑）/「弊社提案」=.badge.brand（焦がし）/
+   「変更点」=.badge.brand（焦がし）/「旧設計」=.badge.muted（グレー） */
+
+/* ---------- コード・URL構造図（唯一のダーク面） ---------- */
+code{background:#F6EFE9;border:1px solid #E8DCD2;border-radius:3px;padding:1px 7px;font-size:.88em;font-family:'SFMono-Regular',Menlo,Consolas,monospace;color:var(--accent-deep)}
+.codeblock{background:var(--code-bg);color:#EDE6DF;border-radius:5px;padding:18px 22px;margin:28px 0;overflow-x:auto}
+.codeblock pre{font-size:12.5px;line-height:1.9;white-space:pre;font-family:'SFMono-Regular',Menlo,Consolas,monospace}
+.codeblock .cm{color:#A89A8E}
+.codeblock .hl{color:#F0B08E}
+.codeblock .hl2{color:#9FC5EA}
+
+
+/* ---------- APIメソッドバッジ（.method: APIリファレンスの GET / POST / DELETE / PUT）。
+   等幅フォント・小さめ・白面+役割色の輪郭。緑=取得 / 藍=作成・更新 / 紅=削除 / 琥珀=置き換え。
+   クラスはドット記法で統一する（.method.get。ハイフン記法 .method-get は作らない） ---------- */
+.method{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10.5px;font-weight:700;letter-spacing:.06em;font-family:'SFMono-Regular',Menlo,Consolas,monospace;min-width:52px;text-align:center;background:var(--surface);border:1px solid var(--line);color:var(--text)}
+.method.get{border-color:var(--ok-line);color:var(--ok-text)}
+.method.post{border-color:var(--info-line);color:var(--info-text)}
+.method.delete{border-color:var(--danger-line);color:var(--danger-text)}
+.method.put{border-color:var(--gold-line);color:var(--gold-text)}
+
+/* ---------- 開発者向け詳細（.dev-detail: 非エンジニア向けの本文と、開発者向けの詳細〈コード・API名・内部仕様〉を
+   同じ場所で分ける折りたたみ。<details>/<summary> で組む。summary=紙地・三角マークは焦がしで、開くと90度回る）。
+   中身は .dd-body で包む（上罫+余白）。.dd-body の中の小見出しは h5 — 本文の見出しの階段（4段）には数えない ---------- */
+.dev-detail{margin:18px 0;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.dev-detail summary{padding:11px 16px;font-size:12.5px;font-weight:700;color:var(--ink);background:var(--paper);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;user-select:none}
+.dev-detail summary::-webkit-details-marker{display:none}
+.dev-detail summary::before{content:"";width:0;height:0;border-left:5px solid var(--accent);border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .2s}
+.dev-detail[open] summary::before{transform:rotate(90deg)}
+.dd-body{padding:16px 20px;font-size:13px;color:var(--text);line-height:1.9;border-top:1px solid var(--line)}
+.dd-body > :first-child{margin-top:0}
+.dd-body p{margin:8px 0}
+.dd-body h5{font-family:var(--serif);font-size:14px;font-weight:600;color:var(--ink);margin:20px 0 6px}
+.dd-body h5:first-child{margin-top:0}
+.dd-body table{font-size:13px}
+.dd-body td{padding:10px 14px 10px 0}
+.dd-body .table-wrap{margin:12px 0}
+.dd-body ul{padding-left:20px}
+.dd-body ul li{margin-bottom:4px}
+
+/* ---------- 番号つき手順（丸+縦罫線） ---------- */
+ol.steps{list-style:none;counter-reset:st;font-size:13.5px}
+ol.steps > li{counter-increment:st;position:relative;padding:0 0 30px 48px;line-height:1.9}
+ol.steps > li:last-child{padding-bottom:0}
+ol.steps > li::before{content:counter(st);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--surface);border:1.5px solid var(--accent);color:var(--accent);font-family:var(--serif);font-size:13px;display:flex;align-items:center;justify-content:center}
+ol.steps > li:not(:last-child)::after{content:"";position:absolute;left:14.5px;top:34px;bottom:2px;width:1px;background:var(--line)}
+
+
+/* ---------- 記号丸（.num-chip: 番号や記号〈1・2・A・B〉を丸で示す。明朝の文字・白面・1.5px輪郭。
+   ol.steps > li::before / .pflow-dot と同じ型を、手順やフロー以外の場所（案の記号・ペルソナの記号）で使うための部品。
+   色の変種は .brand（焦がし輪郭）だけ — 藍・緑は図解の役割色（ユーザー・店舗）なので流用しない。
+   既定は墨の輪郭。表のセル内で使う小サイズは .sm（24px） ---------- */
+.num-chip{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--surface);border:1.5px solid var(--ink);color:var(--ink);font-family:var(--serif);font-size:13px;line-height:1;flex-shrink:0}
+.num-chip.brand{border-color:var(--accent);color:var(--accent)}
+.num-chip.sm{width:24px;height:24px;font-size:12px;margin-right:6px;vertical-align:-6px}
+
+/* ---------- 注意リスト（※印） ---------- */
+ul.notes{list-style:none;font-size:13px;color:var(--text)}
+ul.notes li{position:relative;padding:6px 0 6px 26px;line-height:1.9}
+ul.notes li::before{content:"※";position:absolute;left:0;top:6px;color:var(--accent);font-weight:700}
+/* 手順リスト直後の注意リストは密着させない */
+ol.steps + ul.notes{margin-top:26px}
+
+/* ---------- まとめ帯（ページ内で唯一の濃い塗り） ---------- */
+.recap{background:var(--ink);color:var(--paper);border-radius:4px;padding:26px 30px;margin-top:8px;display:flex;flex-direction:column;gap:14px}
+.recap h2{font-family:var(--serif);font-size:17px;font-weight:600}
+.recap .r-flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12.5px}
+.recap .r-chip{border:1px solid rgba(251,249,245,.4);border-radius:999px;padding:5px 14px}
+.recap .r-chip.hot{border-color:var(--accent);background:rgba(0,104,183,.25)}
+.recap .r-arr{opacity:.5}
+.recap p{font-size:11.5px;opacity:.7}
+
+/* ---------- チャート（線は細く・中央は数字だけ・出典は凡例側） ---------- */
+.chart{display:flex;gap:40px;align-items:center;flex-wrap:wrap}
+.chart svg{width:150px;height:150px;flex-shrink:0}
+.chart text.big{font-family:var(--serif);font-size:10px;fill:var(--ink);dominant-baseline:central}
+.chart .cl{display:flex;flex-direction:column;min-width:280px;font-size:13.5px}
+.chart .cl > div{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line-soft);padding:10px 0}
+.chart .cl > div:last-of-type{border-bottom:none}
+.chart .cl i{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
+.chart .cl strong{margin-left:auto;font-family:var(--serif);font-weight:500}
+.chart .src{font-size:10.5px;color:var(--sub);padding-top:8px}
+/* 半分幅の置き場（2カラムの片側等）用: リングを小さく・凡例は折り返さず右に */
+.chart.compact{flex-wrap:nowrap;gap:24px}
+.chart.compact svg{width:130px;height:130px}
+.chart.compact .cl{min-width:0;flex:1}
+.hbar{display:grid;grid-template-columns:190px 1fr 56px;align-items:center;gap:14px;margin:8px 0}
+.hbar .track{display:block;height:16px;background:#EAE2D6;border-radius:2px}
+.hbar .fill{display:block;height:16px;background:var(--accent);border-radius:2px}
+.hbar .val{font-family:var(--serif);font-size:15px;text-align:right}
+.hbar .fill.dim{background:#C9BFB4} /* 主役でない棒を沈める（ヒストグラムで攻めどころだけ焦がしにする等） */
+/* 表のセルの中に置く小さな棒（.hbar.cell）。ラベル列を持たず「棒+値」だけの2列にする。
+   これは図でなく数値の見せ方なので figure で個別に包まない — 表全体（.table-wrap）を1つの figure で包み、
+   aria-label にはその表の主張を書く（2026-09-14登録。2ページで再発明されていたものを昇格） */
+.hbar.cell{grid-template-columns:1fr 42px;gap:8px;margin:0;min-width:96px}
+.hbar.cell .track,.hbar.cell .fill{height:8px}
+.hbar.cell .val{font-size:13px}
+/* 100%積み上げ構成バー: 1本の帯を構成比で塗り分ける（「全体の中身の内訳」を1行で見せる）。
+   色は s1=焦がし・s2=墨・s3=下地・s4=罫線色 の順に「主役→脇役」で割り当てる（データ色3段+残り）。
+   帯の中に%を書けるのは広いセグメントだけ（狭ければ凡例に逃がす） */
+.stackbar{margin:18px 0}
+.stackbar .sb-title{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;letter-spacing:.08em;color:var(--sub);margin-bottom:6px}
+.stackbar .sb-title .sb-total{font-family:var(--serif);font-size:15px;color:var(--ink);letter-spacing:0}
+.stackbar .sb-track{display:flex;height:24px;border-radius:2px;overflow:hidden}
+.stackbar .sb-seg{min-width:2px;display:flex;align-items:center;justify-content:center;font-size:11px;white-space:nowrap;overflow:hidden}
+.stackbar .sb-seg.s1{background:var(--accent);color:#fff}
+.stackbar .sb-seg.s2{background:var(--ink);color:#fff}
+.stackbar .sb-seg.s3{background:#EAE2D6;color:var(--sub)}
+.stackbar .sb-seg.s4{background:#DCD3C8;color:var(--sub)}
+.sb-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:11.5px;color:var(--sub);margin-top:8px}
+.sb-legend span{display:flex;align-items:center;gap:6px}
+.sb-legend i{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+/* ---------- 地域タイルマップ（.tilemap: 都道府県を正方形タイルで日本列島の形に並べ、色の濃さ=量で塗る）。
+   面の広がりを見せる図。正確な大小比較は読めないので、上位の横棒（.hbar）を右に併置する。
+   47タイルの配置は snippets.html の雛形をコピーする（grid-column/rowで位置指定）。
+   値ラベル（.tv）は上位10県程度だけ・色は6段階（b5=焦がし最濃→b0=下地）。凡例は .map-legend ---------- */
+.tilemap{display:grid;grid-template-columns:repeat(14,42px);grid-auto-rows:42px;gap:4px;justify-content:start}
+.tile{border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.2}
+.tile .tn{font-size:9.5px;letter-spacing:.02em}
+.tile .tv{font-family:var(--serif);font-size:11px}
+.tile.b0{background:#F0EBE3;color:#B4AA9C}
+/* 6段階の濃さは --accent から導出する（案件のブランド色を替えるとタイルマップも追随する）。
+   b1〜b2 は文字が墨でも読める薄さ・b3 以降は白抜き */
+.tile.b1{background:color-mix(in srgb, var(--accent) 18%, var(--paper));color:var(--text)}
+.tile.b2{background:color-mix(in srgb, var(--accent) 36%, var(--paper));color:var(--text)}
+.tile.b3{background:color-mix(in srgb, var(--accent) 60%, var(--paper));color:#fff}
+.tile.b4{background:color-mix(in srgb, var(--accent) 80%, var(--paper));color:#fff}
+.tile.b5{background:var(--accent);color:#fff}
+.map-legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--sub);margin-top:14px}
+.map-legend i{width:14px;height:14px;border-radius:3px;display:inline-block;vertical-align:-2px;margin-right:5px}
+.stat{display:flex;flex-direction:column;gap:6px;border-left:1px solid var(--ink);padding-left:24px}
+.stat .n{font-family:var(--serif);font-size:60px;line-height:1;color:var(--ink)}
+.stat .n.hot{color:var(--accent)}
+.stat .l{font-size:10.5px;color:var(--sub)}
+/* ---------- 統計カードの列+前月比（.stat-row > .stat / .d=前月比） ---------- */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin:28px 0 12px}
+.stat .n small{font-size:20px;color:var(--sub);margin-left:4px;font-weight:400}
+.stat .d{font-size:12px;font-family:var(--serif)}
+.stat .d.up{color:var(--ok)}
+.stat .d.down{color:var(--danger)}
+.stat .n.md{font-size:30px} /* 単価・内訳など「答えでない数字」の中サイズ。月額と同じ特大にすると固定料金と誤読される（2026-09-01 料金提案の教訓） */
+.stat .n.md small{font-size:13px} /* 中サイズの単位は数字に合わせて落とす（60px用の20pxのままだと数字の2/3になる） */
+
+/* ---------- 横棒ペア（当月×前月の比較チャート。当月=焦がし/前月=下地） ---------- */
+.bars{display:flex;flex-direction:column;gap:16px;margin:24px 0}
+.bars .brow{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
+.bars .bl{font-size:12.5px;color:var(--text);line-height:1.6}
+.bars .bpair{display:flex;flex-direction:column;gap:5px}
+.bars .bline{display:flex;align-items:center}
+.bars .b{height:15px;min-width:2px;flex-shrink:0}
+.bars .b.cur{background:var(--accent)}
+.bars .b.prev{background:#EAE2D6}
+.bars .bv{font-family:var(--serif);font-size:12.5px;margin-left:8px;white-space:nowrap;color:var(--ink)}
+.bars .bv small{color:var(--sub);font-family:var(--sans);font-size:10.5px;margin-left:4px}
+.bars-legend{display:flex;gap:22px;font-size:11px;color:var(--sub);margin-top:-6px}
+.bars-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:-1px}
+
+/* ---------- 図の外枠 .fig（原則11: 図には主張を書く）
+   図の部品は <figure class="fig" aria-label="この図が言っていること"> で包む。
+   aria-label は見た目の説明でなく「読者に持ち帰ってほしい結論」を1文で。
+   1文で書けない図は置く理由がない — 書く段階で気づくための仕掛け ---------- */
+figure.fig{margin:22px 0 8px;min-width:0} /* min-width:0 = グリッド/フレックスの子になっても、中の横スクロール部品（.lane-wrap等）の幅に引っぱられない */
+figure.fig > :first-child{margin-top:0}
+figure.fig figcaption{font-size:11.5px;color:var(--sub);line-height:1.9;margin-top:10px}
+
+/* ---------- スイムレーン（横=フェーズ/縦=役割・例外列=紅破線・お金=琥珀） ---------- */
+.lane-wrap{border:1px solid var(--line);border-radius:6px;overflow-x:auto;background:var(--surface);margin:28px 0}
+.lanes{display:grid;font-size:12px;min-width:900px}
+.lane-corner{background:#F3EFE8;border-bottom:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:var(--sub)}
+.lane-head{background:#F3EFE8;font-weight:700;font-size:11.5px;text-align:center;padding:10px 8px;line-height:1.5;border-left:1px solid var(--line-soft);border-bottom:2px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.lane-head .sub{font-weight:500;font-size:10px;color:var(--sub)}
+.lane-head.ex{background:#F5E7EA;color:var(--danger)}
+.lane-head.ex .sub{color:#B76A76}
+.lane-label{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:700;text-align:center;padding:10px 6px;border-top:1px solid var(--line-soft);background:var(--paper);line-height:1.4}
+.lane-label i{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.lane-label.user{color:var(--info)} .lane-label.user i{background:var(--info)}
+.lane-label.shop{color:var(--ok)} .lane-label.shop i{background:var(--ok)}
+.lane-label.sys{color:var(--accent)} .lane-label.sys i{background:var(--accent)}
+.lane-label.money{color:var(--gold-text)} .lane-label.money i{background:var(--gold)}
+.lane-label.ext{color:var(--danger)} .lane-label.ext i{background:var(--danger)}
+.lane-label.other{color:var(--ink)} .lane-label.other i{background:var(--ink)}
+.lane-cell{padding:10px;border-top:1px solid var(--line-soft);border-left:1px solid #F0EBE4;font-size:11.5px;line-height:1.7;background:var(--surface);display:flex;flex-direction:column;gap:4px}
+.lane-cell.ex{background:#FBF3F4;border-left:2px dashed #E0AAB4}
+.lane-cell.empty{color:#C9BFB4;text-align:center;justify-content:center}
+.lane-cell.money{background:var(--gold-soft);font-weight:700;color:var(--gold-text);text-align:center;justify-content:center;font-size:12px}
+.lane-cell.money small{display:block;font-weight:500;font-size:10px;color:#A9720F}
+.legend{display:flex;align-items:center;gap:24px;flex-wrap:wrap;font-size:12.5px;margin:12px 0}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* ---------- 横フロー（.swim: 行=役割・箱矢印の流れ。分岐・判定・強調・エラー対応） ---------- */
+.swim{background:var(--surface);border:1px solid var(--line);border-radius:6px;margin:28px 0 0;overflow-x:auto}
+.swim-inner{min-width:600px;padding:16px 24px}
+.swim-row{display:flex;align-items:center;gap:10px;padding:14px 0;min-height:56px}
+.swim-row + .swim-row{border-top:1px solid var(--line-soft)}
+.swim-label{width:92px;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;gap:6px;font-size:11px;font-weight:700;text-align:right;padding-right:12px;line-height:1.4}
+.swim-label i{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.swim-label.user{color:var(--info)} .swim-label.user i{background:var(--info)}
+.swim-label.store{color:var(--ok)} .swim-label.store i{background:var(--ok)}
+.swim-label.admin{color:var(--accent)} .swim-label.admin i{background:var(--accent)}
+.swim-label.gold{color:var(--gold-text)} .swim-label.gold i{background:var(--gold)}
+.swim-label.ext{color:var(--danger)} .swim-label.ext i{background:var(--danger)}
+.swim-label.other{color:var(--ink)} .swim-label.other i{background:var(--ink)}
+.swim-track{display:flex;align-items:center;gap:0;flex:1;flex-wrap:wrap;row-gap:10px}
+/* ノードはニュートラルなピル型チップ（役割は行ラベルが示すので、ノードには色を付けない） */
+.swim-node{display:inline-flex;align-items:center;padding:8px 16px;border-radius:999px;font-size:11.5px;font-weight:500;white-space:nowrap;background:var(--surface);border:1px solid var(--line);color:var(--ink);line-height:1.5}
+.swim-node.decision{border-color:var(--ink);font-weight:700}
+.swim-node.error{border:1px dashed var(--danger-line);color:var(--danger-text)}
+.swim-node.hot{border-color:var(--accent);background:var(--accent-faint);color:var(--accent-deep);font-weight:700}
+.swim-arrow{flex-shrink:0;width:22px;height:1px;background:var(--line);position:relative;margin:0 4px;font-size:0;align-self:center}
+.swim-arrow::after{content:"";position:absolute;right:-1px;top:-3px;border-left:6px solid var(--line);border-top:3.5px solid transparent;border-bottom:3.5px solid transparent}
+.swim-arrow.hot{background:var(--accent)}
+.swim-arrow.hot::after{border-left-color:var(--accent)}
+.swim-branch{display:flex;flex-direction:column;gap:12px;align-items:flex-start;border-left:1px solid var(--line);padding:2px 0 2px 16px;margin-left:2px}
+.swim-branch-label{font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--sub)}
+.swim-branch-label.ok{color:var(--ok)}
+.swim-branch-label.ng{color:var(--danger)}
+/* ---------- 役割つき縦フロー（.pflow: 番号丸=役割色の輪郭+明朝数字・役割キッカー・本文・注記） ---------- */
+.pflow{margin:12px 0 0}
+.pflow-step{display:flex;gap:16px;position:relative;padding-bottom:8px}
+.pflow-step:not(:last-child){padding-bottom:22px}
+.pflow-step:not(:last-child)::after{content:'';position:absolute;left:17px;top:40px;bottom:2px;width:1px;background:var(--line)}
+.pflow-dot{width:34px;height:34px;border-radius:50%;background:var(--surface);border:1.5px solid;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:13px;flex-shrink:0;position:relative;z-index:1}
+.pflow-dot.user{color:var(--info);border-color:var(--info)}
+.pflow-dot.store{color:var(--ok);border-color:var(--ok)}
+.pflow-dot.admin,.pflow-dot.system,.pflow-dot.brand{color:var(--accent);border-color:var(--accent)}
+.pflow-dot.notify{color:var(--gold-text);border-color:var(--gold)}
+.pflow-dot.external{color:var(--danger);border-color:var(--danger)}
+.pflow-dot.other{color:var(--ink);border-color:var(--ink)}
+.pflow-body{flex:1;padding-top:3px}
+.pflow-actor{font-size:10.5px;font-weight:700;letter-spacing:.16em;margin-bottom:2px}
+.pflow-actor.user{color:var(--info)}
+.pflow-actor.store{color:var(--ok)}
+.pflow-actor.admin,.pflow-actor.system{color:var(--accent)}
+.pflow-actor.notify{color:var(--gold-text)}
+.pflow-actor.external{color:var(--danger)}
+.pflow-actor.other{color:var(--ink)}
+.pflow-text{font-size:14px;color:var(--text);line-height:1.9}
+.pflow-note{font-size:12.5px;color:var(--sub);margin-top:4px;padding-left:12px;border-left:1px solid var(--line-soft);line-height:1.9}
+
+/* ---------- ファネル（.funnel: 段階ごとの絞り込み。棒の幅=構成比・段間に転換率） ---------- */
+.funnel{display:flex;flex-direction:column;gap:4px;margin:24px 0}
+.funnel .frow{display:flex;align-items:center;gap:12px}
+.funnel .fbar{height:34px;min-width:44px;background:var(--accent);border-radius:4px;flex-shrink:0;display:flex;align-items:center;padding:0 14px;color:#fff;font-size:12px;white-space:nowrap}
+/* 段の濃さは明示クラスで（nth-of-typeは転換率の行が挟まるとズレるため使わない） */
+.funnel .fbar.f2{opacity:.72}
+.funnel .fbar.f3{opacity:.5}
+.funnel .fbar.f4{opacity:.35}
+.funnel .fv{font-family:var(--serif);font-size:15px;color:var(--ink);white-space:nowrap}
+.funnel .fl{font-size:12px;color:var(--sub);white-space:nowrap}
+.funnel .fconv{display:flex;align-items:center;gap:8px;padding:2px 0 2px 14px;font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--sub)}
+.funnel .fconv::before{content:"↓";color:var(--line)}
+.funnel .fconv span{font-weight:400;color:var(--text)} /* 率に添える「（前月 n%）」等 */
+/* 前月比較: 当月バーの真下に前月の量を淡色の細バーで敷く（濃=当月/淡=前月は.barsと同じ時間の色） */
+.funnel .fghost{height:9px;min-width:2px;background:#EAE2D6;flex-shrink:0}
+.funnel .frow.ghost{margin-top:-2px}
+.funnel .frow.ghost .fl{font-size:12px;color:var(--text)}
+/* ラベル列型（.funnel.labeled）: 段名を左の固定列に出す。段名が長くバーに収まらない資料向け。
+   各frowの先頭に <span class="fname">段名</span> を置く（ゴースト行は空の<span class="fname"></span>で桁を合わせる） */
+.funnel.labeled .fname{flex:0 0 150px;font-size:12.5px;color:var(--text);line-height:1.5;white-space:normal}
+.funnel.labeled .fconv{padding-left:162px}
+
+/* ---------- フェーズ帯（現在だけブランド色） ---------- */
+.phases{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin:28px 0}
+.phase{border-top:3px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:4px}
+.phase .pn{font-family:var(--serif);font-size:15px;color:var(--sub)}
+.phase .pt{font-size:12px;font-weight:700;color:var(--text)}
+.phase .ps{font-size:10.5px;color:var(--sub)}
+.phase.done{border-top-color:var(--ink)} .phase.done .pn{color:var(--ink)}
+.phase.now{border-top-color:var(--accent)} .phase.now .pn,.phase.now .pt{color:var(--accent)}
+
+/* ---------- 縦フロー（分岐つき） ---------- */
+.fbox{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:12px 18px;font-size:12.5px;font-weight:700;text-align:center}
+.fbox.q{border-color:var(--accent);color:var(--accent)}
+.fbox.yes{background:var(--ok-soft);border-color:var(--ok-line);color:var(--ok-text)}
+.fbox.no{background:var(--danger-soft);border-color:var(--danger-line);color:var(--danger-text)}
+.farr{display:flex;justify-content:center;color:var(--accent);font-size:15px;line-height:1;padding:4px 0}
+
+/* ---------- スライド（16:9・定例でそのまま映す型） ---------- */
+.slide{width:100%;aspect-ratio:16/9;background:#FDFCFA;border:1px solid var(--line);border-radius:4px;box-shadow:0 10px 30px -16px rgba(38,34,30,.3);overflow:hidden;position:relative;display:flex;flex-direction:column}
+.slide-ft{position:absolute;left:5%;right:5%;bottom:3%;display:flex;justify-content:space-between;align-items:center;font-size:.6em;letter-spacing:.14em;color:#A9A199}
+.slide .ghost{font-family:var(--serif);font-weight:700;line-height:1;color:rgba(0,104,183,.14)}
+
+/* ---------- 読み進みバー・演出 ---------- */
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:99;pointer-events:none}
+.progress i{display:block;height:100%;width:0;background:var(--accent)}
+.rv{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.rv-in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;transition:none}}
+
+/* ---------- SVGアイコン（線幅1.5・スプライト参照） ---------- */
+.icon{width:1.05em;height:1.05em;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em}
+
+/* footerに書くのは「正本: <mdパス>」だけ（2026-09-04改定）。
+   「md更新時はこのHTMLも同期すること」等の保守者向け指示は読者に不要なので <!-- --> コメントへ */
+footer{text-align:center;padding:36px 0;color:var(--sub);font-size:12px;border-top:1px solid var(--line);max-width:1080px;margin:0 auto}
+
+/* SPAシェルのiframe内（本文幅が約1020pxになる）でH1が2行に折れるため、H1だけ落とす。
+   見出しの階段4段（52/30/19/16）はここでも壊さない — 落とすのはH1のページ題だけ（2026-09-04追加） */
+@media (max-width:1100px){
+  .hero h1{font-size:44px}
+}
+
+@media (max-width:760px){
+  .hero{padding:44px 24px 84px}
+  .hero h1{font-size:32px;margin-top:36px}
+  .flow,.flow-tabs{grid-template-columns:1fr 1fr;margin-top:-40px}
+  .flow a:nth-child(2n+1){border-left:none} /* 2カラムになるので左罫線の消去も2列前提に */
+  .flow a,.tab-btn{border-top:1px solid var(--line-soft)}
+  .flow::after,.flow-tabs::after{display:none}
+  .flow:has(> a:nth-child(2n+1):last-child)::after,
+  .flow-tabs:has(> .tab-btn:nth-child(2n+1):last-child)::after{content:"";display:block;grid-column:span 1/-1;border-left:1px solid var(--line-soft);border-top:1px solid var(--line-soft)}
+  .compare{grid-template-columns:1fr}
+  .container{padding:28px 18px 60px}
+  .section-num{font-size:56px}
+  .stat-row{grid-template-columns:1fr;gap:20px}
+  .bars .brow{grid-template-columns:1fr;gap:6px}
+}
+
+
+/* ---------- サイドバーの模写（切替前後の見え方を並べて見せる） ---------- */
+.mocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;margin:26px 0 8px}
+.mock{border:1px solid var(--line);border-radius:4px;background:var(--surface);display:flex;flex-direction:column}
+.mock-cap{font-size:10.5px;font-weight:700;letter-spacing:.14em;color:var(--accent);padding:14px 16px 0}
+.mock-cap .mc-sub{display:block;font-size:11.5px;font-weight:400;letter-spacing:0;color:var(--sub);margin-top:3px}
+.mock-side{margin:14px 16px 0;background:var(--accent-faint);border:1px solid var(--line-soft);border-radius:4px;padding:14px 12px}
+.mock-logo{font-size:15px;font-weight:700;color:var(--accent);margin-bottom:12px}
+.mock-select{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:4px;background:var(--surface);font-size:11.5px;color:var(--text);padding:7px 10px;margin-bottom:14px}
+.mock-item{font-size:12px;color:var(--text);padding:8px 10px;border-radius:4px}
+.mock-item + .mock-item{margin-top:4px}
+.mock-item.on{background:var(--accent-soft);color:var(--accent-deep);font-weight:700}
+.mock-item.add{border:1px dashed var(--accent);color:var(--accent-deep);font-weight:700}
+.mock-note{font-size:11.5px;color:var(--sub);line-height:1.8;padding:14px 16px 16px}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><i></i></div>
+
+<svg style="display:none" aria-hidden="true"><defs>
+<symbol id="i-check" viewBox="0 0 24 24"><polyline points="4 12.5 10 18.5 20 6.5"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><line x1="12" y1="7.5" x2="12" y2="7.5"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2.5 20h19Z"/><line x1="12" y1="9.5" x2="12" y2="14"/><line x1="12" y1="16.8" x2="12" y2="16.8"/></symbol>
+</defs></svg>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="hero-brand">
+        <span class="hero-kicker">らくデザ — 運用設計</span>
+      </div>
+      <span class="hero-no">資料 10</span>
+    </div>
+    <h1>テンプレDL版から画像生成版への切り替え設計</h1>
+    <p class="lead">9月14日にテンプレートダウンロード版、10月5日に画像生成版をユーザーへ提供します。この切り替えを、当日の作業なしで自動的に成立させる方式をまとめました。動線の表示条件と、ページの入口をふさぐ条件に切替日時を仕込みます。その日時はDBの値で持ちます。</p>
+    <div class="hero-meta">最終更新 2026-09-14（9月14日の書き出しでレビュー。10月5日までの要対応を追加）</div>
+  </div>
+</div>
+
+<nav class="flow">
+  <a href="#conclusion" class="cur"><span class="fnum">1</span><span class="ft">結論</span><span class="fd">動線の条件と見え方</span></a>
+  <a href="#guard"><span class="fnum">2</span><span class="ft">ページの入口</span><span class="fd">URL直打ちをふさぐ</span></a>
+  <a href="#datetime"><span class="fnum">3</span><span class="ft">切替日時の持ち方</span><span class="fd">DBの値にする理由</span></a>
+  <a href="#todo"><span class="fnum">4</span><span class="ft">実装の確認項目</span><span class="fd">入れる順番と確認方法</span></a>
+  <a href="#review"><span class="fnum">5</span><span class="ft">実装レビュー</span><span class="fd">9月10日時点の突き合わせ</span></a>
+  <a href="#ops"><span class="fnum">6</span><span class="ft">運用で決めること</span><span class="fd">切替後の見え方</span></a>
+</nav>
+
+<div class="container">
+
+<div class="section" id="conclusion">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="sh-body"><h2>結論</h2><div class="sh-sub">2本の動線に表示条件を付ける。当日の作業はない</div></div>
+  </div>
+
+  <p>サイドメニューの動線を2本に分け、それぞれに表示条件を付けます。現在日時が切替日時を跨いだ時点で、動線は自動的に入れ替わります。10月5日に人が行う作業はありません。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>動線</th><th>表示する条件</th><th>条件の意味</th></tr></thead>
+      <tbody>
+        <tr><td class="label wrap">デザインテンプレ<span class="td-sub">遷移先: design_temp</span></td><td><code>Current User's Created Date &lt; 切替日時</code></td><td>登録が切替日時より前のユーザーにだけ表示する。切替後も既存ユーザーには残る</td></tr>
+        <tr><td class="label wrap">行事一覧<span class="td-sub">遷移先: design</span></td><td><code>Current date/time &gt;= 切替日時</code></td><td>切替日時を過ぎたら全ユーザーへ表示する</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <details class="dev-detail">
+    <summary>開発者向け: 条件を書くときに必要な情報</summary>
+    <div class="dd-body">
+      <h5>登録日として使う項目</h5>
+      <p>User に登録日のカスタム項目はありません。組み込みの <code>Created Date</code> を使います。privacy rule に self（view_all: true）があるため、<code>Current User's Created Date</code> は本人から読めます。</p>
+      <h5>条件を付ける対象</h5>
+      <p>Side_main_menu の「行事一覧」（<code>page_name = design</code>）と「デザインテンプレ」（<code>page_name = design_temp</code>）の2値です。ここに日時条件を置きます。</p>
+    </div>
+  </details>
+
+  <figure class="fig" aria-label="切替日時を跨ぐと、サイドバーの動線が1本増えるだけで画面の構造は変わらない">
+    <div class="mocks">
+      <div class="mock">
+        <div class="mock-cap">切替日時より前<span class="mc-sub">全ユーザー</span></div>
+        <div class="mock-side">
+          <div class="mock-logo">らくデザ</div>
+          <div class="mock-select"><span>2026年度</span><span>&#9662;</span></div>
+          <div class="mock-item on">デザインテンプレ</div>
+          <div class="mock-item">共通印刷物</div>
+          <div class="mock-item">ノベルティ</div>
+        </div>
+        <div class="mock-note">行事一覧の動線は出ません。テンプレートのダウンロードと評価だけができます。</div>
+      </div>
+      <div class="mock">
+        <div class="mock-cap">切替日時 以降<span class="mc-sub">既存ユーザー（登録が切替日時より前）</span></div>
+        <div class="mock-side">
+          <div class="mock-logo">らくデザ</div>
+          <div class="mock-select"><span>2026年度</span><span>&#9662;</span></div>
+          <div class="mock-item">デザインテンプレ</div>
+          <div class="mock-item add">行事一覧</div>
+          <div class="mock-item">共通印刷物</div>
+          <div class="mock-item">ノベルティ</div>
+        </div>
+        <div class="mock-note">破線が切替日時に増える動線です。デザインテンプレの動線は残ります。</div>
+      </div>
+      <div class="mock">
+        <div class="mock-cap">切替日時 以降<span class="mc-sub">新規ユーザー（登録が切替日時より後）</span></div>
+        <div class="mock-side">
+          <div class="mock-logo">らくデザ</div>
+          <div class="mock-select"><span>2026年度</span><span>&#9662;</span></div>
+          <div class="mock-item on">行事一覧</div>
+          <div class="mock-item">共通印刷物</div>
+          <div class="mock-item">ノベルティ</div>
+        </div>
+        <div class="mock-note">デザインテンプレの動線は出ません。画像生成版だけを使う状態になります。</div>
+      </div>
+    </div>
+    <figcaption>実画面のサイドバーを簡略化して描いたものです。年度の選択・共通印刷物・ノベルティの動線は切り替えの影響を受けません。</figcaption>
+  </figure>
+
+  <div class="alert alert-green"><svg class="a-icon icon"><use href="#i-check"/></svg><span><strong>決定:</strong> 9月14日の提供に向けて作った仕組みに条件を足すだけで、10月5日の切り替えは自動になります。</span></div>
+
+  <ul class="notes">
+    <li>2つの条件は、必ず同じ切替日時を参照してください。別々の値を書くと、片方だけ直したときに動線が1本も出ない時間帯が生まれます。</li>
+    <li>動線を隠してもURLは生きています。ページの入口をふさぐ条件も別に必要です（2章）。切替日時は式に直接書かず、DBの値として持ちます（3章）。</li>
+    <li>この資料は書き出しファイル brother-86284.bubble を読んで作成しました。設計は9月8日 13時30分の書き出しにもとづきます。5章のレビューは9月10日 13時22分の書き出しです。</li>
+  </ul>
+</div>
+
+<div class="section" id="guard">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="sh-body"><h2>ページの入口をふさぐ</h2><div class="sh-sub">動線を隠しても、URLは生きている</div></div>
+  </div>
+
+  <div class="alert alert-red"><svg class="a-icon icon"><use href="#i-alert"/></svg><span><strong>リスク:</strong> サイドメニューの動線を隠しても、<code>/design</code> を直接開けば画像生成版に入れます。ブックマークや履歴からの再訪でも同じです。</span></div>
+
+  <p>design ページのリダイレクトは、もともと条件なしで常に動く作りでした。オプションセットの説明欄にある切り替え手順も「これを削除する」前提で書かれています。削除ではなく、1章と同じ条件を付ける形に置き換えます。入口は2段で守ります。</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>対象</th><th>入れる条件</th><th>入れないと起きること</th></tr></thead>
+      <tbody>
+        <tr><td class="label wrap">design のリダイレクト<span class="td-sub">「Do when condition is true」で動かす</span></td><td><code>Current date/time &lt; 切替日時</code> のときだけ動かす</td><td>切替後もテンプレDL版へ飛ばされ続ける</td></tr>
+        <tr><td class="label wrap">design のメイン要素<span class="td-sub">行事一覧とデザイン表示を含むグループ</span></td><td>既定を非表示にする。<code>Current date/time &gt; 切替日時</code> のときだけ表示する</td><td>リダイレクトが動かなかったときに、画像生成版の中身が見える</td></tr>
+        <tr><td class="label wrap">design_temp 側</td><td><code>Current User's Created Date &gt; 切替日時</code> なら design へ飛ばす</td><td>切替後に登録したユーザーが、使えない画面に入る</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ul class="notes">
+    <li>リダイレクトを Page Load ではなく「Do when condition is true」に置くのが要点です。Page Load は一度しか走りません。切替日時がまだ読めていない瞬間に評価されると、そのまま素通りします。</li>
+    <li>メイン要素の既定を非表示にしておくと、切替日時が読めないときは表示されない側に倒れます。リダイレクト1つに頼らないための2段目です。</li>
+  </ul>
+
+  <details class="dev-detail">
+    <summary>開発者向け: 入口の実装と、条件を足さない処理</summary>
+    <div class="dd-body">
+      <h5>入口をふさいでいる場所</h5>
+      <p>design ページ（<code>bTKwz</code>）の ConditionTrue <code>bTUnh0</code>（<code>run_when = every_time</code>）が、<code>Current Date/Time &lt; Current User's switch_date's date</code> のときに design_temp（<code>bTTvd</code>）へ <code>ChangePage</code> します。PageLoaded の版は残っていません。</p>
+      <p>メイン要素は <code>is_visible: false</code> が既定です。<code>Current Date/Time &gt; Current User's switch_date's date</code> の条件で表示に切り替わります。</p>
+      <h5>生成の監視処理に条件を足さない理由</h5>
+      <p>design ページには生成の完了・失敗を見張る「Do when condition is true」が2件あります（完了 <code>bTSdn0</code> / 失敗 <code>bTSdX0</code>）。どちらも <code>design_generation_monitor</code> のリスト（<code>RG monitor</code>・要素 <code>bTScm0</code>）を見ています。条件が成立すると <code>ChangeListOfThings</code> でモニターの <code>deleted_at</code> を書き換えます。</p>
+      <p>ここに切替日時の条件は要りません。<code>RG monitor</code> は<strong>基本のデータソースを持たず、3つとも条件付き</strong>です（<code>is_dl_flag_</code> / <code>is_regenerate_</code> / <code>load_monitor_flag_</code>）。開いた直後はどの条件も成立しないため、リストは空で <code>count &gt;= 1</code> も成立しません。フラグを立てる操作は非表示のメイン要素の中にあるので、切替前には到達できません。</p>
+      <p>design_temp 側にも同じ名前の監視処理があります（<code>bTUid0</code> は filekey の取得状況を見るもの）。こちらは切替前に動く必要があるため、条件を足さないでください。</p>
+      <h5>外部から直接呼べる経路</h5>
+      <p>画像生成系の Backend Workflow（<code>trigger_generated_image</code> / <code>generated_image</code> / <code>parent_re_generated_image</code> など）は <code>expose = false</code> です。ページの入口をふさげば、生成を外から起動する経路は残りません。<code>expose = true</code> かつ認証不要は <code>email_duplication_check</code> と <code>change_email</code> の2本で、本件とは別に確認が必要です。</p>
+      <h5>置き換える手順</h5>
+      <p>オプションセットの説明欄にある「Roleにエンドユーザーを追加」「テンプレート版のRoleを解除」「design の page load のリダイレクトを削除」の3手順は、今回の条件付きの入口制御に置き換わります。説明欄も更新してください。</p>
+    </div>
+  </details>
+</div>
+
+<div class="section" id="datetime">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="sh-body"><h2>切替日時の持ち方</h2><div class="sh-sub">式に直接書かず、DBの値で持つ</div></div>
+  </div>
+
+  <p>切替日時は「2026年10月5日 9時00分」です。これを式に直接書くか、DBの値として持つかで、あとから効いてくる差が3つあります。DBの値で持ってください。</p>
+
+  <div class="sub-item">
+    <div class="kick">理由 1</div>
+    <h4>延期にデプロイが不要になる</h4>
+    <p>8月20日の議事録のとおり、画像生成はテキスト置換が期待どおりに動かず、ユーザー提供の水準に達していません。10月5日に品質が揃うかは未確定です。式に日時を直接書くと、揃っていなくても9時00分に自動で切り替わります。止めるには式を書き換えてデプロイする作業が発生します。DBの値なら日時を先送りするだけで済みます。</p>
+  </div>
+
+  <div class="sub-item">
+    <div class="kick">理由 2</div>
+    <h4>切り戻しも同じ操作でできる</h4>
+    <p>切り替えたあとに問題が出た場合も、日時を先送りすれば動線はテンプレDL版に戻ります。design_temp のページとデザインテンプレの動線を残しておけば、これだけで戻せます。</p>
+  </div>
+
+  <div class="sub-item">
+    <div class="kick">理由 3</div>
+    <h4>参照が4か所以上に散らない</h4>
+    <p>動線の条件が2本、ページの入口をふさぐ条件を加えると参照箇所は4か所以上になります。日時を各所に直接書くと、片方だけ直したときに動線が1本も出ない時間帯が生まれます。1つの値を全員が参照する形にすれば、その穴は起きません。</p>
+  </div>
+
+  <div class="alert alert-blue"><svg class="a-icon icon"><use href="#i-info"/></svg><span><strong>補足:</strong> オプションセットはアプリの定義側にあるため、値を変えて本番に効かせるにはデプロイが必要です。切替日時はオプションセットではなくDBのレコードで持ってください。</span></div>
+</div>
+
+<div class="section" id="todo">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div class="sh-body"><h2>実装の確認項目</h2><div class="sh-sub">9月14日の提供までに入れておく</div></div>
+  </div>
+
+  <figure class="fig" aria-label="人が判断する場面は9月14日までの実装に前倒しされ、10月5日は無人で切り替わる">
+    <div class="phases">
+      <div class="phase now"><span class="pn">9月8日 〜 13日</span><span class="pt">切替日時の項目と条件を実装</span><span class="ps">進行中</span></div>
+      <div class="phase"><span class="pn">9月14日</span><span class="pt">テンプレDL版をユーザーへ提供</span><span class="ps">本番へデプロイ</span></div>
+      <div class="phase"><span class="pn">9月15日 〜 10月4日</span><span class="pt">画像生成版の不具合修正</span><span class="ps">入口を閉じたまま本番へ反映</span></div>
+      <div class="phase"><span class="pn">10月5日 9時00分</span><span class="pt">動線が自動で入れ替わる</span><span class="ps">当日の作業なし</span></div>
+    </div>
+  </figure>
+
+  <ol class="steps">
+    <li><span class="badge good">実装済み</span> 全体設定のデータ型に日時の項目を追加する。値は2026年10月5日 9時00分を入れる。</li>
+    <li><span class="badge good">実装済み</span> サイドメニューの2本の動線に、1章の表示条件を設定する。どちらも同じ切替日時を参照していることを確認する。</li>
+    <li><span class="badge good">実装済み</span> 切替日時を利用者へ紐づける処理を、全画面共通のリユーザブルの「Do when condition is true」に置く。ログイン済みのセッションでも走る形にする。</li>
+    <li><span class="badge good">実装済み</span> design のリダイレクトを「Do when condition is true」に置き、条件を付ける。Page Load には置かない。</li>
+    <li><span class="badge good">実装済み</span> design のメイン要素の既定を非表示にする。切替日時を過ぎたときだけ表示する条件を付ける。</li>
+    <li><span class="badge good">実装済み</span> Side_main_menu の2件の表示名を分ける。サイドメニューに同じ名前が並ばないことを確認する。</li>
+    <li><span class="badge good">実装済み</span> ページ名の変更にあわせ、<code>bubble_pages</code> の該当値を <code>design_temp</code> に直す。</li>
+    <li><span class="badge plain">未確認</span> 切替日時を過去の日時へ一時的に変更する。テスト環境で画像生成版の動線が表示されることを確認する。確認後は元の日時に戻す。</li>
+    <li><span class="badge plain">未確認</span> 登録日が切替日時より後のテストユーザーを作る。デザインテンプレの動線が表示されないことを確認する。</li>
+    <li><span class="badge plain">未確認</span> 切替日時の前後で、<code>/design</code> を直接開いたときの挙動を確認する。</li>
+    <li><span class="badge plain">未確認</span> 切り替えの前に、ブラザーAPIのクォータの残りを確認する。両方の版が同じ鍵とUsage Planを使う。</li>
+  </ol>
+
+  <ul class="notes">
+    <li>過去に API Gateway の Usage Plan の上限で429が発生しています。11番目は省略しないでください。</li>
+    <li>8番目の確認はテスト環境で行ってください。本番の切替日時を動かすと、利用者の画面がその場で変わります。</li>
+    <li>バッジは2026年9月10日の書き出しファイルで確認した状態です。内訳は5章にまとめました。</li>
+    <li>9月14日の提供までに残っているのは8番以降の確認と、本番反映前チェックの2つです。</li>
+  </ul>
+
+  <div class="sub-item">
+    <div class="kick">本番反映前チェック</div>
+    <h4>9月14日のデプロイで抜けやすい2つ</h4>
+
+    <div class="alert alert-red"><svg class="a-icon icon"><use href="#i-alert"/></svg><span><strong>リスク:</strong> 切替日時を過去に倒したまま本番へ出すと、テンプレDL版ではなく画像生成版がそのままユーザーに出ます。</span></div>
+
+    <ol class="steps">
+      <li>動作確認のために切替日時を過去へ倒している場合、本番へ出す前に <strong>2026年10月5日 9時00分</strong> に戻す。2026年9月10日時点の開発環境では 2026年9月9日 9時00分 になっている。すでに切替後として動く状態にあることを確認する。</li>
+      <li>デプロイのあと、本番のデータに <code>switch_date</code> の行を1件作る。値は <strong>2026年10月5日 9時00分</strong>。開発と本番はデータが別のため、デプロイだけでは入らない。行が1件もないと動線は1本も出ない。</li>
+    </ol>
+
+    <ul class="notes">
+      <li>行は1件だけにしてください。条件は最初の1件を見ます。2件以上あるとどれを見るかが不定になります。</li>
+      <li>切替日時を戻す作業と、本番に行を作る作業は、9月14日のリリース判定の項目に入れてください。デプロイする人と実装した人が別だと抜けやすい種類の作業です。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section" id="review">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div class="sh-body"><h2>実装レビュー</h2><div class="sh-sub">書き出しファイルの突き合わせと、実機での確認結果</div></div>
+  </div>
+
+  <p>当初3件挙げた要対応は、実装側の作りと実機の確認ですべて解消しました。9月14日の提供を止めるものはありません。10月5日の切り替えまでに直したい点は、別資料<a href="fix_notes.html">「10月5日までに直す3点」</a>にまとめました。</p>
+
+  <div class="sub-item">
+    <div class="kick">突き合わせ結果</div>
+    <h4>実装できていること</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>項目</th><th>実装</th></tr></thead>
+        <tbody>
+          <tr><td class="label wrap">切替日時をDBで持つ</td><td>データ型 <code>switch_date</code>（<code>date</code> フィールド）を追加。試作したオプションセット版は削除済み</td></tr>
+          <tr><td class="label wrap">デザインテンプレの表示条件</td><td><code>Current User's Created Date &lt; Current User's switch_date's date</code></td></tr>
+          <tr><td class="label wrap">行事一覧の表示条件</td><td><code>Current Date/Time &gt; Current User's switch_date's date</code></td></tr>
+          <tr><td class="label wrap">切替日時の紐づけ</td><td>全画面共通のリユーザブルの ConditionTrue（<code>bTUqb0</code>）で、エンドユーザーの <code>switch_date</code> が空なら値を入れる。ログイン済みのセッションでも走る</td></tr>
+          <tr><td class="label wrap">design の入口</td><td>リダイレクトを ConditionTrue（<code>bTUnh0</code>・every_time）へ移した。条件は <code>Current Date/Time &lt; 切替日時</code>。Page Load の版は残っていない</td></tr>
+          <tr><td class="label wrap">design のメイン要素</td><td><code>is_visible: false</code> が既定。<code>Current Date/Time &gt; 切替日時</code> のときだけ表示する</td></tr>
+          <tr><td class="label wrap">design_temp 側の扱い</td><td>ConditionTrue（<code>bTUnt0</code>）で「<code>Current User's Created Date &gt; 切替日時</code> なら design へ飛ばす」。新規ユーザーはテンプレ画面に入らない</td></tr>
+          <tr><td class="label wrap">メール未確認のガード</td><td>カスタムイベント <code>email_conform_no</code> を新設。確認メールを送り直して confirm へ移す</td></tr>
+          <tr><td class="label wrap">ログイン後の着地先</td><td><code>role_branch_action</code> から <code>go_to_page_enduser</code> を呼び、切替日時で design と design_temp を出し分ける</td></tr>
+          <tr><td class="label wrap">メニュー名の重複</td><td>旧「行事一覧（design_ver_tempdl）」を削除。既存の「デザインテンプレ」を管理者・エンドユーザー共用に統合。<code>enduser_index</code> も 1 から 4 に整理</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub-item">
+    <div class="kick">対応不要と確認</div>
+    <h4>bubble_pages の突き合わせは成立している</h4>
+    <p>各ページは、URLのパスセグメントと <code>bubble_pages</code> の表示名の一致で、自分のページ定義を引いています。引いた定義は共通部品 global の引数として渡され、未ログイン時のリダイレクトと権限による振り分けに使われます。</p>
+    <p>当初は「ページ名が <code>design_temp</code> に変わったのに <code>bubble_pages</code> の値が <code>design_ver_tempdl</code> のままで、定義が空になる」と指摘しました。実機で確認したところ、ログアウト状態で <code>/design_temp</code> を開くとログイン画面へ飛びました。この分岐は「定義の <code>public_</code> が true のとき」に走るため、飛んだ時点で定義は引けています。2026年9月10日 19時06分の書き出しに入っていなかったのは、その後に直したためです。</p>
+    <div class="alert alert-blue"><svg class="a-icon icon"><use href="#i-info"/></svg><span><strong>判定のしかた:</strong> 画面が出たかどうかでは判定できません。表示は別の条件でも成立します。ログアウト状態で開いてログイン画面へ飛ぶかどうかで見てください。</span></div>
+    <p>あわせて分かった点があります。<code>need_mail_confirmation</code> は、メール未確認のユーザーを弾く条件では<strong>ありません</strong>。<code>true</code> のときは「メール確認済みで権限が合わないユーザーだけ、権限による振り分けを走らせる」という使われ方です。未確認のユーザーはどちらの分岐も通りません。confirm へ移るのは新規登録とメールアドレス変更の直後だけです。</p>
+  </div>
+
+  <div class="sub-item">
+    <div class="kick">対応不要と確認</div>
+    <h4>切替日時が空になるケースは塞がっている</h4>
+    <p>当初は「条件がすべて <code>Current User's switch_date</code> を経由するため、空のときに動線が消えて入口も開く」と指摘しました。実装側の3つの作りで解消済みです。実機の確認も済んでいます。</p>
+    <ul>
+      <li>紐づけ処理が全画面共通のリユーザブルの ConditionTrue にあるため、ページを開けば走る。エンドユーザーで空のまま残ることがない</li>
+      <li>リダイレクトが ConditionTrue（every_time）のため一度きりでない。値が入った時点で後追いで発火する</li>
+      <li>メイン要素が既定で非表示のため、値が読めないときは表示されない側に倒れる</li>
+    </ul>
+    <p>毎回 Search を走らせない判断も妥当です。管理者は日付による制限を受けないため、紐づけの対象外でよいことも確認しました。</p>
+  </div>
+
+  <div class="sub-item">
+    <div class="kick">対応不要と確認</div>
+    <h4>生成の監視処理に条件は要らない</h4>
+    <p>当初は「生成の完了・失敗を見張る2つの処理（<code>bTSdn0</code> / <code>bTSdX0</code>）がリダイレクトより先に評価され、生成モニターの <code>deleted_at</code> が書き換わる」と指摘しました。こちらも要りません。</p>
+    <p><code>RG monitor</code>（要素 <code>bTScm0</code>）は基本のデータソースを持たず、3つとも条件付きです（<code>is_dl_flag_</code> / <code>is_regenerate_</code> / <code>load_monitor_flag_</code>）。開いた直後はどの条件も成立しないため、リストは空で <code>count &gt;= 1</code> も成立しません。フラグを立てる操作は非表示のメイン要素の中にあるので、切替前には到達できません。</p>
+    <p>design_temp 側の同名の処理も、条件を足す対象ではありません。<code>bTUid0</code> は filekey の取得状況を見るもので、こちらは切替前に動く必要があります。</p>
+  </div>
+
+  <div class="sub-item">
+    <div class="kick">9月14日まで</div>
+    <h4>修正と同格で確認する2つ</h4>
+<p>修正はすべて入りました。残っているのは確認だけです。どちらも欠けると9月14日の提供が成立しません。</p>
+    <ol class="steps">
+      <li>オプションセット <code>bubble_pages</code> の該当値の表示名が <code>design_temp</code> になっていることを目視で確認する。ログアウト状態のリダイレクトが動いているため成立している見込みだが、値そのものを1度見ておく。</li>
+      <li>本番のデータに <code>switch_date</code> の行があることを確認する。作業の手順と注意点は4章の本番反映前チェックにまとめた。</li>
+    </ol>
+  </div>
+
+  <div class="sub-item">
+    <div class="kick">10月5日まで</div>
+    <h4>あとから回せる4つ</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td class="label wrap">時計のずれと、9時00分をまたぐ瞬間</td><td>判定は利用者の端末の時計で行われる。画面を開いたまま切替時刻を迎えたときに、その場で動線が入れ替わるかを1度試す</td></tr>
+          <tr><td class="label wrap">ブラザーAPIの残り回数</td><td>切替の日は生成が一斉に走る。過去に上限で429が出ている。前日までに残りを見る</td></tr>
+          <tr><td class="label wrap">Side_main_menu の説明欄</td><td>昔の切り替え手順（権限の付け替えとリダイレクトの削除）が残っている。そのとおり操作すると壊れる。次に触る人のために書き直す</td></tr>
+          <tr><td class="label wrap">switch_date の privacy rule</td><td>未設定のため誰でも見られる状態。条件はブラウザ側でこの値を読む。あとから絞ると条件が動かなくなる。触らないでおくか、見る権限は残す</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sub-item">
+    <div class="kick">今回は見送る</div>
+    <h4>生成モニターの後始末をサーバ側へ移す</h4>
+    <p>生成モニターを片づけているのは、いまブラウザ側の2つの処理だけです。バックエンドでは一度も書いていません（実測）。タブを閉じるとレコードが残ります。次に同じ行事を開いて生成を始めたときに、前回の残骸を拾う余地があります。</p>
+    <p>本来は <code>call_polling</code> が全件の完了を検知したところでサーバ側に片づけさせ、画面は表示だけを担うのが筋です。切替の設計とは別の話なので、恒久対応として積んでください。</p>
+  </div>
+
+  <ul class="notes">
+    <li>ページ名が design_ver_tempdl から design_temp に変わりました。URLが変わるため、運用手順書の記載も追従が必要です。データ型にも design_temp があるので、名前が重なる点は社内で認識を合わせてください。</li>
+    <li>この章は2026年9月14日 13時03分に書き出したファイルと、実機での確認結果によります。対応不要とした3件は、エンジニアからの報告とあわせて確認しました。</li>
+  </ul>
+</div>
+
+<div class="section" id="ops">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div class="sh-body"><h2>運用で決めること</h2><div class="sh-sub">切替後の見え方を、先に合意しておく</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>決めること</th><th>いまの状況</th><th>確認したい点</th></tr></thead>
+      <tbody>
+        <tr><td class="label wrap">動線の表示名</td><td>「デザインテンプレ」と「行事一覧」に分かれ、<code>enduser_index</code> も1から4に整理済み</td><td>利用者に見せる名前としてこの2つでよいか</td></tr>
+        <tr><td class="label wrap">管理者・検証用アカウント</td><td>登録日が10月5日より前のため、切替後もデザインテンプレの動線が見える</td><td>意図どおりか。分けたい場合は権限での出し分けを併用する</td></tr>
+        <tr><td class="label wrap">リマインドメールの文面</td><td>2か月前・1か月前のリマインドメールは「今すぐポスターを作る」の文言で <code>/design</code> へ誘導する</td><td>テンプレDL版の期間は「作る」ではなく「ダウンロードする」動きになる。文面を版に合わせるか、両方に通じる書き方にするかを決める</td></tr>
+          <tr><td class="label wrap">タイムゾーンと再評価</td><td>現在日時の判定は利用者の端末側で行われる</td><td>端末の時計がずれた場合の影響と、画面を開いたまま9時00分を跨いだときの挙動を実機で確認する</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ul class="notes">
+    <li>リマインドメールのリンク先は <code>/design</code> のままで構いません。リダイレクトが効いていればテンプレDL版へ移ります。10月5日以降はそのまま正しい遷移先になります。ただしリダイレクトは要対応2に依存します。</li>
+    <li>「デザインテンプレ」は管理者とエンドユーザーで1つの値を共用する形になりました。遷移先は権限で分かれます（管理者は admin_d-temp、エンドユーザーは design_temp）。同じ名前で中身が違うため、呼び方は社内で認識を合わせてください。</li>
+  </ul>
+
+  <div class="alert alert-blue"><svg class="a-icon icon"><use href="#i-info"/></svg><span><strong>補足:</strong> 10月5日に品質が揃わない場合は、切替日時を先送りするだけでテンプレDL版の提供を続けられます。ブラザーへ日程を回答する際は、この点を前提にしてください。</span></div>
+</div>
+
+</div>
+
+<!-- 元データ: brother-86284.bubble（2026-09-08 書き出し）/ documents/1_meeting_minutes/議事録_ゼロイチスタート_定例会_20260820.pdf -->
+<footer>正本: brother-86284.bubble（2026-09-14 13:03 書き出し）・議事録 2026-08-20</footer>
+
+<script>
+(function(){
+  var bar = document.querySelector('.progress i');
+  if (bar) {
+    var onScroll = function(){
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+    };
+    addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  }
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    var targets = document.querySelectorAll('.section,.recap,nav.flow');
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('rv-in'); io.unobserve(e.target); } });
+    }, {rootMargin:'0px 0px -8% 0px'});
+    targets.forEach(function(el){ el.classList.add('rv'); io.observe(el); });
+  }
+  var links = document.querySelectorAll('.flow a[href^="#"]');
+  if (links.length) {
+    var map = [];
+    links.forEach(function(a){ var t = document.querySelector(a.getAttribute('href')); if (t) map.push([a, t]); });
+    var updateCur = function(){
+      var line = window.innerHeight * 0.3;
+      var cur = null;
+      map.forEach(function(m){ if (m[1].getBoundingClientRect().top <= line) cur = m; });
+      links.forEach(function(l){ l.classList.remove('cur'); });
+      if (cur) cur[0].classList.add('cur');
+    };
+    addEventListener('scroll', updateCur, {passive:true}); updateCur();
+  }
+})();
+</script>
+</body>
+</html>
